@@ -1,0 +1,1 @@
+(() => { const box=document.querySelector('#topicChoice'); if(!box)return; box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{box.querySelectorAll('button').forEach(x=>x.classList.toggle('is-selected',x===b));box.dataset.value=b.dataset.topic;})); })();

@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080b10" />
+    <title>玄頁 · 東方命理</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./override.css?v=20260824-4" />
+    <link rel="stylesheet" href="./temple.css" />
+    <link rel="stylesheet" href="./form.css" />
+    <link rel="stylesheet" href="./korean-webtoon.css" />
+    <link rel="stylesheet" href="./webtoon-hit.css" />
+    <link rel="stylesheet" href="./comic-motion.css" />
+    <link rel="stylesheet" href="./wizard.css" />
+    <link rel="stylesheet" href="./teaser-story.css?v=20260826-1" />
+    <link rel="stylesheet" href="./rich-reading.css?v=20260902-1" />
+    <link rel="stylesheet" href="./male-choice.css?v=20260903-1" />
+    <link rel="stylesheet" href="./ziwei-interactive.css" />
+    <link rel="stylesheet" href="./bazi-interactive.css" />
+    <link rel="stylesheet" href="./theme-mokawa.css?v=20260906-25" />
+    <link rel="stylesheet" href="./theme-layout.css?v=20260906-4" />
+    <link rel="stylesheet" href="./topic-overrides.css?v=20260906-1" />
+    <link rel="stylesheet" href="./design-overhaul.css?v=20260906-1" />
+    <link rel="stylesheet" href="./deep-explanations.css?v=20260906-3" />
+    <link rel="stylesheet" href="./hexagram-library.css?v=20260906-2" />
+    <link rel="stylesheet" href="./calculation-ledger.css?v=20260906-1" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero" id="hero">
+        <div class="hero-art" aria-hidden="true">
+          <div class="orb orb-a"></div><div class="orb orb-b"></div>
+          <div class="constellation">✦　·　✧　·　✦</div>
+          <div class="figure"><div class="figure-hair"></div><div class="figure-face"><span></span><span></span></div><div class="figure-robe"><i></i><i></i></div></div>
+          <div class="seal">玄<br>頁</div>
+        </div>
+        <header class="topbar"><button class="icon-btn" aria-label="返回">←</button><div class="brand">HYEON<span>PAGE</span></div><button class="icon-btn" aria-label="更多">•••</button></header>
+        <div class="hero-copy"><p class="eyebrow">玄頁</p><h1>墨川，替你讀。<br><em>先由你決定。</em></h1></div>
+        <div class="hero-bottom"><button class="primary-cta" id="enterBtn" aria-label="開始">↗</button></div>
+        <div class="comic-transition" id="comicTransition" aria-hidden="true"><div class="comic-frame frame-one"><span>01</span><p>你終於<br>肯面對自己。</p></div><div class="comic-frame frame-two"><span>02</span><p>把問題交出來，<br>先聽清楚。</p></div><div class="comic-caption">玄頁 · 讀你的當下</div><div class="comic-progress"></div></div>
+      </section>
+
+      <section class="temple-screen" id="templeScreen" aria-hidden="true">
+        <button class="temple-back" id="templeBack" aria-label="返回">←</button>
+        <div class="temple-copy"><button class="temple-message" id="templeMessage" aria-label="繼續"></button><button class="skip-btn" id="skipBtn" aria-label="繼續"><span>›</span></button></div>
+      </section>
+
+      <section class="onboarding" id="onboarding" aria-hidden="true">
+        <div class="onboarding-top"><button class="back-btn" id="onboardingBack">← 返回</button><span id="wizardCount">01 / 09</span></div>
+        <div class="wizard-progress"><i id="wizardProgress"></i></div>
+        <div class="wizard-step is-active" data-step="0"><p class="eyebrow">YOUR BIRTH DATE</p><h2>告訴我你的出生年月日</h2><input id="wizardDate" type="date"><div class="choice-row"><button class="choice active" data-calendar="solar">國曆</button><button class="choice" data-calendar="lunar">農曆</button></div></div>
+        <div class="wizard-step" data-step="1"><p class="eyebrow">YOUR BIRTH TIME</p><h2>出生時間是？</h2><input id="wizardTime" type="time"><button class="text-choice" id="unknownTime">不知道時間</button></div>
+        <div class="wizard-step" data-step="2"><p class="eyebrow">YOUR BIRTH PLACE</p><h2>出生地是哪裡？</h2><p>出生地會影響時區及上升點的計算。</p><select id="wizardPlace" class="wizard-select"></select></div>
+        <div class="wizard-step" data-step="3"><p class="eyebrow">YOUR GENDER</p><h2>你的性別？</h2><div class="stack-choice"><button class="gender-choice" data-gender="male">男生</button><button class="gender-choice" data-gender="female">女生</button><button class="gender-choice" data-gender="other">其他／不透露</button></div></div>
+        <div class="wizard-step" data-step="4"><p class="eyebrow">A LITTLE ABOUT YOU</p><h2>你叫什麼名字？</h2><input id="wizardName" type="text"><button class="wizard-confirm" id="nameConfirm">確認</button></div>
+        <div class="wizard-step" data-step="5"><p class="eyebrow">READY TO READ</p><h2>資料已經準備好</h2><p>出生資料已經記低。下一步揀一門術數開始解讀。</p><button class="wizard-confirm" id="wizardFinish">開始揀術數</button></div>
+        <button class="wizard-next" id="wizardNext">下一步 <span>↗</span></button>
+      </section>
+
+      <section class="teaser-story" id="teaserStory" aria-hidden="true">
+        <header class="story-nav">
+          <button class="story-back" id="storyBack" aria-label="返回資料輸入">←</button>
+          <div class="story-brand">玄頁 <span>HYEON PAGE</span></div>
+          <span class="story-progress" id="storyProgress">00</span>
+        </header>
+
+        <article class="teaser-scene scene-arrival" data-scene="1">
+          <img class="scene-image scene-image-main" src="./public/teaser/mokawa-pose-orb.png" alt="墨川在月下以星石起局" />
+          <div class="scene-shade"></div>
+          <div class="scene-caption scene-caption-top teaser-reveal">
+            <p class="scene-kicker">為你解命的</p>
+            <h2>墨川，<br>月下問局。</h2>
+          </div>
+          <div class="speech-card teaser-reveal" data-delay="1">
+            <small>道令</small>
+            <p><span data-teaser-name>你</span>，你終於肯行入嚟。</p>
+          </div>
+          <div class="scroll-cue">慢慢拉落去 <i></i></div>
+        </article>
+
+        <article class="teaser-scene scene-recognition" data-scene="2">
+          <img class="scene-image" src="./public/teaser/mokawa-pose-compass.png" alt="墨川轉動古老羅盤" />
+          <div class="scene-shade shade-heavy"></div>
+          <div class="scene-caption scene-caption-middle teaser-reveal">
+            <p class="scene-kicker">第一眼</p>
+            <h2>你唔係因為<br>一件小事嚟。</h2>
+            <p class="scene-body">你表面想要一個答案，實際係想知道：眼前條路，值唔值得繼續押落去。</p>
+          </div>
+          <div class="ink-bubble bubble-right teaser-reveal" data-delay="2">我睇到。</div>
+        </article>
+
+        <article class="teaser-scene scene-profile" data-scene="3">
+          <img class="scene-image" src="./public/teaser/mokawa-pose-threads.png" alt="墨川手握命運絲線" />
+          <div class="scene-shade shade-bottom"></div>
+          <div class="profile-slip teaser-reveal">
+            <p>你的命盤底稿</p>
+            <dl>
+              <div><dt>名字</dt><dd data-teaser-name>你</dd></div>
+              <div><dt>出生</dt><dd data-teaser-birth>尚未輸入</dd></div>
+              <div><dt>四柱</dt><dd data-teaser-pillars>等待排盤</dd></div>
+              <div><dt>所問</dt><dd data-teaser-question>尚未輸入問題</dd></div>
+            </dl>
+          </div>
+          <div class="scene-caption scene-caption-bottom teaser-reveal" data-delay="1">
+            <p class="scene-kicker">命盤先行</p>
+            <h2>先排盤，<br>再解讀。</h2>
+            <p class="scene-body">唔會用一段空泛文字扮答案。每一粒星、每一個宮、每一柱、每一卦，都可以撳開睇來源同意思。</p>
+          </div>
+        </article>
+
+        <section class="story-interlude" data-scene="4">
+          <img class="interlude-figure" src="./public/teaser/mokawa-pose-threads.png" alt="墨川牽引命運絲線" />
+          <div class="interlude-copy teaser-reveal">
+            <span>ACT I</span>
+            <h2>你問嘅唔只係<br>吉定凶。</h2>
+            <p>係時機、代價、你能控制嘅部分，同一條可以即刻開始行嘅路。</p>
+          </div>
+          <div class="red-thread" aria-hidden="true"></div>
+        </section>
+
+        <article class="teaser-scene scene-work" data-scene="5">
+          <img class="scene-image" src="./public/teaser/mokawa-pose-orb.png" alt="墨川分析工作與選擇" />
+          <div class="scene-shade shade-heavy"></div>
+          <div class="analysis-stack teaser-reveal">
+            <p class="scene-kicker">你此刻的問題</p>
+            <blockquote>「<span data-teaser-question>尚未輸入問題</span>」</blockquote>
+            <div class="analysis-row"><b>01</b><span><strong>先辨長期底盤</strong>八字、紫微、印度占星會先排出結構，不會先作結論。</span></div>
+            <div class="analysis-row"><b>02</b><span><strong>再睇當下局勢</strong>梅花、掐指一算、奇門、易經按問題與起卦資料判讀。</span></div>
+            <div class="analysis-row"><b>03</b><span><strong>最後落到行動</strong>把訊號分成機會、風險、時間及下一步。</span></div>
+          </div>
+        </article>
+
+        <section class="story-interlude interlude-dark" data-scene="6">
+          <img class="interlude-figure figure-low" src="./public/teaser/mokawa-pose-compass.png" alt="墨川守在命盤旁" />
+          <div class="interlude-copy teaser-reveal">
+            <span>ACT II</span>
+            <h2>九門術數，<br>唔係九段罐頭文。</h2>
+            <p>每一門先生成應有嘅盤，再逐個可互動元素解釋。</p>
+          </div>
+        </section>
+
+        <article class="teaser-scene scene-methods" data-scene="7">
+          <img class="scene-image scene-image-soft" src="./public/teaser/mokawa-pose-orb.png" alt="墨川展示九門術數" />
+          <div class="scene-shade shade-heavy"></div>
+          <div class="method-preview teaser-reveal">
+            <p class="scene-kicker">盤面會先出現</p>
+            <div class="preview-grid">
+              <div><b>紫微斗數</b><span>先排十二宮，再看全星曜、四化及三方四正，解釋你係邊個人生範圍卡住。</span></div>
+              <div><b>八字</b><span>由四柱、藏干、十神同五行，拆出性格底盤、工作節奏、財務取向及流運。</span></div>
+              <div><b>奇門遁甲</b><span>用九宮、九星、八門、八神、值符值使，集中回答一件事應該點揀、幾時郁。</span></div>
+              <div><b>印度占星</b><span>讀星盤、Bhava、Nakshatra、Dasha，將人生主題放返入時間週期同事件窗口。</span></div>
+              <div><b>梅花易數</b><span>以本卦、互卦、變卦及動爻，睇一件當下事情由邊度起、點樣變。</span></div>
+              <div><b>掐指一算</b><span>男主按住左手六個關節位，由大安起正月，再月上起日、日上起時，逐步讀出事情節奏。</span></div>
+              <div><b>易經</b><span>由六十四卦、卦辭、爻位及變化，講清楚目前位置同下一步應守定應變。</span></div>
+              <div><b>綜合解讀</b><span>將命盤、起卦、時間層交叉核對，最後落到工作、財運、感情同一個實際行動。</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="teaser-scene scene-fate" data-scene="8">
+          <img class="scene-image" src="./public/teaser/mokawa-pose-threads.png" alt="墨川觀察感情與命運線" />
+          <div class="scene-shade shade-bottom"></div>
+          <div class="scene-caption scene-caption-top teaser-reveal">
+            <p class="scene-kicker">感情與人際</p>
+            <h2>唔只講桃花。<br>會講互動模式。</h2>
+            <p class="scene-body">邊一種關係令你耗損、邊一種承諾要睇行動、邊一個時間點適合講清楚，都會分開解。</p>
+          </div>
+          <div class="ink-bubble bubble-left teaser-reveal" data-delay="2">先睇事實。</div>
+        </article>
+
+        <article class="teaser-scene scene-wealth" data-scene="9">
+          <img class="scene-image" src="./public/teaser/mokawa-pose-compass.png" alt="墨川遞出代表財運與選擇的命運卡" />
+          <div class="scene-shade shade-heavy"></div>
+          <div class="scene-caption scene-caption-bottom teaser-reveal">
+            <p class="scene-kicker">工作與財務</p>
+            <h2>唔只講有冇財。<br>會講點樣取捨。</h2>
+            <p class="scene-body">收入、權責、成長、風險同時間成本逐項拆開；命理只負責提供假設，最後用現實證據覆核。</p>
+          </div>
+        </article>
+
+        <section class="story-interlude interlude-report" data-scene="10">
+          <img class="interlude-figure figure-right" src="./public/teaser/mokawa-pose-orb.png" alt="墨川逐頁解釋命書" />
+          <div class="interlude-copy teaser-reveal">
+            <span>ACT III</span>
+            <h2>每個術語，<br>都可以撳開。</h2>
+            <p>例如紫微、七殺、化祿、日主、十神、值符、八門、Nakshatra、Dasha；會同時解釋定義、盤中位置、對問題嘅作用同需要留意嘅失衡。</p>
+          </div>
+          <div class="term-chips teaser-reveal" data-delay="1">
+            <button type="button" data-demo-term="紫微">紫微</button>
+            <button type="button" data-demo-term="七殺">七殺</button>
+            <button type="button" data-demo-term="日主">日主</button>
+            <button type="button" data-demo-term="值符">值符</button>
+            <button type="button" data-demo-term="Dasha">Dasha</button>
+          </div>
+          <div class="term-demo" id="termDemo" aria-live="polite">撳一個術語，先睇佢代表咩。</div>
+        </section>
+
+        <article class="teaser-scene scene-proof" data-scene="11">
+          <img class="scene-image" src="./public/teaser/mokawa-pose-compass.png" alt="墨川展示命盤計算" />
+          <div class="scene-shade shade-heavy"></div>
+          <div class="proof-card teaser-reveal">
+            <p class="scene-kicker">你會睇到</p>
+            <h2>盤面資料、解讀理由、<br>時間層、下一步。</h2>
+            <ul>
+              <li><span>01</span>先顯示實際排盤結果</li>
+              <li><span>02</span>撳宮位、星曜、柱或卦查看詳細意思</li>
+              <li><span>03</span>按你條問題組合判斷，不用單一吉凶</li>
+              <li><span>04</span>最後整理成可執行建議</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="teaser-scene scene-final" data-scene="12">
+          <img class="scene-image" src="./public/teaser/mokawa-pose-threads.png" alt="墨川邀請你開始排盤" />
+          <div class="scene-shade shade-bottom"></div>
+          <div class="scene-caption scene-caption-bottom final-copy teaser-reveal">
+            <p class="scene-kicker">輪到你揀</p>
+            <h2><span data-teaser-name>你</span>，<br>想先打開邊一個盤？</h2>
+            <p class="scene-body">出生類先排命盤；算卦類先收問題同起卦資料。揀完之後，盤面同解讀會一齊出現。</p>
+          </div>
+        </article>
+
+        <div class="story-end-spacer" aria-hidden="true"></div>
+        <button class="story-continue" id="storyContinue">開始揀術數 <span>→</span></button>
+      </section>
+
+      <section class="oracle" id="oracle" aria-hidden="true">
+        <header class="oracle-header"><button class="back-btn" id="backBtn">← 返回</button><div><p class="eyebrow">玄頁 / SELECT YOUR PATH</p><h2>揀一門，問一件事</h2></div><div class="status-dot"></div></header>
+        <div class="quote">「命不是答案，係一張地圖。」<span>— 玄頁主人</span></div>
+        <div class="oracle-protagonist" aria-hidden="true">
+          <img data-guide-portrait src="./public/teaser/male-choice-amber.png" alt="墨川，玄頁韓漫命理師" />
+          <div><p data-guide-name>墨川 · 月下問局人</p><strong>你揀一門，<br>我開始讀。</strong></div>
+        </div>
+        <section class="male-choice" aria-labelledby="maleChoiceTitle">
+          <div class="male-choice-heading"><p class="eyebrow">YOUR GUIDE</p><h3 id="maleChoiceTitle">墨川會一直喺度，<br>由佢替你讀命。</h3><span>月下問局人 · 玩味、敏銳，先看穿你未講出口嘅事</span></div>
+          <div class="male-choice-grid">
+            <button class="male-choice-card is-selected" type="button" data-guide="amber" data-name="墨川" data-title="墨川 · 月下問局人" data-image="./public/teaser/male-choice-amber.png" data-tone="玩味、敏銳，先看穿人心"><span class="male-choice-index">03</span><img src="./public/teaser/male-choice-amber.png" alt="墨川：月下韓漫命理師" /><span class="male-choice-name">墨川</span><small>魅影型 · 讀你未講出口</small></button>
+          </div>
+          <p class="male-choice-status" id="maleChoiceStatus">目前由墨川替你開盤：玩味、敏銳，先看穿人心。</p>
+        </section>
+        <div class="method-grid" id="methodGrid"></div>
+        <div class="reading-panel" id="readingPanel">
+          <div class="panel-heading"><span class="panel-index">01</span><div><p class="eyebrow">YOUR QUESTION</p><h3 id="selectedTitle">選擇一門術數</h3></div><button class="close-panel" id="closePanel">×</button></div>
+          <p class="panel-note" id="selectedNote">每一門術數，都是一種看見自己的角度。</p>
+          <p class="data-note" id="dataNote">請先選擇術數，系統會顯示真正需要嘅資料。</p>
+          <div class="form-row birth-fields"><label>出生日期<input id="birthDate" type="date"></label><label>出生時間<input id="birthTime" type="time"></label></div>
+          <div class="form-row profile-fields"><label>性別<select id="gender"><option value="">請選擇</option><option value="female">女性</option><option value="male">男性</option><option value="other">其他／不透露</option></select></label><label id="birthPlaceLabel">出生地點<select id="birthPlace"></select></label></div>
+          <div class="moment-fields"><label>起卦時間（香港時間）<input id="momentTime" type="datetime-local"></label><label id="numberFieldLabel">起卦數字<input id="numbers" inputmode="numeric" placeholder="例如：27"></label></div>
+          <label class="question-label">你此刻最想問的是？<input id="question" type="text" placeholder="例如：這段關係會走到哪裡？"></label>
+          <fieldset class="topic-choice" id="topicChoice" data-value="工作"><legend>你想睇邊一方面？</legend><button type="button" class="is-selected" data-topic="工作">工作</button><button type="button" data-topic="財運">財運</button><button type="button" data-topic="感情">感情</button><button type="button" data-topic="健康">健康</button><button type="button" data-topic="家庭／人際">家庭／人際</button><button type="button" data-topic="學業／方向">學業／方向</button><button type="button" data-topic="其他">其他</button></fieldset>
+          <button class="read-btn" id="readBtn">開始讀取 <span>↗</span></button>
+          <p class="microcopy">你提供的資料只保留在此裝置，不會上傳。</p>
+        </div>
+        <div class="result-card" id="resultCard"><div class="result-kicker">玄頁讀象 · 你的當下</div><h3 id="resultTitle">—</h3><p id="resultText"></p><div id="oracleNarrativeResult" class="oracle-narrative-result" hidden></div><div id="interactiveResult" class="interactive-result" hidden></div><div id="baziInteractiveResult" class="interactive-result" hidden></div><div class="result-footer"><span>先記下第一個浮現的念頭</span><button id="resetBtn">重新選擇</button></div></div>
+      </section>
+    </main>
+    <script src="./public/lunar.js?v=20260823"></script>
+    <script src="./public/iztro.min.js?v=20260823"></script>
+    <script src="./public/astronomy.browser.min.js?v=20260823"></script>
+    <script src="./public/renhuai-ziwei.js?v=20260823"></script>
+    <script type="module" src="./public/qimen-bridge.js?v=20260906-2"></script>
+    <script src="./app.js?v=20260906-30"></script>
+    <script src="./liuren-ui-fix.js?v=20260906-4"></script>
+    <script src="./read-fix.js?v=20260823-3"></script>
+    <script src="./indian-bridge.js?v=20260823-1"></script>
+    <script src="./oracle-engine.js?v=20260906-4"></script>
+    <script src="./glossary.js?v=20260823-1"></script>
+    <script src="./webtoon-interactions.js?v=20260823-1"></script>
+    <script src="./wizard.js?v=20260906-2"></script>
+    <script src="./teaser-motion.js?v=20260906-2"></script>
+    <script src="./public/qimen-fallback.js?v=20260906-1"></script>
+    <script src="./bazi-reading.js?v=20260823-1"></script>
+    <script src="./ziwei-interactive.js?v=20260903-16"></script>
+    <script src="./bazi-interactive.js?v=20260823-2"></script>
+    <script src="./bazi-deep.js?v=20260824-1"></script>
+    <script src="./method-visuals.js?v=20260906-4"></script>
+    <script src="./emergency-visuals.js?v=20260903-16"></script>
+    <script src="./xiaoliuren.js?v=20260906-1"></script>
+    <script src="./liuren-figure.js?v=20260906-1"></script>
+    <script src="./rich-method-live.js?v=20260906-2"></script>
+    <script src="./topic-choice.js?v=20260906-1"></script>
+    <script src="./context-reading.js?v=20260906-1"></script>
+    <script src="./personal-reading.js?v=20260906-1"></script>
+    <script src="./analysis-layer.js?v=20260906-2"></script>
+    <script src="./rich-reading.js?v=20260902-1"></script>
+    <script src="./method-explanations.js?v=20260906-2"></script>
+    <script src="./male-choice.js?v=20260903-1"></script>
+    <script src="./deep-explanations.js?v=20260906-3"></script>
+    <script src="./hexagram-library.js?v=20260906-3"></script>
+    <script src="./calculation-ledger.js?v=20260906-1"></script>
+  </body>
+</html>

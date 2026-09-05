@@ -1,0 +1,19 @@
+.deep-reading-intro{padding:18px 0 16px;border-bottom:1px solid rgba(159,207,204,.22)}
+.deep-reading-intro span{color:#9fcfca;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+.deep-reading-intro h3{margin:8px 0 7px;color:#f3f0e7;font:700 23px/1.45 Georgia,'Noto Serif TC',serif}
+.deep-reading-intro p{margin:0;color:#adc4c0;line-height:1.7;font-size:14px}
+.deep-reading-grid{display:grid;gap:12px;margin-top:16px}
+.deep-reading-block{display:grid;grid-template-columns:42px 1fr;gap:12px;padding:17px;border:1px solid rgba(120,166,171,.32);border-radius:14px;background:linear-gradient(145deg,rgba(12,35,42,.86),rgba(4,16,22,.92));opacity:0;transform:translateY(18px);transition:opacity .6s ease var(--deep-delay),transform .6s cubic-bezier(.2,.8,.2,1) var(--deep-delay)}
+.deep-reading-block.is-revealed{opacity:1;transform:none}
+.deep-reading-index{color:#9fcfca;font:700 20px/1 'Space Grotesk',sans-serif;padding-top:3px}
+.deep-reading-label{margin:0 0 5px;color:#c4ded8;font-size:12px;letter-spacing:.11em}
+.deep-reading-block h4{margin:0 0 10px;color:#f3f0e7;font:700 19px/1.45 Georgia,'Noto Serif TC',serif}
+.deep-reading-block>div>p:not(.deep-reading-label){margin:0;color:#d2e0dc;font-size:15px;line-height:1.85}
+.deep-impact,.deep-action{margin-top:11px;padding:10px 12px;border-left:2px solid #6fa9a7;background:rgba(8,26,32,.72);color:#c3d6d1;font-size:14px;line-height:1.75}
+.deep-action{border-left-color:#9fcfca;background:rgba(19,58,63,.42)}
+.deep-impact b,.deep-action b{color:#f0e1b9}
+.deep-term{border:0;border-bottom:1px dashed rgba(159,207,204,.8);background:transparent;color:#a8d8d2;padding:0;cursor:pointer;font:inherit;text-align:left}
+.deep-term-drawer{display:flex;flex-direction:column;gap:7px;margin-top:16px;padding:16px;border:1px solid rgba(159,207,204,.48);border-radius:14px;background:rgba(4,17,23,.96);color:#d7e4df;line-height:1.7}
+.deep-term-drawer b{color:#f0e1b9;font-size:17px}.deep-term-drawer.is-active{animation:deepDrawer .3s ease both}
+@keyframes deepDrawer{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:520px){.deep-reading-block{grid-template-columns:34px 1fr;padding:14px}.deep-reading-intro h3{font-size:20px}.deep-reading-block h4{font-size:18px}}
