@@ -6,6 +6,50 @@ const screens = ['intro','story','profile','methods','reading'];
 const asset = name => `./public/teaser/${name}`;
 
 const term = (label, explanation, key = label) => { state.terms.set(key, {label, explanation}); return `<button class="term-link" type="button" data-term="${esc(key)}">${esc(label)}</button>`; };
+const glossary={
+  '四柱':'年柱、月柱、日柱、時柱合成出生底盤；四柱要連月令、日主及五行一齊讀，唔可以只取一粒字。',
+  '日主':'八字代表本人的核心天干；強弱要配合月令、根氣、通關及全盤五行，唔係單看日主性格。',
+  '月令':'出生月份所處季節，是判斷日主旺衰及整張八字氣勢的第一層。',
+  '十神':'按日主與其他天干的生剋陰陽分類，將資源、輸出、責任、同伴及財務放入同一套語言。',
+  '藏干':'地支內藏住的天干，象徵未浮面的人、資源、習慣或事件背景。',
+  '刑沖合害':'地支之間的互動；沖偏向變動，合偏向牽連，刑害偏向壓力或暗中摩擦，要看全盤力度。',
+  '大運':'八字約十年一段的時間層，要配合原局及流年看，不能單獨當成劇本。',
+  '流年':'某一年加入出生盤的年度背景，適合定策略與觀察主題，不是百分百事件預告。',
+  '命宮':'紫微斗數看本人核心表現與人生主軸的宮位；必須連對宮、三方四正及運限閱讀。',
+  '身宮':'紫微看你實際把力氣投放在哪個生活領域；同命宮比較，能分開理想自我與實際行動。',
+  '十二宮':'紫微將人生拆成命、財帛、官祿、夫妻、田宅等十二個領域；每宮都要看宮位與星曜的組合。',
+  '三方四正':'命宮與相關會照宮位的交叉骨架，用來看一件事如何牽動工作、財運、關係與外部環境。',
+  '四化':'化祿、化權、化科、化忌描述資源、控制、被看見與卡點如何流動，唔係四個簡單吉凶標籤。',
+  'Lagna':'印度占星的上升點，由出生時間與地點計出，描述你如何進入環境及事情如何開始。',
+  'Bhava':'印度占星的生活宮位，把星體功能放入工作、收入、感情、家庭等具體領域。',
+  'Nakshatra':'把黃道分成二十七個月宿，以月亮位置細分情緒模式、習慣及時間節奏。',
+  'Dasha':'印度占星按月宿分配的行星主周期，用來建立時間背景；是窗口，不是必然預言。',
+  'Transit':'當下天空行星相對出生盤的移動，用來補充哪些主題較容易在近期被觸發。',
+  '本卦':'梅花易數或易經當下局面的主結構；先讀卦象，再由動爻看變化位置。',
+  '體用':'梅花易數分開主體與外部條件，透過生剋看支援、消耗或牽制，不能只看卦名。',
+  '互卦':'由本卦中間爻位重組，常用來看表面事件底下的內部過程與真正卡點。',
+  '動爻':'六爻中正在變動的位置，提示最需要處理的環節及事情目前處於哪個階段。',
+  '變卦':'將動爻翻轉後的卦，表示行動後可能走向，不等於保證的終局。',
+  '小六壬':'以農曆月、日、時辰在大安、留連、速喜、赤口、小吉、空亡六個位置推短課的方式。',
+  '落宮':'小六壬最後由時辰推到的六神位置，是今次問題的短期氣氛與節奏。',
+  '大安':'小六壬六神之一，偏向穩定、可守、事情按原定節奏推進；仍要用現實條件核對。',
+  '留連':'小六壬六神之一，偏向延誤、反覆或未完；適合等資料，不宜急著把未定當成否定。',
+  '速喜':'小六壬六神之一，偏向快速訊息或短期進展；快不等於長期穩定，要先做低風險行動。',
+  '赤口':'小六壬六神之一，偏向口舌、衝突或誤會；先核對文字與情緒，再決定是否回覆。',
+  '小吉':'小六壬六神之一，偏向小幅順利與有人相助；是可試行的訊號，不是大勝保證。',
+  '空亡':'小六壬六神之一，偏向資料缺失、落空或暫未成形；先補條件，不要硬猜結果。',
+  '局數':'奇門遁甲按節氣、陰陽遁與時辰排出的九宮時間結構，決定當刻的環境框架。',
+  '九宮':'奇門把空間與事件分成九個位置，容納天盤、地盤、八門、九星與八神。',
+  '八門':'奇門八個行動入口：開、休、生、傷、杜、景、死、驚，提示適合開展、休整、避險或觀望。',
+  '九星':'奇門九種策略氣質，例如天心偏分析、天蓬偏風險；要連宮位及八門看。',
+  '八神':'奇門事件的氣氛、助力與干擾層；單獨一神不能判定成敗。',
+  '值符':'奇門九星系統的主導點，用來定位局勢核心及誰掌握主導權。',
+  '值使':'奇門八門系統的主導點，用來看事情如何落地及應採取哪種行動方式。',
+  '交叉核對':'綜合解讀比較不同方法是否指向同一問題；一致才算重複訊號，矛盾就要回到事實補核。',
+  '時間窗口':'把象意轉成可觀察的日期範圍；代表機會密度，不代表事件一定發生。'
+};
+const registerGlossary=()=>Object.entries(glossary).forEach(([label,explanation])=>{if(!state.terms.has(label))state.terms.set(label,{label,explanation});});
+const linkGlossaryTerms=root=>{registerGlossary();const labels=Object.keys(glossary).sort((a,b)=>b.length-a.length),re=new RegExp(`(${labels.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')})`,'g'),walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{if(node.parentElement?.closest('.term-link,.palace-open,script,style'))return;const text=node.nodeValue;if(!re.test(text)){re.lastIndex=0;return;}re.lastIndex=0;const frag=document.createDocumentFragment();let last=0;for(const match of text.matchAll(re)){const i=match.index; if(i>last)frag.append(text.slice(last,i));const b=document.createElement('button');b.type='button';b.className='term-link';b.dataset.term=match[0];b.textContent=match[0];frag.append(b);last=i+match[0].length;}if(last<text.length)frag.append(text.slice(last));node.replaceWith(frag);});};
 const nowHK = () => {
   const value = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Hong_Kong',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date());
   return value.replace(' ','T');
@@ -325,7 +369,7 @@ const renderReading=async id=>{
   const q=question(); let r;
   if(id==='bazi') r=baziCalc(p); else if(id==='ziwei') r=ziweiCalc(p); else if(id==='indian') r=indianCalc(p); else if(id==='meihua') r=meihuaCalc(p,q,'time'); else if(id==='iching') r=meihuaCalc(p,q,'question'); else if(id==='liuren') r=liurenCalc(p); else if(id==='qimen') r=await qimenCalc(p,q); else {const [b,z,i,m,l]=[baziCalc(p),ziweiCalc(p),indianCalc(p),meihuaCalc(p,q,'time'),liurenCalc(p)];r={bazi:b,ziwei:z,indian:i,meihua:m,liuren:l};}
   if(id==='cross'){state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent='五種讀法未必講同一把聲；我會先指出邊度一致，邊度要你自己驗證。';} else {state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent=r.error?'資料未齊，我唔會扮有答案。':id==='liuren'?`手指停喺 ${r.god}。先看呢個落宮點樣落地。`:`${p.name||'你'}，${meta.name}先指出：${state.topic}唔可以只看一個表面。`;}
-  bindTerms(); bindPalaces();
+  linkGlossaryTerms($('#readingContent')); bindTerms(); bindPalaces();
 };
 const bindTerms=()=>$$('.term-link').forEach(b=>b.addEventListener('click',()=>{const key=b.dataset.term,info=state.terms.get(key),body=info?.explanation||'呢個術語要連同所在宮位、卦位或時間層一齊看。';$('#termName').textContent=info?.label||b.textContent;$('#termBody').textContent=body;$('#termDrawer').classList.add('is-open');$('#termDrawer').setAttribute('aria-hidden','false');}));
 const bindPalaces=()=>$$('.palace-open').forEach(b=>b.addEventListener('click',()=>{const body=state.palaceExplanations.get(b.dataset.palace)||'此宮解釋未載入。';$('#termName').textContent=b.querySelector('b')?.textContent||'宮位解釋';$('#termBody').textContent=body;$('#termDrawer').classList.add('is-open');$('#termDrawer').setAttribute('aria-hidden','false');}));
