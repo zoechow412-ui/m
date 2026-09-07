@@ -1,0 +1,15 @@
+{
+  "updated": "2026-08-23",
+  "policy": "每個結果頁顯示實際使用的計算層、資料層及解讀層；未在瀏覽器執行的來源只列為研究來源，不冒充已接入。",
+  "sources": [
+    {"method":"紫微斗數","repo":"Renhuai123/ziwei-doushu","url":"https://github.com/Renhuai123/ziwei-doushu","engine":"本地 iztro + Renhuai 四化／星曜／宮位資料","data":"14 主星、十二宮、四化、格局、古籍","rules":"倪海夏《天紀》體系；流年／流月四化規則","status":"active"},
+    {"method":"八字","repo":"dzcmemory-web/bazi-ziwei-skill","url":"https://github.com/dzcmemory-web/bazi-ziwei-skill","engine":"lunar-javascript（瀏覽器本地執行）","data":"五行、藏干、納音、十神、大運、流年、流月","rules":"旺衰權重提示、調候研究、刑沖合害、八字／紫微交叉驗證","status":"active-local; Yiqi 為研究來源"},
+    {"method":"綜合解讀","repo":"Brhiza/mingyu","url":"https://github.com/Brhiza/mingyu","engine":"多術式核心作研究及驗證基準","data":"八字、紫微、梅花、六爻、奇門、星盤資料層","rules":"結構化 prompt、證據鏈及跨術式合參","status":"research-integrated"},
+    {"method":"易經","repo":"kentang2017/ichingshifa","url":"https://github.com/kentang2017/ichingshifa","engine":"本地六十四卦資料及起卦規則","data":"卦辭、爻辭、彖辭、象辭、納甲","rules":"大衍蓍草及變爻規則","status":"active"},
+    {"method":"奇門遁甲","repo":"perfhelf/bigfishmarquis-qimen","url":"https://github.com/perfhelf/bigfishmarquis-qimen","engine":"本地 qimendunjia engine build","data":"九星、八門、八神、九宮、克應、格局","rules":"拆補、茅山、置閏；年／月／日／時家","status":"active"},
+    {"method":"印度占星","repo":"nikolamilenkovic/openastrology-library","url":"https://github.com/nikolamilenkovic/openastrology-library","engine":"Astronomy Engine 現有瀏覽器計算；開源庫作校驗基準","data":"Lagna、九曜、Bhava、D9、Nakshatra","rules":"Lahiri、Vimshottari Dasha、Transit","status":"active-local-approximation"},
+    {"method":"梅花易數","repo":"handsomejustin/meihua-yi","url":"https://github.com/handsomejustin/meihua-yi","engine":"本地時間／數字起卦流程","data":"本卦、互卦、變卦、八卦五行","rules":"體用、生剋、動爻","status":"active"},
+    {"method":"指一算","repo":"handsomejustin/meihua-yi","url":"https://github.com/handsomejustin/meihua-yi","engine":"一指數字輸入轉梅花數字起卦","data":"八卦、六十四卦、變爻","rules":"一念一數；明確標示為梅花數字起卦，不冒充獨立流派","status":"active"},
+    {"method":"小六壬","repo":"本地六神規則層","url":"https://zh.wikipedia.org/wiki/小六壬","engine":"農曆月日＋時辰本地計算","data":"大安、留連、速喜、赤口、小吉、空亡","rules":"月上起日、日上起時；結果配合問題及現實資料解讀","status":"active-local"}
+  ]
+}
