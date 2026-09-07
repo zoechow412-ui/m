@@ -170,7 +170,7 @@ const qimenCalc=async(p,q)=>{
 };
 
 const impacts=(focus, signal, method='default') => {
-  if(method==='default') method=signal.includes('日主')?'bazi':signal.includes('命宮')?'ziwei':signal.includes('Lagna')?'indian':signal.includes('落宮')?'liuren':signal.includes('值符')?'qimen':signal.includes('綜合盤面')?'cross':signal.includes('本卦')?'meihua':'default';
+  if(method==='default') method=state.method==='iching'?'iching':signal.includes('日主')?'bazi':signal.includes('命宮')?'ziwei':signal.includes('Lagna')?'indian':signal.includes('落宮')?'liuren':signal.includes('值符')?'qimen':signal.includes('綜合盤面')?'cross':signal.includes('本卦')?'meihua':'default';
   const profiles={
     bazi:{
       工作:`${signal}；日主偏旺時主動量大，但最怕責任增加而權限未同步。先把交付標準、截止日及誰有最後決定權寫清楚，唔好用硬頂證明能力。`,
