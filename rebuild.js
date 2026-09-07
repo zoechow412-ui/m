@@ -366,10 +366,15 @@ const buildReading=(id,r,p)=>{
 
 const renderReading=async id=>{
   const p=profile(); state.method=id; state.terms.clear(); $('#termDrawer').classList.remove('is-open'); $('#termDrawer').setAttribute('aria-hidden','true'); const meta=methods.find(x=>x.id===id), no=methods.findIndex(x=>x.id===id)+1; $('#readingTitle').textContent=meta.name;$('#readingMethodNo').textContent=`0${no} / 08`;$('#readingBackdrop').style.backgroundImage=`linear-gradient(180deg,rgba(3,12,16,.5),rgba(3,12,16,.96)),url("${asset(meta.visual)}")`;$('#guideQuote').textContent='等我把你問緊嘅事，放返入盤面。';$('#readingContent').innerHTML=`<div class="loading-reading"><span class="loader"></span><p>墨川正在按規則排盤……</p></div>`;setScreen('reading');
-  const q=question(); let r;
-  if(id==='bazi') r=baziCalc(p); else if(id==='ziwei') r=ziweiCalc(p); else if(id==='indian') r=indianCalc(p); else if(id==='meihua') r=meihuaCalc(p,q,'time'); else if(id==='iching') r=meihuaCalc(p,q,'question'); else if(id==='liuren') r=liurenCalc(p); else if(id==='qimen') r=await qimenCalc(p,q); else {const [b,z,i,m,l]=[baziCalc(p),ziweiCalc(p),indianCalc(p),meihuaCalc(p,q,'time'),liurenCalc(p)];r={bazi:b,ziwei:z,indian:i,meihua:m,liuren:l};}
-  if(id==='cross'){state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent='五種讀法未必講同一把聲；我會先指出邊度一致，邊度要你自己驗證。';} else {state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent=r.error?'資料未齊，我唔會扮有答案。':id==='liuren'?`手指停喺 ${r.god}。先看呢個落宮點樣落地。`:`${p.name||'你'}，${meta.name}先指出：${state.topic}唔可以只看一個表面。`;}
-  linkGlossaryTerms($('#readingContent')); bindTerms(); bindPalaces();
+  try {
+    const q=question(); let r;
+    if(id==='bazi') r=baziCalc(p); else if(id==='ziwei') r=ziweiCalc(p); else if(id==='indian') r=indianCalc(p); else if(id==='meihua') r=meihuaCalc(p,q,'time'); else if(id==='iching') r=meihuaCalc(p,q,'question'); else if(id==='liuren') r=liurenCalc(p); else if(id==='qimen') r=await qimenCalc(p,q); else {const [b,z,i,m,l]=[baziCalc(p),ziweiCalc(p),indianCalc(p),meihuaCalc(p,q,'time'),liurenCalc(p)];r={bazi:b,ziwei:z,indian:i,meihua:m,liuren:l};}
+    if(id==='cross'){state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent='五種讀法未必講同一把聲；我會先指出邊度一致，邊度要你自己驗證。';} else {state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent=r.error?'資料未齊，我唔會扮有答案。':id==='liuren'?`手指停喺 ${r.god}。先看呢個落宮點樣落地。`:`${p.name||'你'}，${meta.name}先指出：${state.topic}唔可以只看一個表面。`;}
+    linkGlossaryTerms($('#readingContent')); bindTerms(); bindPalaces();
+  } catch(e) {
+    console.error('reading-render-failed', e);
+    $('#readingContent').innerHTML=`<section class="reading-error"><h2>呢一門暫時未能完成排盤</h2><p>計算過程出現問題，未有用一段通用文字充數。請按「再讀另一門」重試，或重新輸入資料。</p></section>`;
+  }
 };
 const bindTerms=()=>$$('.term-link').forEach(b=>b.addEventListener('click',()=>{const key=b.dataset.term,info=state.terms.get(key),body=info?.explanation||'呢個術語要連同所在宮位、卦位或時間層一齊看。';$('#termName').textContent=info?.label||b.textContent;$('#termBody').textContent=body;$('#termDrawer').classList.add('is-open');$('#termDrawer').setAttribute('aria-hidden','false');}));
 const bindPalaces=()=>$$('.palace-open').forEach(b=>b.addEventListener('click',()=>{const body=state.palaceExplanations.get(b.dataset.palace)||'此宮解釋未載入。';$('#termName').textContent=b.querySelector('b')?.textContent||'宮位解釋';$('#termBody').textContent=body;$('#termDrawer').classList.add('is-open');$('#termDrawer').setAttribute('aria-hidden','false');}));
