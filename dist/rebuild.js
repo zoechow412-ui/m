@@ -255,7 +255,7 @@ const impacts=(focus, signal, method='default') => {
     qimen:{工作:`${signal}。奇門以門、星、神是否同向判斷行動入口；值使比單粒吉星更關鍵。行動：揀一個可控溝通方向，帶齊證據再出手。`,財運:`${signal}。值符值使只表示局勢主導與落地方式，不是獲利保證。行動：先看資金由誰掌控、何時止損，再決定進場。`,感情:`${signal}。九宮把人、位置、時間與行動方式分開，唔把對象限定為異性。行動：改變一次接觸方式，觀察是否有對等回應。`,'家庭／人際':`${signal}。門、星、神互相牽制時容易出現多頭指令。行動：定唯一議題、聯絡人與回覆期限。`,健康:`${signal}。奇門只作環境與節奏提醒，不是診斷。行動：降低暴露與過勞，身體問題交醫護。`,'學業／方向':`${signal}。九星可提示分析、表達、行動或整理，但仍要用成果校驗。行動：做三日試驗，再按結果調整。`,其他:`${signal}。奇門回答的是此刻用哪種姿態，不保證終局。行動：列出要爭取與要避開各一項。`},
     cross:{工作:`${signal}。綜合只接受多門方法重複指向的工作訊號；長期出生盤與短期卦局矛盾時，先補事實。行動：把責任、權限與期限分開核對。`,財運:`${signal}。交叉結果只用來找重複風險，唔會變成投資指令。行動：以現金流與可承受損失作硬限制。`,感情:`${signal}。出生盤看長期傾向，卦法看當下互動；任何方法都唔替你指定伴侶性別。行動：用真實對話與對等行動核對。`,'家庭／人際':`${signal}。若多門都指向牽連，先處理界線；若只有一門警示，就當作待核對假設。行動：不要直接升級衝突。`,健康:`${signal}。任何方法都不能診斷；最多提醒反覆生活壓力。行動：記錄、休息或求醫，唔自行下結論。`,'學業／方向':`${signal}。出生盤提供偏好，卦局提供試行節奏，方向必須靠成果接回來。行動：做七日小實驗。`,其他:`${signal}。綜合唔係把八門句子疊高，而是列出一致、矛盾及未計算之處。行動：只採取一個低風險動作。`}
   };
-  if(richProfiles[method]) return Object.entries(richProfiles[method]).map(([k,v])=>`<div class="impact-item ${k===focus?'is-focus':''}"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join('');
+  if(richProfiles[method]) return Object.entries(richProfiles[method]).map(([k,v])=>{const clean=v.startsWith(`${signal}。`)?v.slice(`${signal}。`.length):v,body=k===focus?`盤面訊號：${signal}。${clean}`:clean;return `<div class="impact-item ${k===focus?'is-focus':''}"><b>${esc(k)}</b><span>${esc(body)}</span></div>`;}).join('');
   const copy=profiles[method]||{
     工作:`${signal}落到工作，先看你能控制的權責、流程和交付。`,
     財運:`${signal}落到財運，先檢查收入、支出、風險和退出條件。`,
