@@ -1,0 +1,41 @@
+/* Reference-matched visual overrides — keep business logic untouched */
+:root{--ref-bg:#fffaf1;--ref-navy:#082f5d;--ref-yellow:#fff0a9;--ref-blue:#cdeefe;--ref-pink:#ffd8dc;--ref-green:#cef4df}
+body{background:linear-gradient(135deg,#fffdf8 0%,#fffaf0 55%,#f9fbfb 100%)}
+.app-shell{background:transparent}
+.sidebar{background:linear-gradient(180deg,#06284e 0%,#082f5d 62%,#0a3867 100%);box-shadow:12px 0 34px rgba(10,45,82,.08)}
+.brand{padding-top:8px}.logo-mark{border-color:#f5c24d;color:#f5c24d;background:rgba(255,255,255,.03)}
+.side-nav button{font-size:14px;min-height:47px}.side-nav button.active{background:linear-gradient(135deg,#fff3b6,#ffe68b);box-shadow:0 9px 24px rgba(0,0,0,.18)}
+.side-art{background-image:url('hero.svg');background-size:205px auto;background-position:center bottom;opacity:.78}
+.workspace{background:radial-gradient(circle at 78% 3%,rgba(255,238,180,.22),transparent 24%),var(--ref-bg)}
+.topbar{height:76px;padding:0 28px;background:rgba(255,255,255,.93);box-shadow:0 4px 18px rgba(20,55,90,.03)}
+.search{width:min(440px,48vw);height:44px;border-radius:15px}.avatar{width:44px;height:44px}.notify{width:42px;height:42px}
+.content{max-width:none;padding:22px 26px 34px}
+.hero{min-height:112px;margin-bottom:9px}.hero h1{font-size:48px}.hero-copy{padding-top:7px}.hero-visual{width:250px;height:172px;right:8px;top:-2px;background-image:url('hero.svg');background-size:contain;background-position:right top}
+.kpis{gap:12px;margin-bottom:16px}.kpi{min-height:98px;padding:16px 17px;border-radius:18px;grid-template-columns:52px 1fr 18px;gap:11px}.kpi .bubble{width:50px;height:50px;font-size:24px}.kpi strong{font-size:27px}.kpi small{font-size:11px}.kpi.yellow{background:linear-gradient(135deg,#fff6cd,#ffe783)}.kpi.blue{background:linear-gradient(135deg,#e3f7ff,#bfe8ff)}.kpi.pink{background:linear-gradient(135deg,#ffe8e8,#ffcfd4)}.kpi.mint{background:linear-gradient(135deg,#e2faec,#bff0d8)}
+.dashboard-grid{grid-template-columns:minmax(0,1.58fr) minmax(285px,.92fr);gap:14px}.dash-col{gap:14px}.card{padding:17px;border-radius:18px;box-shadow:0 8px 24px rgba(16,48,84,.07)}.card-head{margin-bottom:9px}.card-head h2{font-size:21px}.card-head h3{font-size:18px}
+.project-row{grid-template-columns:74px 1fr 38px;gap:12px;padding:8px 0}.project-thumb{height:54px;background-image:url('hero.svg');background-size:cover;background-position:center 55%}.project-main b{font-size:14px}.project-sub{font-size:10px}.bar{height:9px}.circle-btn{width:34px;height:34px}
+.donut{width:155px}.donut-center b{font-size:30px}.legend{font-size:11px;gap:9px}.donut-wrap{gap:17px;padding:5px 0}
+.months{margin-left:105px}.timeline-row{grid-template-columns:98px 1fr;margin:11px 0}.timeline-name{font-size:11px}.timeline-track{height:21px}.timeline-track i{height:15px}
+.activity{grid-template-columns:38px 1fr auto;gap:9px;padding:9px 0}.activity-ico{width:36px;height:36px}.activity b{font-size:12px}.activity small{font-size:10px}
+.mobile-nav{box-shadow:0 -5px 20px rgba(18,49,82,.08)}
+/* Keep a compact desktop/sidebar even in split-screen browser windows like the user's */
+@media (min-width:701px) and (max-width:1120px){
+  .app-shell{display:grid!important;grid-template-columns:176px minmax(0,1fr)!important}
+  .sidebar{display:flex!important;width:176px!important;padding:16px 10px!important}
+  .workspace{grid-column:2!important;min-width:0!important}
+  .mobile-nav{display:none!important}
+  .brand{padding:0 5px 12px!important;gap:7px}.logo-mark{width:34px;height:34px;border-radius:9px;font-size:15px}.brand b{font-size:11px}.brand small{font-size:7px}
+  .side-nav{gap:4px}.side-nav button{padding:9px 9px!important;min-height:38px;font-size:11px!important;border-radius:10px}.side-nav .ico{width:20px;font-size:15px}.side-divider{margin:11px 6px}.side-art{height:178px;background-size:150px auto!important}.side-art .motto{font-size:15px;left:12px;bottom:11px}
+  .topbar{height:68px;padding:0 14px!important;gap:9px}.top-title{display:none!important}.search{width:min(330px,52vw);height:40px}.search input{font-size:12px}.notify{width:38px;height:38px}.avatar{width:39px;height:39px}
+  .content{padding:15px 14px 25px!important}
+  .hero{min-height:94px!important}.hero h1{font-size:36px!important}.hero p{font-size:11px}.hero-visual{width:190px!important;height:130px!important}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}.kpi{min-height:84px!important;padding:10px!important;grid-template-columns:38px 1fr 12px!important;gap:7px!important;border-radius:14px}.kpi .bubble{width:38px;height:38px;font-size:18px}.kpi strong{font-size:20px!important;margin-top:2px}.kpi small{font-size:9px}.kpi .arrow{font-size:17px}
+  .dashboard-grid{grid-template-columns:minmax(0,1.5fr) minmax(220px,.9fr)!important;gap:9px!important}.dash-col{gap:9px!important}.card{padding:11px!important;border-radius:15px!important}.card-head{margin-bottom:5px}.card-head h2{font-size:15px!important}.card-head h3{font-size:14px!important}
+  .project-row{grid-template-columns:52px 1fr 28px!important;gap:7px!important;padding:6px 0}.project-thumb{height:39px!important;border-radius:8px}.project-main b{font-size:10px!important}.project-sub{font-size:8px!important}.progress-row{gap:6px;margin-top:5px}.bar{height:7px}.pct{font-size:9px;min-width:27px}.circle-btn{width:27px;height:27px;font-size:14px}
+  .donut{width:112px!important}.donut-center b{font-size:22px}.donut-center span{font-size:9px}.donut-wrap{gap:9px!important}.legend{font-size:8px!important;gap:6px}.legend i{width:8px;height:8px}
+  .months{margin-left:70px;font-size:7px!important}.timeline-row{grid-template-columns:65px 1fr!important;margin:7px 0}.timeline-name{font-size:8px!important}.timeline-track{height:15px}.timeline-track i{height:10px;top:2px}
+  .activity{grid-template-columns:28px 1fr auto!important;gap:6px;padding:6px 0}.activity-ico{width:27px;height:27px;font-size:10px}.activity b{font-size:9px}.activity small{font-size:7px}
+}
+@media (max-width:700px){
+  .sidebar{display:none!important}.app-shell{display:block!important}.workspace{display:block!important}.mobile-nav{display:grid!important}.topbar{height:62px;padding:0 12px}.top-title{display:block;font-size:12px}.search{display:none}.notify{margin-left:auto}.avatar{width:36px;height:36px;font-size:14px}.content{padding:16px 12px 88px}.hero{min-height:125px}.hero h1{font-size:36px}.hero p{max-width:180px;font-size:11px}.hero-visual{width:170px;height:130px;right:-3px;top:0}.kpis{grid-template-columns:1fr 1fr!important;gap:8px}.kpi{min-height:82px;padding:10px;grid-template-columns:38px 1fr 10px}.kpi .bubble{width:38px;height:38px;font-size:18px}.kpi strong{font-size:21px}.dashboard-grid{grid-template-columns:1fr!important}.dash-col{display:contents}.card{border-radius:16px;padding:13px}.card-head h2{font-size:16px}.card-head h3{font-size:15px}.project-row{grid-template-columns:54px 1fr 30px}.project-thumb{height:42px}.donut{width:128px}.donut-wrap{gap:12px}.legend{font-size:10px}.months{margin-left:75px;font-size:8px}.timeline-row{grid-template-columns:70px 1fr}.timeline-name{font-size:9px}
+}
