@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-window.UNIBRIGHT_BUILD='20260911-flowfix-pdf-v1';
+window.UNIBRIGHT_BUILD='20260911-flowfix-pdf-v2';
 
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const errText=e=>String(e?.message||e||'');
@@ -105,7 +105,7 @@ async function ensureInvoiceFinancials(invoice){
 async function ensureInvoiceItems(invoiceId,items){
   const existing=await api('invoice_items','?invoice_id=eq.'+invoiceId+'&select=id&limit=1');
   if(existing.length||!items?.length)return;
-  await api('invoice_items','',{method:'POST',body:items.map((x,i)=>({invoice_id:invoiceId,sort_order:i+1,description:x.description,unit:x.unit,quantity:x.quantity,unit_price:x.unit_price,amount:x.amount??n(x.quantity)*n(x.unit_price)}))});
+  await api('invoice_items','',{method:'POST',body:items.map((x,i)=>({invoice_id:invoiceId,sort_order:i+1,description:x.description,unit:x.unit,quantity:x.quantity,unit_price:x.unit_price}))});
 }
 
 let quoteBusy=false;
@@ -120,7 +120,7 @@ window.saveQuote=async function(){
     const no=gen(tier==='trade'?'TQ':'QO');
     const rows=await api('quotations','',{method:'POST',body:{quotation_no:no,project_id:pid,issue_date:today(),valid_until:addDays(today(),90),discount_type:type,discount_value:dv,subtotal:s,discount_amount:d,total,status:'草稿',price_tier:tier}});
     const q=rows[0];
-    await api('quotation_items','',{method:'POST',body:clean.map((x,i)=>({quotation_id:q.id,sort_order:i+1,description:x.description,unit:x.unit,quantity:x.quantity,unit_price:x.unit_price,amount:n(x.quantity)*n(x.unit_price)}))});
+    await api('quotation_items','',{method:'POST',body:clean.map((x,i)=>({quotation_id:q.id,sort_order:i+1,description:x.description,unit:x.unit,quantity:x.quantity,unit_price:x.unit_price}))});
     await refreshData();toast('報價已儲存，正在匯出 PDF');await viewQuote(q.id);await sleep(250);await exportCurrentPDF(`UNIBRIGHT_Quotation_${cleanName(no)}.pdf`);
   }catch(e){alert('儲存報價失敗：'+errText(e))}
   finally{quoteBusy=false;if(btn)btn.disabled=false;relabelActions()}
