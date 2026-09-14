@@ -1,0 +1,9 @@
+/* v35 — restore company identity and remove unwanted promo block */
+.brand{height:92px!important;min-height:92px!important;padding:8px 16px 7px!important;align-items:flex-start!important}
+.ub35-brandwrap{display:flex;flex-direction:column;gap:3px;width:100%}
+.ub35-brandwrap img{display:block;width:172px!important;height:52px!important;object-fit:contain;object-position:left center}
+.ub35-brandwrap span{display:block;color:#0b365e;font-size:9px;font-weight:700;letter-spacing:.2px;line-height:1.2;white-space:nowrap}
+.ub34-bottom.ub35-bottom2{grid-template-columns:375px minmax(0,1fr)!important}
+.ub34-bottom.ub35-bottom2>.ub34-payment-panel,.ub34-bottom.ub35-bottom2>.ub34-bars-panel{min-height:188px}
+@media(max-width:1280px){.ub34-bottom.ub35-bottom2{grid-template-columns:1fr 1fr!important}}
+@media(max-width:820px){.ub34-bottom.ub35-bottom2{grid-template-columns:1fr!important}}
