@@ -1,0 +1,22 @@
+/* v38 — make the approved company logo a real visible element */
+.brand{height:102px!important;min-height:102px!important;padding:8px 10px!important;background:#fff!important;overflow:visible!important;display:flex!important;align-items:center!important}
+.brand:before,.brand:after{content:none!important;display:none!important;background:none!important}
+.brand > *{display:none!important}
+.brand > .ub38-company-brand{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;min-width:0!important}
+.ub38-company-brand .ub38-logo{display:block!important;width:48px!important;height:60px!important;object-fit:contain!important;object-position:center!important;flex:0 0 48px!important;background:#fff!important}
+.ub38-company-brand .ub38-copy{display:block!important;min-width:0!important;line-height:1.12!important}
+.ub38-company-brand .ub38-copy b{display:block!important;color:#0b3157!important;font-size:11px!important;font-weight:800!important;white-space:nowrap!important}
+.ub38-company-brand .ub38-copy span{display:block!important;margin-top:4px!important;color:#0b3157!important;font-size:9px!important;font-weight:800!important;line-height:1.15!important;letter-spacing:.15px!important}
+/* keep the left navigation colourful */
+.side-nav button .ub33-icon{width:30px!important;height:30px!important;border-radius:9px!important;display:grid!important;place-items:center!important}
+.side-nav button:nth-child(1) .ub33-icon{background:#dcf7e8!important;color:#0b9d57!important}
+.side-nav button:nth-child(2) .ub33-icon{background:#e2efff!important;color:#2678df!important}
+.side-nav button:nth-child(3) .ub33-icon{background:#fff0cb!important;color:#d99600!important}
+.side-nav button:nth-child(4) .ub33-icon{background:#ffe1e6!important;color:#e3364b!important}
+.side-nav button:nth-child(5) .ub33-icon{background:#e7e4ff!important;color:#6957d9!important}
+.side-nav button:nth-child(6) .ub33-icon{background:#ddf6f3!important;color:#0f9481!important}
+.side-nav button:nth-child(7) .ub33-icon{background:#fff0df!important;color:#dc7c18!important}
+.side-nav button:nth-child(8) .ub33-icon{background:#e1f6ff!important;color:#1684b7!important}
+.side-nav button:nth-child(9) .ub33-icon{background:#ece8ff!important;color:#704fd4!important}
+.side-nav button:nth-child(10) .ub33-icon{background:#ffe8df!important;color:#d85a33!important}
+.side-nav button.active .ub33-icon{background:rgba(255,255,255,.18)!important;color:#fff!important}
