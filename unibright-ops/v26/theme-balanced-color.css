@@ -1,0 +1,60 @@
+:root{
+  --navy:#0D2B45;
+  --navy2:#123B5A;
+  --cream:#F7F8F5;
+  --white:#FFFFFF;
+  --ink:#17324D;
+  --muted:#6F8191;
+  --line:#E6ECE8;
+  --blue:#EAF4FF;
+  --blue2:#4A90E2;
+  --mint:#E7F8F1;
+  --mint2:#1FA38A;
+  --yellow:#FFF3D6;
+  --yellow2:#E3A62F;
+  --pink:#FDE8E8;
+  --pink2:#E85D5D;
+  --green:#1FA38A;
+  --gold:#E3A62F;
+  --red:#E85D5D;
+  --shadow:0 12px 30px rgba(13,43,69,.08);
+}
+html,body{background:#F7F8F5;color:var(--ink)}
+.sidebar{background:linear-gradient(180deg,#0D2B45 0%,#123B5A 100%)}
+.brand{border-bottom:1px solid rgba(255,255,255,.09);margin-bottom:10px}
+.logo-mark{background:#fff;color:#0D2B45;border:0;border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.16)}
+.side-nav button{border-radius:11px;transition:.18s ease}
+.side-nav button:hover{background:rgba(255,255,255,.08)}
+.side-nav button.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:none;position:relative}
+.side-nav button.active:before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:4px;border-radius:99px;background:#E3A62F}
+.topbar{background:rgba(255,255,255,.96);border-bottom:1px solid #E6ECE8}
+.search{border-color:#DDE7E3;box-shadow:none}
+.notify{box-shadow:none;background:#F1F5F4}
+.content{background:linear-gradient(180deg,#FBFCFA 0%,#F7F8F5 100%)}
+.hero h1{color:#0D2B45}
+.hero h1 span{color:#E3A62F}
+.kpis{gap:14px}
+.kpi{border:1px solid rgba(13,43,69,.06);box-shadow:0 10px 24px rgba(13,43,69,.06);border-radius:18px;transition:transform .18s ease,box-shadow .18s ease}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(13,43,69,.10)}
+.kpi.yellow{background:linear-gradient(135deg,#FFF8E8,#FFF0C4)}
+.kpi.blue{background:linear-gradient(135deg,#EFF7FF,#DDEEFF)}
+.kpi.pink{background:linear-gradient(135deg,#FFF0F0,#FDDDDD)}
+.kpi.mint{background:linear-gradient(135deg,#ECFAF4,#D7F3E8)}
+.yellow .bubble{background:#E3A62F;color:#fff}.blue .bubble{background:#4A90E2;color:#fff}.pink .bubble{background:#E85D5D;color:#fff}.mint .bubble{background:#1FA38A;color:#fff}
+.card,.form-card,.project-card,.document-card,.loading-card,.empty-state{border:1px solid #E6ECE8;box-shadow:0 10px 26px rgba(13,43,69,.055);border-radius:18px}
+.card-head h2,.card-head h3,.page-head h1,.workbench-head h1,.document-view-head h1{color:#0D2B45}
+.btn{background:#0D2B45;box-shadow:none;border-radius:11px}.btn.green{background:#1FA38A}.btn.gold{background:#E3A62F}.btn.red{background:#E85D5D}.btn.light{background:#EEF4F3;color:#0D2B45}
+.project-row{border-bottom-color:#EDF1EF}.project-row:hover{background:#FBFCFA}
+.bar{background:#E8EEEC}.bar i{background:linear-gradient(90deg,#4A90E2,#77B2F0)!important}.project-row:nth-child(2n) .bar i{background:linear-gradient(90deg,#E3A62F,#F0C468)!important}.project-row:nth-child(3n) .bar i{background:linear-gradient(90deg,#1FA38A,#65C7B4)!important}
+.activity:nth-child(4n+1) .activity-ico{background:#FFF0C4}.activity:nth-child(4n+2) .activity-ico{background:#DDEEFF}.activity:nth-child(4n+3) .activity-ico{background:#FDDDDD}.activity:nth-child(4n) .activity-ico{background:#D7F3E8}
+.blue-section{background:#EAF4FF}.yellow-section{background:#FFF3D6}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#4A90E2;box-shadow:0 0 0 3px rgba(74,144,226,.12)}
+.donut{background:conic-gradient(#1FA38A 0 calc(var(--paid)*1%),#E85D5D calc(var(--paid)*1%) calc((var(--paid) + var(--due))*1%),#EAF4FF calc((var(--paid) + var(--due))*1%) 100%)}
+.legend .paid{background:#1FA38A}.legend .due{background:#E85D5D}.legend .up{background:#4A90E2}
+.project-card,.document-card{transition:.16s ease}.project-card:hover,.document-card:hover{transform:translateY(-1px);border-color:#D9E3DF}
+.status,.pill,.badge{font-weight:800}
+.mobile-nav{background:#fff;border-top:1px solid #E6ECE8;box-shadow:0 -10px 24px rgba(13,43,69,.07)}
+.mobile-nav button.active{color:#0D2B45}.mobile-nav button.active span{background:#EAF4FF;color:#0D2B45}
+@media(max-width:820px){
+  .content{padding:18px 14px 92px}.hero{min-height:auto}.hero-visual{opacity:.18}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi{min-height:98px;padding:14px;grid-template-columns:46px 1fr 16px}.kpi .bubble{width:44px;height:44px;font-size:21px}.kpi strong{font-size:24px}.card,.form-card,.project-card,.document-card{border-radius:15px}
+}
