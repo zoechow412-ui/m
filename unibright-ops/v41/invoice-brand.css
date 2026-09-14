@@ -1,0 +1,9 @@
+/* v41 — exact invoice logo and company name */
+.brand{height:94px!important;min-height:94px!important;padding:9px 12px!important;background:#fff!important;display:flex!important;align-items:center!important;overflow:visible!important}
+.brand:before,.brand:after{content:none!important;display:none!important}
+.brand>*{display:none!important}
+.brand>.ub41-brand{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;min-width:0!important}
+.ub41-brand img{display:block!important;width:46px!important;height:58px!important;object-fit:contain!important;flex:0 0 46px!important;background:#fff!important;opacity:1!important;visibility:visible!important}
+.ub41-copy{display:block!important;min-width:0!important;color:#0b3157!important;line-height:1.08!important}
+.ub41-copy b{display:block!important;font-size:11px!important;font-weight:800!important;white-space:nowrap!important;color:#0b3157!important}
+.ub41-copy span{display:block!important;margin-top:4px!important;font-size:8.7px!important;font-weight:800!important;letter-spacing:.12px!important;line-height:1.18!important;color:#0b3157!important}
