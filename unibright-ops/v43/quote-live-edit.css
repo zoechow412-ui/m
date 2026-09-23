@@ -1,0 +1,9 @@
+/* v43 quote live preview + editable quote items */
+.document-workbench .preview-pane{display:block!important;visibility:visible!important;opacity:1!important}
+#quotePreview,#livePreview{display:block!important;min-height:520px!important}
+#quotePreview .formal-document,#livePreview .formal-document{display:block!important}
+.doc-card-actions .btn{white-space:nowrap}
+@media(max-width:820px){
+  #quotePreview,#livePreview{min-height:420px!important}
+  .preview-pane{display:block!important;margin-top:14px!important}
+}
