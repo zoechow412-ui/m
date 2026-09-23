@@ -108,15 +108,22 @@ window.saveQuote=saveQuote=async function(){
       }))});
 
       const linked=await api('invoices','?quotation_id=eq.'+encodeURIComponent(editing.id)+'&select=*');
+      let syncNote='';
       for(const iv of linked||[]){
+        const paid=(D.payments||[]).some(p=>p.invoice_id===iv.id);
+        if(paid){
+          syncNote='；已收款 Invoice 保持原資料';
+          continue;
+        }
         await api('invoices','?id=eq.'+encodeURIComponent(iv.id),{method:'PATCH',body:{subtotal:c.s,discount_amount:c.d,total:c.t}});
         await api('invoice_items','?invoice_id=eq.'+encodeURIComponent(iv.id),{method:'DELETE'});
         await api('invoice_items','',{method:'POST',body:clean.map((x,i)=>({
           invoice_id:iv.id,sort_order:i+1,description:String(x.description).trim(),unit:x.unit||'項',quantity:n(x.quantity),unit_price:n(x.unit_price)
         }))});
         try{await api('projects','?id=eq.'+encodeURIComponent(pid),{method:'PATCH',body:{contract_amount:c.t}})}catch(_){}
+        syncNote='；未收款 Invoice 已同步';
       }
-      toast('報價及工程項目已更新');
+      toast('報價及工程項目已更新'+syncNote);
       window.__ub43EditQuote=null;
       await refreshData();
       await viewQuote(editing.id);
