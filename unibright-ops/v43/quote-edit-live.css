@@ -1,0 +1,15 @@
+/* v43 — restore live quotation preview + editable quotation items */
+.live-workbench .preview-panel,
+.document-workbench .preview-pane{display:block!important;visibility:visible!important;opacity:1!important}
+#livePreview,#quotePreview{display:block!important;visibility:visible!important;opacity:1!important;min-height:520px!important}
+.ub43-edit-no{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:5px 9px;border-radius:999px;background:#eef6ff;color:#1e5e9d;font-size:11px}
+.ub43-edit-btn{border-color:#b8cee1!important;color:#164f7e!important;background:#f5faff!important}
+.live-line input:first-child{min-width:0}
+@media(max-width:1100px){
+  .live-workbench{grid-template-columns:1fr!important}
+  .live-workbench .preview-panel{position:relative!important;top:auto!important;margin-top:8px}
+}
+@media(max-width:700px){
+  #livePreview,#quotePreview{min-height:460px!important}
+  .preview-panel.ub43-preview-on,.preview-pane.ub43-preview-on{display:block!important}
+}
