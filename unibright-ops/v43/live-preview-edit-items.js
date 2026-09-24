@@ -19,7 +19,7 @@ function injectCss(){
   if(document.getElementById('ub43-css')) return;
   const s=document.createElement('style');
   s.id='ub43-css';
-  s.textContent=\`
+  s.textContent=`
     .ub43-edit-note{margin:0 0 12px;padding:11px 13px;border-radius:12px;background:#eef8ff;border:1px solid #cfe8fa;color:#0b2c5b;font-size:12px;font-weight:700}
     .ub43-preview-jump{display:none}
     .ub43-edit-btn{background:#eef8ff!important;color:#0b2c5b!important;border:1px solid #cbddea!important}
@@ -28,7 +28,7 @@ function injectCss(){
       .ub43-preview-jump{display:inline-flex!important;align-items:center;justify-content:center}
       .live-workbench .preview-panel{display:block!important;visibility:visible!important;opacity:1!important}
     }
-  \`;
+  `;
   document.head.appendChild(s);
 }
 injectCss();
@@ -92,11 +92,11 @@ window.editQuote=async function(id){
     if(p) p.textContent='工程項目、數量、單價同折扣都可以修改，右邊即時預覽會同步更新。';
 
     const back=document.querySelector('.page-head .btn.light');
-    if(back){back.setAttribute('onclick',\`viewQuote('\${id}')\`);back.textContent='返回訂單';}
+    if(back){back.setAttribute('onclick',`viewQuote('${id}')`);back.textContent='返回訂單';}
 
     const controls=document.querySelector('.live-controls');
     if(controls){
-      controls.insertAdjacentHTML('afterbegin',\`<div class="ub43-edit-note">正在修改：<b>\${q.quotation_no||''}</b><span class="ub43-sync-note">修改項目後，正式報價內容會直接更新。</span></div>\`);
+      controls.insertAdjacentHTML('afterbegin',`<div class="ub43-edit-note">正在修改：<b>${q.quotation_no||''}</b><span class="ub43-sync-note">修改項目後，正式報價內容會直接更新。</span></div>`);
     }
 
     const seg=document.querySelectorAll('.segmented button');
@@ -115,7 +115,7 @@ window.editQuote=async function(id){
     const save=[...document.querySelectorAll('.form-actions button,.live-card button')].find(b=>/儲存報價|儲存正式報價/.test(b.textContent||''));
     if(save){
       save.textContent='儲存修改';
-      save.setAttribute('onclick',\`saveEditedQuote('\${id}')\`);
+      save.setAttribute('onclick',`saveEditedQuote('${id}')`);
     }
 
     const headActions=document.querySelector('.page-head');
