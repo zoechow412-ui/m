@@ -1,41 +1,53 @@
 (()=>{
 'use strict';
-window.UNIBRIGHT_V43_BUILD='20260924-v43-quote-edit-live-preview-1';
+window.UNIBRIGHT_V43_BUILD='20260924-v43-quote-edit-live-preview-2';
+const originalSaveQuote=window.saveQuote;
+const originalViewQuote=window.viewQuote;
+const originalRenderQuotes=window.renderQuotes;
 
-const $id=id=>document.getElementById(id);
-const num=v=>Number(v||0);
-
-function calcTotals(){
-  const subtotal=(Array.isArray(draft)?draft:[]).reduce((s,x)=>s+num(x.quantity)*num(x.unit_price),0);
-  const type=$id('dtype')?.value||'percent';
-  const value=num($id('dval')?.value);
-  const discount=type==='fixed'?Math.min(subtotal,value):subtotal*value/100;
-  return {subtotal,discount,total:Math.max(0,subtotal-discount),type,value};
+function editingQuote(){
+  const id=window.__editingQuoteId;
+  return id?((D.quotes||[]).find(x=>x.id===id)||window.__editingQuoteData||null):null;
 }
 
-function forceLiveEditor(){
-  if(typeof renderQuoteEditor==='function'){
-    try{renderQuoteWorkbench=renderQuoteEditor}catch(_){}
-    try{window.renderQuoteWorkbench=renderQuoteEditor}catch(_){}
-    return renderQuoteEditor;
-  }
-  return typeof renderQuoteWorkbench==='function'?renderQuoteWorkbench:null;
+function relabelEditor(){
+  if(!window.__editingQuoteId)return;
+  const h=document.querySelector('.workbench-head h1');
+  const p=document.querySelector('.workbench-head p');
+  const eye=document.querySelector('.workbench-head .eyebrow');
+  const save=document.querySelector('.save-dock .btn.green');
+  if(h)h.textContent='修改訂單／報價';
+  if(p)p.textContent='左邊可直接修改項目、單位、數量、單價及折扣；右邊同步即時預覽。';
+  if(eye)eye.textContent='EDIT QUOTATION';
+  if(save)save.textContent='儲存修改';
 }
-
-const originalSaveQuote=window.saveQuote||saveQuote;
-const originalViewQuote=window.viewQuote||viewQuote;
-const originalRenderQuotes=window.renderQuotes||renderQuotes;
 
 window.newQuote=function(){
   window.__editingQuoteId='';
-  window.__editingQuoteNumber='';
+  window.__editingQuoteData=null;
   tier='customer';
   draft=[];
-  const editor=forceLiveEditor();
-  if(editor)editor();
-  requestAnimationFrame(()=>{try{updateQuotePreview()}catch(_){}});
+  renderQuoteWorkbench();
 };
 try{newQuote=window.newQuote}catch(_){}
+
+window.updateQuotePreview=function(){
+  const totals=quoteTotals();
+  draft.forEach((x,i)=>{if(el('line'+i))el('line'+i).textContent=hk(n(x.quantity)*n(x.unit_price))});
+  if(el('editorTotal'))el('editorTotal').textContent=hk(totals.t);
+  const box=el('quotePreview');
+  if(!box)return;
+  const q=editingQuote();
+  box.innerHTML=quoteDocumentHTML({
+    quotation_no:q?.quotation_no||('PREVIEW-'+today().replaceAll('-','')),
+    issue_date:q?.issue_date||today(),
+    valid_until:q?.valid_until||addDays(today(),90),
+    discount_amount:totals.d,
+    total:totals.t,
+    subtotal:totals.s
+  },liveProjectData(),draft,true);
+};
+try{updateQuotePreview=window.updateQuotePreview}catch(_){}
 
 window.editQuote=async function(id){
   try{
@@ -43,38 +55,24 @@ window.editQuote=async function(id){
     if(!q)throw new Error('搵唔到報價');
     const items=await api('quotation_items','?quotation_id=eq.'+encodeURIComponent(id)+'&select=*&order=sort_order');
     window.__editingQuoteId=id;
-    window.__editingQuoteNumber=q.quotation_no||'';
+    window.__editingQuoteData=q;
     tier=q.price_tier||'customer';
-    draft=items.map(x=>({
+    draft=(items||[]).map(x=>({
       description:x.description||'',
       unit:x.unit||'項',
-      quantity:num(x.quantity),
-      unit_price:num(x.unit_price)
+      quantity:n(x.quantity),
+      unit_price:n(x.unit_price)
     }));
-
-    const editor=forceLiveEditor();
-    if(!editor)throw new Error('報價編輯器未載入');
-    editor();
-
-    const projectSel=$id('qproject');
-    if(projectSel){
-      [...projectSel.options].forEach(o=>{if(o.value==='NEW')o.remove()});
-      projectSel.value=q.project_id||'';
-      projectSel.dispatchEvent(new Event('change',{bubbles:true}));
+    renderQuoteWorkbench();
+    if(el('qproject')){
+      el('qproject').value=q.project_id||'NEW';
+      projectChoiceChanged();
     }
-    if($id('dtype'))$id('dtype').value=q.discount_type||'percent';
-    if($id('dval'))$id('dval').value=num(q.discount_value);
-
-    document.querySelectorAll('.segmented button').forEach(b=>{b.disabled=true;b.title='修改現有報價時保留原本報價類別'});
-    const h1=document.querySelector('.page-head h1');
-    const p=document.querySelector('.page-head p');
-    if(h1)h1.textContent='修改報價 '+(q.quotation_no||'');
-    if(p)p.textContent='左邊可修改工程項目、單位、數量、單價及折扣；右邊即時預覽。';
-    const saveBtn=[...document.querySelectorAll('.form-actions .btn.green')].find(b=>/儲存報價/.test(b.textContent||''));
-    if(saveBtn)saveBtn.textContent='儲存修改';
-
-    try{drawQuoteItems()}catch(_){}
-    try{calcQuote()}catch(_){try{updateQuotePreview()}catch(__){}}
+    if(el('dtype'))el('dtype').value=q.discount_type||'percent';
+    if(el('dval'))el('dval').value=n(q.discount_value);
+    relabelEditor();
+    drawQuoteItems();
+    updateQuotePreview();
   }catch(e){
     alert('開啟修改報價失敗：'+String(e?.message||e));
   }
@@ -82,103 +80,100 @@ window.editQuote=async function(id){
 try{editQuote=window.editQuote}catch(_){}
 
 window.saveQuote=async function(){
-  const editId=window.__editingQuoteId;
-  if(!editId)return originalSaveQuote();
-
-  const clean=(Array.isArray(draft)?draft:[]).filter(x=>String(x.description||'').trim()&&num(x.quantity)>0);
-  if(!clean.length){toast('請保留至少一個工程項目');return}
-  const pid=$id('qproject')?.value||'';
-  if(!pid||pid==='NEW'){toast('請選擇工程項目');return}
-
+  const id=window.__editingQuoteId;
+  if(!id)return originalSaveQuote();
+  const q=editingQuote();
+  const clean=draft.filter(x=>String(x.description||'').trim()&&n(x.quantity)>0);
+  if(!clean.length){toast('請加入至少一個工程項目');return}
   try{
-    const t=calcTotals();
-    await api('quotations','?id=eq.'+encodeURIComponent(editId),{
+    const pid=val('qproject')==='NEW'?await createProjectFromQuote():val('qproject');
+    const c=quoteTotals();
+    await api('quotations','?id=eq.'+encodeURIComponent(id),{
       method:'PATCH',
       body:{
         project_id:pid,
-        price_tier:tier,
-        discount_type:t.type,
-        discount_value:t.value,
-        subtotal:t.subtotal,
-        discount_amount:t.discount,
-        total:t.total
+        issue_date:q?.issue_date||today(),
+        valid_until:q?.valid_until||addDays(today(),90),
+        discount_type:c.type,
+        discount_value:c.v,
+        subtotal:c.s,
+        discount_amount:c.d,
+        total:c.t,
+        price_tier:tier
       }
     });
+    await api('quotation_items','?quotation_id=eq.'+encodeURIComponent(id),{method:'DELETE'});
+    await api('quotation_items','',{method:'POST',body:clean.map((x,i)=>({
+      quotation_id:id,
+      sort_order:i+1,
+      description:String(x.description||'').trim(),
+      unit:String(x.unit||'項').trim()||'項',
+      quantity:n(x.quantity),
+      unit_price:n(x.unit_price)
+    }))});
 
-    await api('quotation_items','?quotation_id=eq.'+encodeURIComponent(editId),{method:'DELETE'});
-    await api('quotation_items','',{
-      method:'POST',
-      body:clean.map((x,i)=>({
-        quotation_id:editId,
+    const inv=(D.invoices||[]).find(x=>x.quotation_id===id);
+    if(inv){
+      await api('invoices','?id=eq.'+encodeURIComponent(inv.id),{
+        method:'PATCH',
+        body:{project_id:pid,subtotal:c.s,discount_amount:c.d,total:c.t}
+      });
+      await api('invoice_items','?invoice_id=eq.'+encodeURIComponent(inv.id),{method:'DELETE'});
+      if(clean.length)await api('invoice_items','',{method:'POST',body:clean.map((x,i)=>({
+        invoice_id:inv.id,
         sort_order:i+1,
         description:String(x.description||'').trim(),
         unit:String(x.unit||'項').trim()||'項',
-        quantity:num(x.quantity),
-        unit_price:num(x.unit_price)
-      }))
-    });
-
-    const linked=(D.invoices||[]).find(x=>x.quotation_id===editId);
-    if(linked){
-      await api('invoices','?id=eq.'+encodeURIComponent(linked.id),{
-        method:'PATCH',
-        body:{project_id:pid,subtotal:t.subtotal,discount_amount:t.discount,total:t.total}
-      });
-      await api('invoice_items','?invoice_id=eq.'+encodeURIComponent(linked.id),{method:'DELETE'});
-      await api('invoice_items','',{
-        method:'POST',
-        body:clean.map((x,i)=>({
-          invoice_id:linked.id,
-          sort_order:i+1,
-          description:String(x.description||'').trim(),
-          unit:String(x.unit||'項').trim()||'項',
-          quantity:num(x.quantity),
-          unit_price:num(x.unit_price)
-        }))
-      });
-      try{await api('projects','?id=eq.'+encodeURIComponent(pid),{method:'PATCH',body:{contract_amount:t.total}})}catch(_){}
+        quantity:n(x.quantity),
+        unit_price:n(x.unit_price)
+      }))});
+      try{await api('projects','?id=eq.'+encodeURIComponent(pid),{method:'PATCH',body:{contract_amount:c.t}})}catch(_){}
     }
 
-    toast('報價及工程項目已更新');
+    toast(inv?'訂單、項目及 Invoice 已同步更新':'訂單及項目已更新');
     window.__editingQuoteId='';
-    window.__editingQuoteNumber='';
+    window.__editingQuoteData=null;
     await refreshData();
-    await viewQuote(editId);
+    await viewQuote(id);
   }catch(e){
-    alert('修改報價失敗：'+String(e?.message||e));
+    alert('儲存修改失敗：'+String(e?.message||e));
   }
 };
 try{saveQuote=window.saveQuote}catch(_){}
+
+window.viewQuote=async function(id){
+  await originalViewQuote(id);
+  const actions=document.querySelector('.document-view-head .view-actions');
+  if(actions&&!actions.querySelector('.ub43-edit-quote')){
+    const b=document.createElement('button');
+    b.className='btn light ub43-edit-quote';
+    b.textContent='修改訂單／項目';
+    b.onclick=()=>window.editQuote(id);
+    const inv=actions.querySelector('.btn.green');
+    if(inv)actions.insertBefore(b,inv);else actions.appendChild(b);
+  }
+};
+try{viewQuote=window.viewQuote}catch(_){}
 
 window.renderQuotes=function(){
   originalRenderQuotes();
   const cards=[...document.querySelectorAll('.document-card.quote-card')];
   cards.forEach((card,i)=>{
-    const q=(D.quotes||[])[i];
-    const actions=card.querySelector('.doc-card-actions');
+    const q=(D.quotes||[])[i],actions=card.querySelector('.doc-card-actions');
     if(!q||!actions||actions.querySelector('.ub43-edit-quote'))return;
     const b=document.createElement('button');
     b.className='btn light ub43-edit-quote';
-    b.textContent='修改訂單';
+    b.textContent='修改項目';
     b.onclick=()=>window.editQuote(q.id);
     actions.insertBefore(b,actions.firstChild);
   });
 };
 try{renderQuotes=window.renderQuotes}catch(_){}
 
-window.viewQuote=async function(id){
-  await originalViewQuote(id);
-  const bar=document.querySelector('.a4-actions,.view-actions');
-  if(bar&&!bar.querySelector('.ub43-edit-quote')){
-    const b=document.createElement('button');
-    b.className='btn light ub43-edit-quote';
-    b.textContent='修改訂單';
-    b.onclick=()=>window.editQuote(id);
-    const first=bar.querySelector('button');
-    if(first&&first.nextSibling)bar.insertBefore(b,first.nextSibling);else bar.appendChild(b);
-  }
-};
-try{viewQuote=window.viewQuote}catch(_){}
-
-forceLiveEditor();
+window.UNIBRIGHT_QUOTE_EDIT_HEALTH=()=>({
+  build:window.UNIBRIGHT_V43_BUILD,
+  editQuote:typeof window.editQuote==='function',
+  livePreview:typeof window.updateQuotePreview==='function',
+  invoiceSync:true
+});
 })();
