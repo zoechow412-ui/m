@@ -1,0 +1,8 @@
+/* v43 live preview + editable order items */
+.preview-panel{display:block!important;visibility:visible!important;opacity:1!important}
+#livePreview,#ub43Preview{display:block!important;visibility:visible!important;min-height:620px!important}
+.ub43-editor .preview-panel{display:block!important}
+.ub43-edit-order{border-color:#c8d7e2!important;color:#0b2c5b!important;font-weight:800!important}
+.ub43-line{grid-template-columns:minmax(0,1fr) 60px 116px 100px 32px!important}
+@media(max-width:1100px){.ub43-editor{grid-template-columns:1fr!important}.ub43-editor .preview-panel{position:relative!important;top:auto!important}}
+@media(max-width:700px){#livePreview,#ub43Preview{min-height:470px!important}.ub43-line{grid-template-columns:minmax(135px,1fr) 52px 108px 82px 30px!important;overflow-x:auto}}
