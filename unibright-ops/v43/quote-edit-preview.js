@@ -147,17 +147,17 @@ window.saveQuote=async function(){
 
       const linked=(D.invoices||[]).filter(x=>x.quotation_id===editing.id);
       for(const iv of linked){
-        const paid=n(iv.amount_paid);
-        if(paid<=0){
-          await api('invoices','?id=eq.'+encodeURIComponent(iv.id),{method:'PATCH',body:{
-            subtotal:t.s,discount_amount:t.d,total:t.t
-          }});
-          await api('invoice_items','?invoice_id=eq.'+encodeURIComponent(iv.id),{method:'DELETE'});
-          await api('invoice_items','',{method:'POST',body:clean.map((x,i)=>({
-            invoice_id:iv.id,sort_order:i+1,description:String(x.description).trim(),
-            unit:x.unit||'項',quantity:n(x.quantity),unit_price:n(x.unit_price)
-          }))});
-        }
+        await api('invoices','?id=eq.'+encodeURIComponent(iv.id),{method:'PATCH',body:{
+          subtotal:t.s,discount_amount:t.d,total:t.t
+        }});
+        await api('invoice_items','?invoice_id=eq.'+encodeURIComponent(iv.id),{method:'DELETE'});
+        await api('invoice_items','',{method:'POST',body:clean.map((x,i)=>({
+          invoice_id:iv.id,sort_order:i+1,description:String(x.description).trim(),
+          unit:x.unit||'項',quantity:n(x.quantity),unit_price:n(x.unit_price)
+        }))});
+      }
+      if(linked.length){
+        try{await api('projects','?id=eq.'+encodeURIComponent(pid),{method:'PATCH',body:{contract_amount:t.t}})}catch(_){}
       }
       window.__ub43EditingQuote=null;
       toast('報價及工程項目已更新');
