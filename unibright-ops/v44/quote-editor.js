@@ -47,7 +47,7 @@ window.ub44UpdatePreview=function(){
   const items=(draft||[]).map(x=>({...x,amount:num(x.quantity)*num(x.unit_price)}));
   try{
     host.innerHTML=quoteDocumentHTML(quoteForPreview(),party(),items,true);
-    const projectName=party().project_name;
+    const projectName=$('qproject')?.value==='NEW'?$('npname')?.value||'':party().project_name||'';
     if(projectName){
       host.insertAdjacentHTML('afterbegin',`<div class="ub44-preview-project-name"><span>工程／項目</span><b>${safe(projectName)}</b></div>`);
     }
