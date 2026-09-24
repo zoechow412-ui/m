@@ -1,0 +1,9 @@
+/* v43 quotation live preview + item editing */
+.live-workbench,.document-workbench{align-items:start}
+.preview-panel,.preview-pane{position:sticky;top:78px;align-self:start}
+#livePreview,#quotePreview{min-height:420px}
+.ub43-edit{border-color:#cfdde7!important}
+@media(max-width:980px){
+ .preview-panel,.preview-pane{position:relative;top:auto}
+ #livePreview,#quotePreview{min-height:280px}
+}
