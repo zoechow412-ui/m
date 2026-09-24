@@ -47,6 +47,10 @@ window.ub44UpdatePreview=function(){
   const items=(draft||[]).map(x=>({...x,amount:num(x.quantity)*num(x.unit_price)}));
   try{
     host.innerHTML=quoteDocumentHTML(quoteForPreview(),party(),items,true);
+    const projectName=party().project_name;
+    if(projectName){
+      host.insertAdjacentHTML('afterbegin',`<div class="ub44-preview-project-name"><span>工程／項目</span><b>${safe(projectName)}</b></div>`);
+    }
   }catch(e){
     host.innerHTML='<div class="ub44-preview-error">預覽更新失敗：'+safe(e?.message||e)+'</div>';
   }
