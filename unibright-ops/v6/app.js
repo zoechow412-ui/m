@@ -7,8 +7,9 @@ const app=document.getElementById('app'),toastEl=document.getElementById('toast'
 const n=v=>Number(v||0);
 const hk=v=>'HK$'+n(v).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const today=()=>new Date().toISOString().slice(0,10);
-const addDays=(d,days)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+days);return x.toISOString().slice(0,10)};
+const localDateKey=x=>[x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-');
+const today=()=>localDateKey(new Date());
+const addDays=(d,days)=>{const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+days);return localDateKey(x)};
 const gen=p=>p+'/'+today().replaceAll('-','').slice(2)+'/'+String(Date.now()).slice(-5);
 const el=id=>document.getElementById(id);
 const val=id=>el(id)?.value||'';

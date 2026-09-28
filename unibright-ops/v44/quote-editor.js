@@ -18,7 +18,7 @@ function totals(){
 }
 function party(){
   const pid=$('qproject')?.value;
-  if(pid==='NEW') return {
+  if($('npname')) return {
     project_no:$('npno')?.value||'',project_name:$('npname')?.value||'',site_address:$('nsite')?.value||'',
     company_name:$('ncname')?.value||'',contact_name:$('ncontact')?.value||'',phone:$('nphone')?.value||'',
     email:$('nemail')?.value||'',client_address:$('ncaddr')?.value||''
@@ -30,10 +30,10 @@ function quoteForPreview(){
   const old=window.__ub44EditQuote;
   const t=totals();
   return {
-    quotation_no:old?.quotation_no||('PREVIEW-'+today().replaceAll('-','')),
-    issue_date:old?.issue_date||today(),
-    valid_until:old?.valid_until||addDays(today(),90),
-    discount_type:t.type,discount_value:t.dv,subtotal:t.s,discount_amount:t.d,total:t.t
+    quotation_no:$('qnumber')?.value||old?.quotation_no||('PREVIEW-'+today().replaceAll('-','')),
+    issue_date:$('qdate')?.value||old?.issue_date||today(),
+    valid_until:$('qvalid')?.value||old?.valid_until||addDays(today(),90),
+    price_tier:tier,discount_type:t.type,discount_value:t.dv,subtotal:t.s,discount_amount:t.d,total:t.t
   };
 }
 window.ub44UpdatePreview=function(){
@@ -46,11 +46,9 @@ window.ub44UpdatePreview=function(){
   if(!host)return;
   const items=(draft||[]).map(x=>({...x,amount:num(x.quantity)*num(x.unit_price)}));
   try{
-    host.innerHTML=quoteDocumentHTML(quoteForPreview(),party(),items,true);
+    host.innerHTML='<div class="a4-scale-box">'+quoteDocumentHTML(quoteForPreview(),party(),items,true)+'</div>';
     const projectName=$('qproject')?.value==='NEW'?$('npname')?.value||'':party().project_name||'';
-    if(projectName){
-      host.insertAdjacentHTML('afterbegin',`<div class="ub44-preview-project-name"><span>工程／項目</span><b>${safe(projectName)}</b></div>`);
-    }
+    if(window.scaleStage)requestAnimationFrame(()=>window.scaleStage(host));
   }catch(e){
     host.innerHTML='<div class="ub44-preview-error">預覽更新失敗：'+safe(e?.message||e)+'</div>';
   }
@@ -66,17 +64,29 @@ window.ub44DrawItems=function(){
   }
   host.innerHTML=(draft||[]).map((x,i)=>`<div class="ub44-item">
     <div class="ub44-item-top"><b>項目 ${i+1}</b><button type="button" class="ub44-remove" onclick="ub44RemoveItem(${i})">刪除</button></div>
-    <label>項目名稱<input value="${safe(x.description||'')}" oninput="draft[${i}].description=this.value;ub44UpdatePreview()"></label>
+    <label>項目名稱<input value="${safe((x.description||'').split('\n')[0])}" oninput="ub44UpdateText(${i},this,false)"></label>
+    <label>項目描述<textarea oninput="ub44UpdateText(${i},this,true)">${safe((x.description||'').split('\n').slice(1).join('\n'))}</textarea></label>
     <div class="ub44-item-grid">
       <label>單位<input value="${safe(x.unit||'項')}" oninput="draft[${i}].unit=this.value;ub44UpdatePreview()"></label>
-      <label>數量<input type="number" min="0" step="1" value="${num(x.quantity)}" oninput="draft[${i}].quantity=num(this.value);ub44DrawItems()"></label>
-      <label>單價 HK$<input type="number" min="0" step="0.01" value="${num(x.unit_price)}" oninput="draft[${i}].unit_price=num(this.value);ub44DrawItems()"></label>
+      <label>數量<input type="number" min="0" step="any" value="${num(x.quantity)}" oninput="ub44UpdateNumber(${i},'quantity',this)"></label>
+      <label>單價 HK$<input type="number" min="0" step="0.01" value="${num(x.unit_price)}" oninput="ub44UpdateNumber(${i},'unit_price',this)"></label>
       <div class="ub44-line-total"><span>小計</span><b>${money(num(x.quantity)*num(x.unit_price))}</b></div>
     </div>
   </div>`).join('');
   ub44UpdatePreview();
 };
 window.drawQuoteItems=window.ub44DrawItems; try{drawQuoteItems=window.ub44DrawItems}catch(_){}
+
+window.ub44UpdateNumber=function(i,key,input){
+  draft[i][key]=Math.max(0,num(input.value));
+  input.closest('.ub44-item').querySelector('.ub44-line-total b').textContent=money(num(draft[i].quantity)*num(draft[i].unit_price));
+  ub44UpdatePreview();
+};
+window.ub44UpdateText=function(i,input,details){
+  const parts=String(draft[i].description||'').split('\n');
+  draft[i].description=details?parts[0]+'\n'+input.value:input.value+(parts.length>1?'\n'+parts.slice(1).join('\n'):'');
+  ub44UpdatePreview();
+};
 
 window.ub44AddBlank=function(){draft.push({description:'',unit:'項',quantity:1,unit_price:0});ub44DrawItems()};
 window.addBlankItem=window.ub44AddBlank; try{addBlankItem=window.ub44AddBlank}catch(_){}
@@ -101,16 +111,20 @@ window.drawCatalog=window.ub44DrawCatalog; try{drawCatalog=window.ub44DrawCatalo
 
 window.ub44SetTier=function(t){
   if(window.__ub44EditQuote)return;
-  tier=t; draft=[];
-  ub44RenderEditor();
+  tier=t;
+  document.querySelectorAll('.segmented button').forEach((b,i)=>b.classList.toggle('on',i===(t==='customer'?0:1)));
+  ub44DrawCatalog();ub44UpdatePreview();
 };
 window.setTierLive=window.ub44SetTier; try{setTierLive=window.ub44SetTier}catch(_){}
 window.setTier=window.ub44SetTier; try{setTier=window.ub44SetTier}catch(_){}
 
 window.ub44ProjectChanged=function(){
   const v=$('qproject')?.value||'NEW',nb=$('newProjectBox'),eb=$('existingProjectBox');
-  if(nb)nb.classList.toggle('hidden',v!=='NEW');
-  if(eb)eb.classList.toggle('hidden',v==='NEW');
+  if(nb)nb.classList.remove('hidden');
+  if(eb)eb.classList.add('hidden');
+  const p0=v==='NEW'?{}:(project(v)||{}),c0=v==='NEW'?{}:(clientByProject(v)||{});
+  const fields={npname:p0.project_name,npno:p0.project_no,nsite:p0.site_address,ncname:c0.company_name,ncontact:c0.contact_name,nphone:c0.phone,nemail:c0.email,ncaddr:c0.address};
+  Object.entries(fields).forEach(([key,value])=>{if($(key)&&v!=='NEW')$(key).value=value||''});
   if(v!=='NEW'&&eb){
     const p=party();
     eb.innerHTML=`<div class="ub44-selected"><b>${safe(p.project_name||'')}</b><span>${safe(p.project_no||'')} · ${safe(p.site_address||'')}</span><small>${safe(p.company_name||'')} ${safe(p.contact_name||'')} ${safe(p.phone||'')}</small></div>`;
@@ -127,6 +141,7 @@ window.ub44RenderEditor=function(){
     <section class="ub44-editor">
       <div class="ub44-card">
         <div class="ub44-step"><i>1</i><div><b>報價類別及工程</b><small>選擇工程資料</small></div></div>
+        <div class="ub44-form-grid"><label class="full">報價編號<input id="qnumber" value="${safe(editing?.quotation_no||gen('QO'))}" oninput="ub44UpdatePreview()"></label><label>報價日期<input id="qdate" type="date" value="${safe(editing?.issue_date||today())}" oninput="ub44UpdatePreview()"></label><label>有效日期<input id="qvalid" type="date" value="${safe(editing?.valid_until||addDays(today(),90))}" oninput="ub44UpdatePreview()"></label></div>
         <div class="segmented"><button class="${tier==='customer'?'on':''}" ${editing?'disabled':''} onclick="ub44SetTier('customer')">客戶價</button><button class="${tier==='trade'?'on':''}" ${editing?'disabled':''} onclick="ub44SetTier('trade')">同行價</button></div>
         <label class="ub44-field">工程／項目<select id="qproject" ${editing?'disabled':''} onchange="ub44ProjectChanged()"><option value="NEW">＋ 新工程／自行輸入名稱</option>${pOptions}</select></label>
         <div id="newProjectBox">
@@ -167,7 +182,7 @@ window.ub44RenderEditor=function(){
       </div>
     </section>
     <aside class="ub44-preview">
-      <div class="ub44-preview-head"><b>即時正式預覽</b><button class="btn light sm" onclick="window.print()">列印／PDF</button></div>
+      <div class="ub44-preview-head"><b>即時正式預覽</b><button class="btn light sm" onclick="printA4()">列印／PDF</button></div>
       <div id="quotePreview" class="preview-stage"></div>
     </aside>
   </div>`;
@@ -207,31 +222,30 @@ window.editQuote=async function(id){
 };
 
 window.saveQuote=async function(){
+  if(window.__ub44Saving)return;
   const clean=(draft||[]).filter(x=>String(x.description||'').trim()&&num(x.quantity)>0);
   if(!clean.length){toast('請加入至少一個工程項目');return}
+  if(clean.length!==draft.length){toast('請填妥每項名稱及大於零的數量，或刪除空白項目');return}
   const t=totals(),editing=window.__ub44EditQuote;
+  const metadata=quoteForPreview();
+  if(!metadata.quotation_no.trim()||metadata.valid_until<metadata.issue_date){toast('請檢查報價編號及有效日期');return;}
+  window.__ub44Saving=true;
   try{
     if(editing){
-      await api('quotations','?id=eq.'+enc(editing.id),{method:'PATCH',body:{
-        discount_type:t.type,discount_value:t.dv,subtotal:t.s,discount_amount:t.d,total:t.t,price_tier:tier
-      }});
-      await api('quotation_items','?quotation_id=eq.'+enc(editing.id),{method:'DELETE'});
-      await api('quotation_items','',{method:'POST',body:clean.map((x,i)=>({
-        quotation_id:editing.id,sort_order:i+1,description:String(x.description).trim(),unit:String(x.unit||'項').trim()||'項',quantity:num(x.quantity),unit_price:num(x.unit_price)
-      }))});
-
-      const linked=(D.invoices||[]).filter(x=>x.quotation_id===editing.id);
-      for(const iv of linked){
-        const paid=(D.payments||[]).some(p=>p.invoice_id===iv.id);
-        if(paid)continue;
-        await api('invoices','?id=eq.'+enc(iv.id),{method:'PATCH',body:{subtotal:t.s,discount_amount:t.d,total:t.t}});
-        await api('invoice_items','?invoice_id=eq.'+enc(iv.id),{method:'DELETE'});
-        await api('invoice_items','',{method:'POST',body:clean.map((x,i)=>({
-          invoice_id:iv.id,sort_order:i+1,description:String(x.description).trim(),unit:String(x.unit||'項').trim()||'項',quantity:num(x.quantity),unit_price:num(x.unit_price)
-        }))});
+      const oldItems=await api('quotation_items','?quotation_id=eq.'+enc(editing.id)+'&select=*&order=sort_order');
+      for(const [i,x] of clean.entries()){
+        const body={quotation_id:editing.id,sort_order:i+1,description:String(x.description).trim(),unit:String(x.unit||'項').trim(),quantity:num(x.quantity),unit_price:num(x.unit_price)};
+        if(x.id)await api('quotation_items','?id=eq.'+enc(x.id)+'&quotation_id=eq.'+enc(editing.id),{method:'PATCH',body});
+        else{const added=await api('quotation_items','',{method:'POST',body});x.id=added[0].id;}
       }
+      for(const old of oldItems.filter(x=>!clean.some(y=>y.id===x.id)))await api('quotation_items','?id=eq.'+enc(old.id)+'&quotation_id=eq.'+enc(editing.id),{method:'DELETE'});
+      await api('quotations','?id=eq.'+enc(editing.id),{method:'PATCH',body:{
+        quotation_no:metadata.quotation_no,issue_date:metadata.issue_date,valid_until:metadata.valid_until,discount_type:t.type,discount_value:t.dv,subtotal:t.s,discount_amount:t.d,total:t.t,price_tier:tier
+      }});
       if(editing.project_id){
-        try{await api('projects','?id=eq.'+enc(editing.project_id),{method:'PATCH',body:{contract_amount:t.t}})}catch(_){}
+        const p=party(),original=project(editing.project_id);
+        await api('projects','?id=eq.'+enc(editing.project_id),{method:'PATCH',body:{project_name:p.project_name,project_no:p.project_no,site_address:p.site_address}});
+        if(original?.client_id)await api('clients','?id=eq.'+enc(original.client_id),{method:'PATCH',body:{company_name:p.company_name,contact_name:p.contact_name,phone:p.phone,email:p.email,address:p.client_address}});
       }
       toast('訂單項目已更新');
       window.__ub44EditQuote=null;
@@ -242,7 +256,7 @@ window.saveQuote=async function(){
 
     const pid=$('qproject')?.value==='NEW'?await createProjectFromQuote():$('qproject')?.value;
     const rows=await api('quotations','',{method:'POST',body:{
-      quotation_no:gen(tier==='trade'?'TQ':'QO'),project_id:pid,issue_date:today(),valid_until:addDays(today(),90),
+      quotation_no:metadata.quotation_no,project_id:pid,issue_date:metadata.issue_date,valid_until:metadata.valid_until,
       discount_type:t.type,discount_value:t.dv,subtotal:t.s,discount_amount:t.d,total:t.t,status:'草稿',price_tier:tier
     }});
     const q=rows[0];
@@ -252,7 +266,8 @@ window.saveQuote=async function(){
     toast('報價已儲存');
     await refreshData();
     await viewQuote(q.id);
-  }catch(e){alert((editing?'更新':'儲存')+'失敗：'+String(e?.message||e))}
+  }catch(e){alert((editing?'更新':'儲存')+'未完成，請保留畫面並重試：'+String(e?.message||e))}
+  finally{window.__ub44Saving=false;}
 };
 try{saveQuote=window.saveQuote}catch(_){}
 
