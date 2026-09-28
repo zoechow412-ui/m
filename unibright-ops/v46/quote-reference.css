@@ -1,0 +1,13 @@
+/* v46 — quotation preview follows the approved Invoice document family */
+.quote-ref-kind{
+  display:inline-block!important;
+  margin:8px 0 0!important;
+  padding:5px 9px!important;
+  background:#12566f!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+@media print{
+  .quote-ref-kind{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+}
