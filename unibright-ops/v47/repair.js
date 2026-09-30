@@ -64,4 +64,41 @@
    popup.document.close();
    popup.onload=async()=>{await popup.document.fonts.ready;await Promise.all([...popup.document.images].map(img=>img.decode().catch(()=>{})));popup.focus();popup.print();};
  };
+ const legacyExport=window.exportCurrentPDF;
+ let exporting=false;
+ function library(src){return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=()=>reject(new Error('PDF 引擎載入失敗'));document.head.appendChild(script)})}
+ window.exportCurrentPDF=window.downloadCurrentPDF=async function(){
+   const paper=document.querySelector('.invoice-reference-sheet');
+   if(!paper)return legacyExport();
+   if(exporting)return;exporting=true;let host;
+   try{
+     toast('正在建立正式 PDF…');
+     if(!window.html2canvas)await library('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+     if(!window.jspdf?.jsPDF)await library('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+     await document.fonts.ready;
+     const clone=paper.cloneNode(true);clone.removeAttribute('id');clone.style.setProperty('transform','none','important');clone.style.setProperty('zoom','1','important');clone.style.setProperty('margin','0','important');clone.style.setProperty('box-shadow','none','important');
+     host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';host.appendChild(clone);document.body.appendChild(host);
+     await Promise.all([...clone.images||clone.querySelectorAll('img')].map(img=>img.decode().catch(()=>{})));
+     const initialTop=clone.getBoundingClientRect().top;
+     const contentBottom=Math.max(...[...clone.children].map(el=>el.getBoundingClientRect().bottom-initialTop));
+     const height=Math.ceil(Math.max(891,clone.scrollHeight,contentBottom+96));
+     clone.style.setProperty('min-height',height+'px','important');
+     const canvas=await window.html2canvas(clone,{scale:2,backgroundColor:'#fff',logging:false,useCORS:true,width:842,height,windowWidth:1440,scrollX:0,scrollY:0});
+     const pdf=new window.jspdf.jsPDF({unit:'pt',format:[842,891],orientation:'portrait',compress:true});
+     const base=clone.getBoundingClientRect().top;
+     const boundaries=[...clone.querySelectorAll('.invoice-ref-items tr,.invoice-ref-summary,.invoice-ref-section-title,.invoice-ref-sign')].map(el=>Math.round(el.getBoundingClientRect().top-base)).filter(y=>y>72);
+     let y=72,page=0;const bottom=height-72;
+     while(y<bottom){
+       let end=Math.min(y+747,bottom);
+       if(end<bottom){const candidates=boundaries.filter(b=>b>y+150&&b<=end);if(candidates.length)end=Math.max(...candidates);}
+       if(page++)pdf.addPage([842,891],'portrait');
+       const slice=document.createElement('canvas');slice.width=canvas.width;slice.height=Math.round((end-y)*2);slice.getContext('2d').drawImage(canvas,0,Math.round(y*2),canvas.width,slice.height,0,0,slice.width,slice.height);
+       pdf.addImage(slice.toDataURL('image/png'),'PNG',0,72,842,end-y,undefined,'FAST');y=end;
+     }
+     const title=document.querySelector('.document-view-head h1')?.textContent||document.querySelector('#qnumber')?.value||'UNIBRIGHT';
+     pdf.save(title.replace(/[\\/:*?"<>|]/g,'-')+'.pdf');
+     document.querySelector('#app').dataset.pdfExport=JSON.stringify({pages:page,width:842,height:891,status:'downloaded'});
+     toast('正式 PDF 已下載');return true;
+   }catch(e){alert('PDF 下載失敗：'+e.message);return false;}finally{host?.remove();exporting=false;}
+ };
 })();

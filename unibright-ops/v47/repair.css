@@ -37,7 +37,7 @@
 .invoice-ref-payment>div{font-size:10px!important;min-height:23px!important;padding:6px 3px!important}
 .invoice-ref-sign{font-size:10px!important;grid-template-columns:1fr 1fr!important;gap:0!important}
 .invoice-ref-sign .sig-line{width:180px!important;height:54px!important}
-.invoice-ref-sign .sig-head{min-height:36px!important}
+.invoice-ref-sign .sig-head{height:48px!important;min-height:48px!important}
 .invoice-ref-sign .date{float:none!important;margin-left:140px!important}
 .quote-ref-kind{font-size:10px!important;margin:5px 0!important}
 .invoice-ref-sign{position:static!important;margin-top:22px!important;break-inside:avoid!important}
