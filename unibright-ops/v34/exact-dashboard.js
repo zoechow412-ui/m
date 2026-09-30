@@ -24,6 +24,5 @@ app.innerHTML=`<div class="ub34-dashboard">
 <section class="ub34-bottom"><div class="ub33-panel ub34-payment-panel"><div class="ub33-panel-head"><h3><span class="ub33-title-ico teal">▣</span>收款進度</h3></div><div class="ub33-payment"><div class="ub33-donut" style="--pct:${Math.max(36,pct)}%"><b>${pct}%</b></div><div class="ub33-paylist"><div class="ub33-payrow"><i></i><span>合約總額</span><b>${cash(contract)}</b></div><div class="ub33-payrow"><i></i><span>已收金額</span><b>${cash(got)}</b></div><div class="ub33-payrow"><i></i><span>尚欠金額</span><b>${cash(Math.max(0,contract-got))}</b></div></div></div></div><div class="ub33-panel ub34-bars-panel"><div class="ub33-panel-head"><h3><span class="ub33-title-ico blue">▥</span>每月工程數量</h3></div><div class="ub33-bars">${bars()}</div></div><div class="ub33-panel ub34-brand"><div class="copy"><h3>專注工程<br>締造更好未來</h3><small>UNIBRIGHT CONSTRUCTION</small></div><div class="ub34-features"><span><i>□</i>合規標準</span><span><i>♧</i>專業團隊</span><span><i>♡</i>優質服務</span></div></div></section></div>`;
 }
 window.renderDashboard=renderExact;try{renderDashboard=renderExact}catch(_){ }
-requestAnimationFrame(()=>{if(typeof tab==='undefined'||tab==='dashboard'||!tab)renderExact()});
-setTimeout(()=>{if(document.querySelector('.ub33-dashboard')&&!document.querySelector('.ub34-dashboard'))renderExact()},250);
+// v6 load() owns the first render after all modules and data are ready.
 })();

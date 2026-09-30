@@ -33,5 +33,6 @@ window.renderDashboard=draw;try{renderDashboard=draw}catch(_){ }
 function clients(){const a=D.clients||[];app.innerHTML=`<div class="ub33-page"><h1>客戶資料</h1><p>Clients</p><div class="ub33-panel"><div class="ub33-table-wrap"><table class="ub33-table"><thead><tr><th>公司／客戶</th><th>聯絡人</th><th>電話</th><th>Email</th></tr></thead><tbody>${a.map(c=>`<tr><td>${esc(c.company_name||'—')}</td><td>${esc(c.contact_name||'—')}</td><td>${esc(c.phone||'—')}</td><td>${esc(c.email||'—')}</td></tr>`).join('')}</tbody></table></div></div></div>`}
 function docs(){app.innerHTML='<div class="ub33-page"><h1>文件管理</h1><p>Documents</p><div class="ub33-panel"><div class="ub33-quick"><button onclick="UB33.go(\'quotation\')"><span class="qico">▤</span>Quotation</button><button onclick="UB33.go(\'invoice\')"><span class="qico">▣</span>Invoice</button><button onclick="UB33.go(\'receipt\')"><span class="qico">$</span>Receipt</button><button onclick="UB33.go(\'calendar\')"><span class="qico">▦</span>Booking</button></div></div></div>'}
 function reports(){const got=(D.payments||[]).reduce((a,x)=>a+num(x.amount),0),contract=(D.summary||[]).reduce((a,x)=>a+num(x.contract_amount),0);app.innerHTML=`<div class="ub33-page"><h1>報表分析</h1><p>Reports</p><div class="ub33-panel"><p>合約總額：<b>${cash(contract)}</b>　已收：<b>${cash(got)}</b>　尚欠：<b>${cash(Math.max(0,contract-got))}</b></p></div></div>`}
-shell();setTimeout(()=>{shell();draw()},350);
+// Build navigation once. v6 load() renders the final dashboard after data is ready.
+shell();
 })();
