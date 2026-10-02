@@ -16,11 +16,21 @@
     }catch(_){ }
     return window.UNIBRIGHT_LOGO||'';
   }
-  function invoiceReference(x,p,items,q,deposit){
+  function standardInvoiceReference(x,p,items,q,deposit){
     const due=number(x.total)*number(deposit)/100;
     const rows=(items||[]).length?(items||[]).map((item,i)=>`<tr><td>${i+1}. ${escapeValue(item.description||'—')}</td><td>${escapeValue(item.unit||'項')}</td><td>${number(item.quantity)}</td><td>${amount(item.unit_price)}</td><td>${amount(number(item.quantity)*number(item.unit_price))}</td></tr>`).join(''):'<tr><td colspan="5">工程項目會即時顯示喺度</td></tr>';
     const src=logoSource();
     return `<article class="a4-sheet invoice-reference-sheet" id="printArea"><div class="invoice-ref-head"><div class="invoice-ref-logo"><img src="${escapeValue(src)}" alt="恆輝建築（香港）有限公司"><div class="invoice-ref-logo-copy"><b>恆輝建築（香港）有限公司</b><span>UNIBRIGHT CONSTRUCTION (H.K.) LIMITED</span></div></div><div class="invoice-ref-title"><b>INVOICE</b><span>發票</span></div></div><div class="invoice-ref-meta"><div class="label">Invoice No.</div><div>${escapeValue(x.invoice_no||'PREVIEW-'+(typeof today==='function'?today():''))}</div><div class="label">Invoice Date</div><div>${escapeValue(x.issue_date||'')}</div><div class="label">Ref. Quotation</div><div>${escapeValue(q?.quotation_no||'')}</div><div class="label">Project Ref.</div><div>${escapeValue(p.project_no||'')}</div></div><div class="invoice-ref-party"><div><div class="title">BILL TO｜付款客戶</div><div class="body"><b>${escapeValue(p.company_name||'—')}</b><br>${escapeValue(p.client_address||'')}<br>${escapeValue(p.email||'')}</div></div><div><div class="title">PROJECT｜工程資料</div><div class="body"><b>${escapeValue(p.site_address||p.project_name||'—')}</b><br>聯絡人：${escapeValue(p.contact_name||'')}<br>電話：${escapeValue(p.phone||'')}</div></div></div><table class="invoice-ref-items"><colgroup><col style="width:41%"><col style="width:9%"><col style="width:8%"><col style="width:21%"><col style="width:21%"></colgroup><thead><tr><th>施工項目</th><th>單位</th><th>數量</th><th>單價</th><th>金額</th></tr></thead><tbody>${rows}</tbody></table><div class="invoice-ref-summary"><table><tr><td>小計 Subtotal</td><td>${amount(x.subtotal)}</td></tr><tr><td>折扣 Discount (${number(x.subtotal)?Math.round(number(x.discount_amount)/number(x.subtotal)*100):0}%)</td><td>${amount(x.discount_amount)}</td></tr><tr><td>合約總額 Total</td><td>${amount(x.total)}</td></tr><tr class="deposit"><td>本期應付 ${number(deposit)}% Deposit</td><td>${amount(due)}</td></tr></table></div><div class="invoice-ref-section-title">付款資料 PAYMENT DETAILS</div><div class="invoice-ref-payment"><div class="label">銀行轉帳／支票</div><div>中國工商銀行（亞洲）有限公司 720502009151</div><div class="label">轉數快 FPS</div><div>120437801</div><div class="label">付款條款</div><div>收取訂金${number(deposit)}%（HKD ${amount(due).replace('HK$','')}），完工7天內收取尾數。</div></div><div class="invoice-ref-sign"><div><div class="sig-head">FOR AND BEHALF OF<br><br>UNIBRIGHT CONSTRUCTION (HK) LIMITED</div><div class="sig-line"></div><div>Authorized Signature</div></div><div><div class="sig-head">客戶確認／簽署</div><div class="sig-line"></div><div>Signature <span class="date">Date</span></div></div></div></article>`;
+  }
+  function invoiceReference(x,p,items,q,deposit){
+    const html=standardInvoiceReference(x,p,items,q,deposit);
+    if(!String(x.notes||'').includes('PAYMENT_PLAN=SIX_STAGE_CASH;'))return html;
+    const cents=Math.round(number(x.total)*100),part=Math.floor(cents/6);
+    const days=['第4–5個工作日','第7–8個工作日','第10–11個工作日','第13–14個工作日','第16–17個工作日','第18個工作日完工驗收'];
+    const schedule=days.map((day,i)=>`第${i+1}期　${day}　${amount((i===5?cents-part*5:part)/100)}`).join('<br>');
+    const terms=String(x.notes||'').replace(/PAYMENT_PLAN=SIX_STAGE_CASH;\s*/,'').replace(/DEPOSIT_PERCENT=[0-9.]+;?\s*/,'').trim();
+    const payment=`<div class="invoice-ref-section-title">付款方式及條款 PAYMENT TERMS</div><div class="invoice-ref-payment"><div class="label">付款方式</div><div>現金支付 / CASH ONLY</div><div class="label">六期付款</div><div>${schedule}</div><div class="label">工程條款</div><div style="white-space:pre-line">${escapeValue(terms)}</div></div>`;
+    return html.replace(/<tr class="deposit">[\s\S]*?<\/tr>/,`<tr class="deposit"><td>六期付款合約總額 Total</td><td>${amount(x.total)}</td></tr>`).replace(/<div class="invoice-ref-section-title">[\s\S]*?(?=<div class="invoice-ref-sign">)/,payment);
   }
   function party(pid){
     const projectValue=typeof project==='function'?(project(pid)||{}):{};
