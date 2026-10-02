@@ -1,6 +1,15 @@
 (()=>{
   'use strict';
   window.UNIBRIGHT_V45_INVOICE='20260924-pdf-reference-1';
+  const previousInvoices=window.renderInvoices;
+  window.renderInvoices=function(){
+    previousInvoices();
+    document.querySelectorAll('.invoice-card').forEach(card=>{
+      const invoice=(D.invoices||[]).find(x=>x.invoice_no===card.querySelector('h3')?.textContent);
+      const summary=card.querySelector('.doc-card-main p');
+      if(summary&&String(invoice?.notes||'').includes('PAYMENT_PLAN=SIX_STAGE_CASH;'))summary.textContent=summary.textContent.replace(/本期 [0-9.]+%/,'六期現金付款');
+    });
+  };
   const escapeValue=v=>typeof window.esc==='function'?window.esc(v):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const amount=v=>typeof window.hk==='function'?window.hk(v):'HK$'+Number(v||0).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2});
   const number=v=>typeof window.n==='function'?window.n(v):Number(v||0);
