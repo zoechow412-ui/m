@@ -88,6 +88,11 @@
      const base=clone.getBoundingClientRect().top;
      const boundaries=[...clone.querySelectorAll('.invoice-ref-items tr,.invoice-ref-summary,.invoice-ref-section-title,.invoice-ref-sign')].map(el=>Math.round(el.getBoundingClientRect().top-base)).filter(y=>y>72);
      let y=72,page=0;const bottom=height-72;
+     // Keep ordinary documents and their signatures together; paginate only long documents.
+     if(height<=1150){
+       const scale=Math.min(1,891/height),width=842*scale;
+       pdf.addImage(canvas.toDataURL('image/png'),'PNG',(842-width)/2,0,width,height*scale,undefined,'FAST');page=1;y=bottom;
+     }
      while(y<bottom){
        let end=Math.min(y+747,bottom);
        if(end<bottom){const candidates=boundaries.filter(b=>b>y+150&&b<=end);if(candidates.length)end=Math.max(...candidates);}
