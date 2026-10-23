@@ -1,4 +1,6 @@
 const $ = (s, root = document) => root.querySelector(s);
+export { state, renderMethods, setScreen, renderReading, hkLabel, nowHK };
+import './office.js?v=20261024';
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const esc = value => String(trad(value ?? '')).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state = { screen:'intro', storyIndex:0, profileIndex:0, unknownTime:false, gender:'', topic:'工作', method:null, results:new Map(), terms:new Map(), palaceExplanations:new Map() };
