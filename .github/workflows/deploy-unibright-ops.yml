@@ -1,0 +1,33 @@
+name: Deploy UNIBRIGHT Ops to Vercel
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'unibright-ops/**'
+      - '.github/workflows/deploy-unibright-ops.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Link Vercel project
+        working-directory: unibright-ops
+        run: |
+          mkdir -p .vercel
+          printf '%s' '{"orgId":"team_pxv3P0GA1HyArZdMlWIM03gN","projectId":"prj_JRLO72QP5dFuoLoHpogADXl9xvhE"}' > .vercel/project.json
+
+      - name: Deploy production
+        working-directory: unibright-ops
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN secret is missing"
+            exit 2
+          fi
+          npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"

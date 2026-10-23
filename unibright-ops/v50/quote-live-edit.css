@@ -1,0 +1,14 @@
+/* v50 — quotation live preview + editable line items */
+.ub44-workbench{grid-template-columns:minmax(390px,.8fr) minmax(560px,1.2fr)!important;align-items:start!important}
+.ub44-preview{display:block!important;visibility:visible!important;opacity:1!important;position:sticky!important;top:12px!important;min-width:0!important;background:#e9eef1!important;border:1px solid #dbe4e9!important;border-radius:16px!important;padding:12px!important}
+.ub44-preview-head{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:42px!important;margin-bottom:10px!important}
+#quotePreview.preview-stage,.ub44-preview #quotePreview{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;min-height:660px!important;height:auto!important;overflow:auto!important;background:#dfe5e8!important;padding:14px!important;border-radius:12px!important;box-sizing:border-box!important}
+#quotePreview .a4-scale-box{display:block!important;visibility:visible!important;opacity:1!important;margin:0 auto!important;overflow:visible!important;position:relative!important}
+#quotePreview .invoice-reference-sheet,#quotePreview .a4-sheet,#quotePreview .formal-document{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+.ub44-item{display:block!important;background:#fff!important;border:1px solid #dfe7ec!important}
+.ub44-item textarea{width:100%!important;min-height:64px!important;box-sizing:border-box!important;border:1px solid #dce5eb!important;border-radius:10px!important;padding:10px 11px!important;font:inherit!important;color:#1d3448!important;background:#fff!important}
+.ub44-item input,.ub44-item textarea,.ub44-remove,.ub44-add-custom,#catalog button{pointer-events:auto!important}
+.ub50-preview-error{min-height:300px;display:grid;place-items:center;align-content:center;gap:8px;color:#a1323e;background:#fff7f7;border:1px solid #f2cfd4;border-radius:12px;padding:20px;text-align:center}
+.ub50-preview-error b{font-size:16px}.ub50-preview-error span{font-size:12px}
+@media(max-width:1100px){.ub44-workbench{grid-template-columns:1fr!important}.ub44-preview{position:relative!important;top:auto!important}#quotePreview.preview-stage,.ub44-preview #quotePreview{min-height:540px!important}}
+@media(max-width:620px){#quotePreview.preview-stage,.ub44-preview #quotePreview{min-height:480px!important;padding:8px!important}.ub44-item-grid{grid-template-columns:1fr 1fr!important}}

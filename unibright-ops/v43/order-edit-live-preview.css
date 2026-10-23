@@ -1,0 +1,20 @@
+/* v43 — restore live preview + editable order items */
+.document-workbench .preview-pane{display:block!important;visibility:visible!important;opacity:1!important}
+#quotePreview.preview-stage{display:block!important;min-height:680px!important;background:#e8eef0!important}
+.ub43-edit-btn{background:#eef4ff!important;color:#174f9a!important;border:1px solid #cdddf5!important;font-weight:850!important}
+.ub43-edit-btn:hover{background:#e3edff!important}
+.ub43-preview-jump{display:none}
+.segmented button:disabled{opacity:.68;cursor:not-allowed}
+@media(min-width:1181px){
+  .document-workbench{display:grid!important;grid-template-columns:minmax(420px,.82fr) minmax(620px,1.18fr)!important;gap:20px!important;align-items:start!important}
+  .document-workbench .preview-pane{position:sticky!important;top:104px!important}
+}
+@media(max-width:1180px){
+  .document-workbench .preview-pane{position:relative!important;top:auto!important;margin-top:16px!important}
+  #quotePreview.preview-stage{min-height:520px!important}
+  .ub43-preview-jump{display:inline-flex!important}
+}
+@media(max-width:820px){
+  #quotePreview.preview-stage{min-height:460px!important;padding:9px!important}
+  .doc-card-actions{gap:7px!important}
+}

@@ -1,0 +1,35 @@
+/* v43 quote editor: restore live preview + editable quote items */
+.live-workbench{
+  display:grid!important;
+  grid-template-columns:minmax(420px,.92fr) minmax(520px,1.08fr)!important;
+  gap:18px!important;
+  align-items:start!important;
+}
+.preview-panel{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  min-width:0!important;
+  position:sticky!important;
+  top:14px!important;
+  align-self:start!important;
+}
+.preview-panel .preview-toolbar{display:flex!important}
+#livePreview.preview-stage{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  min-height:620px!important;
+  overflow:auto!important;
+  background:#e8eef0!important;
+}
+#quoteItems .live-line input{min-width:0!important}
+.ub43-edit-quote{border-color:#d5a43b!important;color:#76580d!important;background:#fffaf0!important}
+@media(max-width:1100px){
+  .live-workbench{grid-template-columns:1fr!important}
+  .preview-panel{position:relative!important;top:auto!important}
+  #livePreview.preview-stage{min-height:520px!important}
+}
+@media(max-width:620px){
+  #livePreview.preview-stage{min-height:430px!important;padding:8px!important}
+}

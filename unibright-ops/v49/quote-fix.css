@@ -1,0 +1,46 @@
+/* v49 — restore quotation live preview and keep canonical item editor */
+.ub44-preview{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  overflow:visible!important;
+  max-height:none!important;
+}
+.ub44-preview #quotePreview,
+#quotePreview.preview-stage{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  min-height:620px!important;
+  height:auto!important;
+  overflow:auto!important;
+  position:relative!important;
+  padding:14px!important;
+  background:#dfe5e8!important;
+  box-sizing:border-box!important;
+}
+#quotePreview .a4-scale-box{
+  display:block!important;
+  position:relative!important;
+  margin:0 auto!important;
+  transform:none!important;
+  overflow:visible!important;
+}
+#quotePreview .invoice-reference-sheet,
+#quotePreview .a4-sheet,
+#quotePreview .formal-document{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform-origin:top left!important;
+}
+.ub44-item{display:block!important}
+.ub44-item input,.ub44-item textarea{pointer-events:auto!important}
+.ub44-remove,.ub44-add-custom{pointer-events:auto!important}
+@media(max-width:1100px){
+  .ub44-preview{position:relative!important;top:auto!important}
+  .ub44-preview #quotePreview{min-height:540px!important}
+}
+@media(max-width:620px){
+  .ub44-preview #quotePreview{min-height:480px!important;padding:8px!important}
+}

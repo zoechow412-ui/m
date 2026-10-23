@@ -75,6 +75,6 @@ window.deleteBooking=async function(id){const b=bookingList().find(x=>x.id===id)
 window.render=function(){const map={dashboard:window.renderDashboard,projects:window.renderProjects,quotation:window.renderQuotes||renderQuotes,invoice:window.renderInvoices||renderInvoices,receipt:window.renderReceipts||renderReceipts,pricing:window.renderPricing||renderPricing,booking:window.renderBooking};(map[tab]||window.renderDashboard)()};
 function decorateChrome(){const mark=document.querySelector('.logo-mark');if(mark)mark.textContent='B';const brand=document.querySelector('.brand');if(brand){const b=brand.querySelector('b'),s=brand.querySelector('small');if(b)b.textContent='UNIBRIGHT';if(s)s.textContent='CONSTRUCTION'}const av=document.querySelector('.avatar');if(av)av.textContent='J'}
 decorateChrome();
-refreshData().then(()=>{if(tab==='dashboard')renderDashboard();else render()}).catch(()=>{});
+// Initial loading is owned by v6 load(); do not overwrite an open editor later.
 window.UNIBRIGHT_V27_HEALTH=()=>({build:window.UNIBRIGHT_V27_BUILD,bookings:Array.isArray(D.bookings),bookingCount:bookingList().length,dashboard:typeof window.renderDashboard==='function',booking:typeof window.renderBooking==='function'});
 })();

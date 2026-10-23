@@ -7,15 +7,17 @@ const app=document.getElementById('app'),toastEl=document.getElementById('toast'
 const n=v=>Number(v||0);
 const hk=v=>'HK$'+n(v).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const today=()=>new Date().toISOString().slice(0,10);
-const addDays=(d,days)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+days);return x.toISOString().slice(0,10)};
+const localDateKey=x=>[x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-');
+const today=()=>localDateKey(new Date());
+const addDays=(d,days)=>{const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+days);return localDateKey(x)};
 const gen=p=>p+'/'+today().replaceAll('-','').slice(2)+'/'+String(Date.now()).slice(-5);
 const el=id=>document.getElementById(id);
 const val=id=>el(id)?.value||'';
 function toast(msg){if(!toastEl)return;toastEl.textContent=msg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2200)}
 async function api(table,q='',o={}){const r=await fetch(BASE+'/rest/v1/'+table+q,{method:o.method||'GET',headers:{...HEAD,Prefer:o.prefer||'return=representation'},body:o.body?JSON.stringify(o.body):undefined});const t=await r.text();if(!r.ok)throw new Error(t||('HTTP '+r.status));return t?JSON.parse(t):[]}
 async function refreshData(){const [projects,summary,clients,quotes,invoices,payments,pricing]=await Promise.all([api('projects','?select=*&order=created_at.desc'),api('project_financial_summary','?select=*'),api('clients','?select=*'),api('quotations','?select=*&order=created_at.desc'),api('invoices','?select=*&order=created_at.desc'),api('payments','?select=*&order=payment_date.desc,created_at.desc'),api('pricing_catalog','?select=*&active=eq.true&order=price_tier,item_code')]);D={projects,summary,clients,quotes,invoices,payments,pricing}}
-async function load(){app.innerHTML='<div class="loading-card"><div class="loader"></div><b>正在載入工程資料…</b></div>';try{await refreshData();render()}catch(e){app.innerHTML='<div class="empty-state"><b>資料庫連線失敗</b><p>'+esc(e.message)+'</p><button class="btn" onclick="load()">重新載入</button></div>'}}
+async function load(){if(window.__ubLoading)return;window.__ubLoading=true;window.__ubDataReady=false;app.innerHTML='<div class="loading-card"><div class="loader"></div><b>正在載入工程資料…</b></div>';try{if(document.readyState==='loading')await new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));await refreshData();window.__ubDataReady=true;render()}catch(e){app.innerHTML='<div class="empty-state"><b>資料庫連線失敗</b><p>'+esc(e.message)+'</p><button class="btn" onclick="load()">重新載入</button></div>'}finally{window.__ubLoading=false}}
+document.addEventListener('click',event=>{if(window.__ubDataReady)return;const control=event.target.closest('button,a,input,select,textarea');if(!control||control.closest('.empty-state'))return;event.preventDefault();event.stopImmediatePropagation();toast(window.__ubLoading?'正在載入資料，請稍候…':'請先重新載入資料');},true);
 function project(id){return D.projects.find(x=>x.id===id)}
 function sumProject(id){return D.summary.find(x=>x.project_id===id)||{}}
 function clientByProject(id){const p=project(id);return D.clients.find(x=>x.id===p?.client_id)||{}}

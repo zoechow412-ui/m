@@ -1,0 +1,32 @@
+/* v42 — sidebar brand sourced directly from the working Invoice logo */
+.brand{
+  height:96px!important;
+  min-height:96px!important;
+  padding:8px 12px!important;
+  background:#fff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  overflow:visible!important;
+}
+.brand:before,.brand:after{content:none!important;display:none!important}
+.brand>.ub42-brand{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+.ub42-logo{
+  display:block!important;
+  width:52px!important;
+  height:68px!important;
+  flex:0 0 52px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+.ub42-copy{display:block!important;min-width:0!important;line-height:1.08!important}
+.ub42-copy b{display:block!important;color:#12315b!important;font-size:11px!important;font-weight:800!important;white-space:nowrap!important}
+.ub42-copy span{display:block!important;color:#12315b!important;font-size:8.5px!important;font-weight:800!important;line-height:1.2!important;margin-top:4px!important;letter-spacing:.1px!important}
