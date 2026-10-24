@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#081319">
-  <title>玄頁｜墨川替你讀命</title>
+  <meta name="theme-color" content="#101323">
+  <title>玄頁｜月下命理事務所</title>
+  <meta name="description" content="八位命理顧問，帶你入房逐步排盤與對話。本機計算、無需登入。">
   <link rel="stylesheet" href="./rebuild.css?v=20260906-1">
+  <link rel="stylesheet" href="./night.css?v=20261025-night1">
 </head>
-<body>
-  <main id="app" class="app-shell">
+<body class="night-mode">
+  <div id="nightBoot" role="status" style="position:fixed;inset:0;display:grid;place-items:center;background:#101323;color:#c4b1df;font:18px serif;letter-spacing:.25em">月下事務所 · 開門中</div>
+  <noscript>請啟用 JavaScript，以使用本機排盤與互動諮詢。</noscript>
+  <main id="app" class="app-shell" hidden>
     <section id="intro" class="screen intro-screen is-active" aria-label="開場">
       <div class="scene scene-intro">
         <div class="scene-image"></div><div class="scene-shade"></div>
@@ -50,6 +54,6 @@
       <div id="termDrawer" class="term-drawer" aria-hidden="true"><button id="termClose" type="button">×</button><p id="termName"></p><div id="termBody"></div></div><div class="reading-footer"><button id="nextMethod" class="bottom-cta" type="button">再讀另一門 <span>↗</span></button><button id="resetFlow" class="quiet-button" type="button">重新開始</button></div>
     </section>
   </main>
-  <script src="./public/lunar.js?v=20260823"></script><script src="./public/iztro.min.js?v=20260823"></script><script src="./public/astronomy.browser.min.js?v=20260823"></script><script type="module" src="./rebuild.js?v=20260907-1"></script>
+  <script src="./public/lunar.js?v=20260823"></script><script src="./public/iztro.min.js?v=20260823"></script><script src="./public/astronomy.browser.min.js?v=20260823"></script><script type="module" src="./rebuild.js?v=20261025-night1"></script>
 </body>
 </html>

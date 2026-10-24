@@ -1,6 +1,6 @@
 const $ = (s, root = document) => root.querySelector(s);
-export { state, renderMethods, setScreen, renderReading, hkLabel, nowHK };
-import './office.js?v=20261024';
+export { state, renderMethods, setScreen, renderReading, hkLabel, nowHK, ziweiDeepStar };
+import './office.js?v=20261025-night1';
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const esc = value => String(trad(value ?? '')).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state = { screen:'intro', storyIndex:0, profileIndex:0, unknownTime:false, gender:'', topic:'工作', method:null, results:new Map(), terms:new Map(), palaceExplanations:new Map() };
@@ -53,7 +53,7 @@ const glossary={
 const termRole={
   '四柱':'把出生年、月、日、時分成四組，先確定排盤底座，再按日主與月令看五行互動。','日主':'將你本人放在盤中心，其他干支都要問「對日主係生、剋、洩、耗定同類」。','月令':'先定季節氣勢及旺衰底色，再校驗其他干支有冇根、有冇通關。','十神':'把同一組五行關係翻譯成資源、輸出、責任、同伴及財務等事件角色。','刑沖合害':'指出地支之間係靠近、拉扯、碰撞定暗耗；必須放返全盤先判輕重。','命宮':'定位紫微盤中「我點樣做選擇」嘅核心，不能代替官祿、財帛及對宮。','身宮':'補充你實際將時間與力氣投放喺邊，與命宮比較先有判讀價值。','十二宮':'將人生分成十二個生活場域，逐宮睇星曜，再用對宮及三方四正連結。','三方四正':'將一宮同三個會照位置放埋一齊，避免只見單一星曜就落結論。','四化':'追蹤資源、權責、名聲及卡點由邊個宮位流向另一個宮位。','Lagna':'用出生時間地點計出上升點，係印度占星將星體放入生活宮位嘅起點。','Bhava':'把行星功能落到工作、收入、關係、家庭等具體生活範圍。','Nakshatra':'用月亮所在月宿細分情緒模式及事件節奏，唔係另一個星座名稱。','Dasha':'將出生盤切成行星主導時段，用來排長期窗口，仍要對照實際事件。','Transit':'比較現時天空同出生盤嘅位置，補充近期較容易被觸發嘅主題。','本卦':'梅花／易經中代表目前局面嘅第一層結構，先問現況係點形成。','體用':'梅花用體代表主體、用代表外部或所問之事，再看五行生剋係支援定消耗。','互卦':'取本卦中段爻位，讀出表面結果底下嘅中途過程、內情及牽連。','動爻':'指出六爻中最先變化嘅位置，係目前最值得驗證嘅環節。','變卦':'把動爻翻轉後所得嘅方向，讀成行動後可能轉向，唔係保證結局。','小六壬':'以當刻農曆月、日、時辰順推六神，係短課，不用出生日期代替。','落宮':'小六壬最後停留嘅六神位置，集中描述今次問題嘅短期氣氛。','局數':'奇門按節氣、陰陽遁及時辰定出九宮框架，先確定局再讀門星神。','九宮':'將空間與事件分成九格，讓天盤、地盤、八門、九星、八神有落點。','八門':'把事情分成開展、休整、資源、阻力、隱藏、表現、停滯及驚動等入口。','九星':'描述策略傾向及處理方式，要與門、神及落宮一齊讀。','八神':'補充事情當刻嘅氣氛、助力、遮蔽或干擾，不能單獨判吉凶。','值符':'找出九星系統中局勢最有主導力嘅位置，反映核心權責。','值使':'找出八門系統中最直接嘅落地入口，反映下一步點做。','交叉核對':'比較不同術數係咪重複指向同一個問題層；相反結果本身亦係需要補證據嘅訊號。','時間窗口':'將象意轉為可以觀察及覆盤嘅日期範圍，唔係預告某日必然發生。'
 };
-const termDetail=(label,explanation)=>{const role=termRole[label]||`${label}要連同所在宮位、卦位、星曜及問題一齊讀，唔可以脫離盤面單獨下結論。`;const impact=label==='日主'||label==='十神'?'工作睇責任與輸出、財運睇資源及現金流、感情睇付出與界線、家庭睇角色分工。':label==='命宮'||label==='身宮'||label==='十二宮'||label==='三方四正'||label==='四化'?'工作睇官祿與權責、財運睇財帛與資源、感情睇夫妻與福德、家庭睇田宅與父母。':label==='Lagna'||label==='Bhava'||label==='Nakshatra'||label==='Dasha'||label==='Transit'?'工作睇行動入口、財運睇價值及風險、感情睇互動安全感、家庭睇生活根基。':label==='本卦'||label==='體用'||label==='互卦'||label==='動爻'||label==='變卦'?'工作、財運、感情、家庭都要先分清主體與外部條件，再看邊個環節先變。':label==='小六壬'||label==='落宮'?'工作、財運、感情、家庭只作短期節奏提醒，唔取代合約、對話、醫療或法律判斷。':'工作、財運、感情、家庭都只能作核對方向，真正影響要由你揀嘅主題及實際事件確認。';const windowText=label==='小六壬'||label==='落宮'||label==='動爻'?'以起課後 1–21 日作短期驗證，按訊息、延誤或轉折記錄。':label==='Dasha'||label==='大運'||label==='流年'?'先看目前年度／周期，再用實際事件校驗，不把周期當成指定日期。':'由今日香港時間起觀察未來 7–60 日，窗口係驗證期，不是必然預言。';const action=label==='本卦'||label==='互卦'||label==='變卦'?'先寫低限制、內在過程及可能轉向，各揀一件可撤回行動。':label==='小六壬'||label==='落宮'?'記低起課時間、實際回應及結果，下一次再比較，不要用出生資料重算。':label==='命宮'||label==='十二宮'||label==='三方四正'?'打開相關宮位及對宮，記一件七日內可以核對嘅事。':`把${label}指出嘅傾向轉成一個有期限、成本上限及回頭檢查點嘅行動。`;return `術語意思：${explanation}｜白話解釋：${role}｜盤面作用：${role}｜工作／財運／感情／家庭影響：${impact}｜可能時間窗口：${windowText}｜實際行動：${action}`;};
+const termDetail=(label,explanation)=>{const role=termRole[label];return `術語意思：${explanation}${role&&role!==explanation?'｜點樣讀：'+role:''}｜時間限制：術語本身不提供事件日期；只有命盤實際計出嘅運限／周期可以用作時間背景。`;};
 const registerGlossary=()=>Object.entries(glossary).forEach(([label,explanation])=>{if(!state.terms.has(label))state.terms.set(label,{label,explanation:termDetail(label,explanation)});});
 const linkGlossaryTerms=root=>{registerGlossary();const labels=Object.keys(glossary).sort((a,b)=>b.length-a.length),re=new RegExp(`(${labels.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')})`,'g'),walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{if(node.parentElement?.closest('.term-link,.palace-open,script,style'))return;const text=node.nodeValue;if(!re.test(text)){re.lastIndex=0;return;}re.lastIndex=0;const frag=document.createDocumentFragment();let last=0;for(const match of text.matchAll(re)){const i=match.index; if(i>last)frag.append(text.slice(last,i));const b=document.createElement('button');b.type='button';b.className='term-link';b.dataset.term=match[0];b.textContent=match[0];frag.append(b);last=i+match[0].length;}if(last<text.length)frag.append(text.slice(last));node.replaceWith(frag);});};
 const nowHK = () => {
@@ -113,8 +113,8 @@ const baziCalc = p => {
     const max=Math.max(...Object.values(counts)), strength=counts[stemElement[dayGan]]>=max-1?'有根偏旺':counts[stemElement[dayGan]]<=1.5?'偏弱需借力':'中和要看運勢';
     const relations=[]; const has=(a,b)=>visible.includes(a)||visible.includes(b);
     [['子','午','沖'],['卯','酉','沖'],['寅','亥','合'],['巳','申','合'],['辰','酉','合'],['午','未','合']].forEach(([a,b,n])=>{if([dayBranch,...rows.map(r=>r[1][1])].includes(a)&&[dayBranch,...rows.map(r=>r[1][1])].includes(b))relations.push(`${a}${b}${n}`);});
-    let luck='大運資料要按起運歲數另行核對';
-    try { const yun=ec.getYun(p.gender==='male'?1:0,2), ds=yun.getDaYun(10)||[], current=ds.find(x=>new Date().getFullYear()>=x.getStartYear()&&new Date().getFullYear()<=x.getEndYear()); if(current) luck=`${current.getGanZhi()} · ${current.getStartYear()}–${current.getEndYear()}（約 ${current.getStartAge()}–${current.getEndAge()} 歲）`; } catch(_){}
+    let luck=p.gender==='other'?'未提供順逆排法，今次不計大運':'大運資料要按起運歲數另行核對';
+    try { if(p.gender==='other')throw Error('未提供順逆排法');const yun=ec.getYun(p.gender==='male'?1:0,2), ds=yun.getDaYun(10)||[], current=ds.find(x=>new Date().getFullYear()>=x.getStartYear()&&new Date().getFullYear()<=x.getEndYear()); if(current) luck=`${current.getGanZhi()} · ${current.getStartYear()}–${current.getEndYear()}（約 ${current.getStartAge()}–${current.getEndAge()} 歲）`; } catch(_){}
     return {rows,dayGan,dayBranch,dayElement:stemElement[dayGan],counts,strength,relations,luck,terms:['四柱','日主','月令','十神','藏干','旺衰','刑沖合害','大運','流年'],evidence:`年柱 ${rows[0][1]}／月柱 ${rows[1][1]}／日柱 ${rows[2][1]}／時柱 ${rows[3][1]}`};
   } catch(e) { return {error:`八字排盤失敗：${e.message}`}; }
 };
@@ -123,21 +123,30 @@ const signs=['白羊座','金牛座','雙子座','巨蟹座','獅子座','處女
 const nakshatras=['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishta','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
 const locations={香港:[22.3193,114.1694,8],澳門:[22.1987,113.5439,8],台北:[25.033,121.5654,8],新加坡:[1.3521,103.8198,8],吉隆坡:[3.139,101.6869,8],東京:[35.6762,139.6503,9],首爾:[37.5665,126.978,9],紐約:[40.7128,-74.006,-5],倫敦:[51.5072,-.1276,0]};
 const utcDate = (p, offset=8) => new Date(Date.UTC(p.year,p.month-1,p.day,p.hour-offset,p.minute));
+const birthUtcDate=p=>{
+  const zones={香港:'Asia/Hong_Kong',澳門:'Asia/Macau',台北:'Asia/Taipei',新加坡:'Asia/Singapore',吉隆坡:'Asia/Kuala_Lumpur',東京:'Asia/Tokyo',首爾:'Asia/Seoul',紐約:'America/New_York',倫敦:'Europe/London'};
+  const zone=zones[p.place];if(!zone)throw Error('未支援此出生城市的時區');
+  const wanted=Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute),formatter=new Intl.DateTimeFormat('en-CA',{timeZone:zone,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const localStamp=d=>{const x=Object.fromEntries(formatter.formatToParts(d).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));return Date.UTC(x.year,x.month-1,x.day,x.hour,x.minute,x.second);};
+  let guess=wanted;for(let n=0;n<4;n++)guess+=wanted-localStamp(new Date(guess));
+  if(localStamp(new Date(guess))!==wanted)throw Error('此當地時間在夏令時間轉換中不存在，請核對出生紀錄');
+  if([guess-3600000,guess+3600000].some(x=>localStamp(new Date(x))===wanted))throw Error('此出生時間遇夏令時間重複時段，未能唯一換算；請核對原始時區紀錄');
+  return new Date(guess);
+};
 const indianCalc = p => {
   if(!window.Astronomy) return {error:'印度占星計算套件未載入，沒有用估算文字代替。'};
   try {
-    const [lat,lon,offset]=locations[p.place]||[]; if(!lat) return {error:'此出生地未有本地座標，請先選擇支援城市。'}; const date=utcDate(p,offset), ayan=24.0+(p.year-2000)*0.01396;
-    const tropical=body=>body==='Sun'
-      ? window.Astronomy.SunPosition(date).elon
-      : window.Astronomy.EclipticLongitude(body,date);
+    const [lat,lon,offset]=locations[p.place]||[]; if(!lat) return {error:'此出生地未有本地座標，請先選擇支援城市。'}; const date=birthUtcDate(p), ayan=23.85675+((date.getTime()-Date.UTC(2000,0,1,12))/86400000/36525)*1.3969713;
+    // A natal chart uses Earth-centred apparent positions, not heliocentric longitudes.
+    const tropical=body=>window.Astronomy.Ecliptic(window.Astronomy.GeoVector(body,date,true)).elon;
     const sidereal=body=>(tropical(body)-ayan+360)%360;
     const planetNames=[['太陽','Sun'],['月亮','Moon'],['水星','Mercury'],['金星','Venus'],['火星','Mars'],['木星','Jupiter'],['土星','Saturn']];
     const planets=planetNames.map(([label,body])=>{const lonValue=sidereal(body);return {label,lon:lonValue,sign:signs[Math.floor(lonValue/30)],degree:(lonValue%30).toFixed(2)}});
     const jd=2451545+(date.getTime()-Date.UTC(2000,0,1,12))/86400000,lst=(280.46061837+360.98564736629*(jd-2451545)+lon)%360,obl=23.4393*Math.PI/180,phi=lat*Math.PI/180,theta=lst*Math.PI/180;
-    const asc=(Math.atan2(-Math.cos(theta),Math.sin(theta)*Math.cos(obl)+Math.tan(phi)*Math.sin(obl))*180/Math.PI+360)%360, moon=planets[1].lon, nakIndex=Math.floor(moon/(360/27)),nakProgress=(moon%(360/27))/(360/27);
-    const lords=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'],years={Ketu:7,Venus:20,Sun:6,Moon:10,Mars:7,Rahu:18,Jupiter:16,Saturn:19,Mercury:17}; let dasha=[]; let cursor=utcDate(p,offset), idx=nakIndex%9, firstRemain=years[lords[idx]]*(1-nakProgress);
-    const add=(d,yrs)=>new Date(d.getTime()+yrs*365.2425*86400000); cursor=add(cursor,0); for(let i=0;i<5;i++){const lord=lords[(idx+i)%9],dur=i===0?firstRemain:years[lord],end=add(cursor,dur);dasha.push({lord,start:new Date(cursor),end,dur});cursor=end;}
-    const today=new Date(), active=dasha.find(x=>today>=x.start&&today<x.end)||dasha[0];
+    const tropicalAsc=(Math.atan2(-Math.cos(theta),Math.sin(theta)*Math.cos(obl)+Math.tan(phi)*Math.sin(obl))*180/Math.PI+540)%360,asc=(tropicalAsc-ayan+360)%360, moon=planets[1].lon, nakIndex=Math.floor(moon/(360/27)),nakProgress=(moon%(360/27))/(360/27);
+    const lords=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'],years={Ketu:7,Venus:20,Sun:6,Moon:10,Mars:7,Rahu:18,Jupiter:16,Saturn:19,Mercury:17}; let dasha=[]; let cursor=new Date(date), idx=nakIndex%9, firstRemain=years[lords[idx]]*(1-nakProgress);
+    const add=(d,yrs)=>new Date(d.getTime()+yrs*365.2425*86400000); for(let i=0;i<20;i++){const lord=lords[(idx+i)%9],dur=i===0?firstRemain:years[lord],end=add(cursor,dur);dasha.push({lord,start:new Date(cursor),end,dur});cursor=end;}
+    const today=new Date(), active=dasha.find(x=>today>=x.start&&today<x.end)||null;
     return {planets,asc:asc.toFixed(2),ascSign:signs[Math.floor(asc/30)],nak:nakshatras[nakIndex],nakIndex:nakIndex+1,dasha,active,ayan,place:p.place,offset};
   } catch(e) { return {error:`印度占星排盤失敗：${e?.message||String(e)}`}; }
 };
@@ -169,8 +178,25 @@ const ziweiCalc=p=>{
 };
 
 const ziweiPalaceMeaning={命宮:'本人性格、選擇方式及人生主軸',兄弟宮:'同輩、手足、合作及資源分配',夫妻宮:'親密關係、伴侶互動及承諾模式',子女宮:'創作、作品、下屬及你養成的事物',財帛宮:'收入模式、理財方式及資源安全感',疾厄宮:'身心壓力、生活習慣及需要保養的位置',遷移宮:'外出、環境變動、客戶及外界給你的回應',僕役宮:'朋友、同事、團隊及你如何用人',官祿宮:'工作方向、責任、名聲及職業角色',田宅宮:'居住、家庭根基、資產及安全感',福德宮:'內在休息、慾望、精神狀態及享受方式',父母宮:'長輩、制度、上司、文書及保護資源'};
-const ziweiStarExplain=s=>{const n=String(s||''); if(n.includes('七殺'))return '七殺屬開創及決斷型主星：遇事傾向直接切入、承擔風險及打破舊局；落入不同宮位，會把這種強度帶到該生活領域，不等於必然凶。'; if(n.includes('紫微'))return '紫微是統籌、主導及承擔責任的主星：重視格局、位置及能否掌握全局；要連同會照星曜看你係得到授權，定係只係被推上前線。'; if(n.includes('天府'))return '天府偏向守成、管理及資源收納：重視穩定、庫存及可持續性；落在財帛或田宅時尤其要看你點樣管理而不是只看擁有幾多。'; if(n.includes('廉貞'))return '廉貞關於界線、慾望、規則及選擇：容易對模糊關係敏感，也會在原則與現實之間反覆衡量。'; if(n.includes('貪狼'))return '貪狼關於吸引力、社交、欲望及多元嘗試：優點是有感染力，風險是選項太多而分散承諾。'; if(n.includes('破軍'))return '破軍代表拆舊立新、重整及高變動：適合處理已經失效的安排，但要先設退出線，避免把衝動誤認成自由。'; if(n.includes('天相'))return '天相重視協調、規格、公平及呈現方式：能處理人與制度之間的接口，但容易因顧全大局而延後自己的決定。'; if(n.includes('天機'))return '天機偏分析、變通及訊息流動：善於看見可能性，但過度比較會令行動延遲。'; if(n.includes('太陰'))return '太陰偏內在安全感、細節、累積及照顧：敏感度高，做決定前會先評估環境是否可靠。'; if(n.includes('太陽'))return '太陽偏公開、承擔、帶領及被看見：容易主動照亮別人，但要留意責任是否有相應權限。'; if(n.includes('武曲'))return '武曲偏執行、數字、效率及資源控制：適合落地與管理，但表達感受時可能顯得過於直接。'; if(n.includes('天同'))return '天同偏和氣、享受、適應及減壓：能化解衝突，但面對必須取捨時容易拖延。'; return `「${n}」係輔助星曜或雜曜，代表一種需要放入落宮、會照星曜及四化才可判讀的傾向；單獨一粒星不能宣判吉凶，今次要核對的是它落在哪個生活領域及實際事件。`;};
-const ziweiPalaceText=(palace,r)=>{const name=palace.name||'宮位', stars=palace.stars.length?palace.stars.join('、'):'空宮（借對宮參考）', meaning=Object.entries(ziweiPalaceMeaning).find(([k])=>name.includes(k))?.[1]||'此宮所代表的生活領域'; const tone=palace.stars.length?`本宮見 ${stars}，表示「${meaning}」會以呢組星曜嘅方式呈現；真正要核對的是你近期遇到的具體人、事及選擇。`:`本宮未見主星，先借對宮看主題，再用三方四正補充，唔會硬塞一粒不存在的星。`; return `【${name}】\n術語意思：${meaning}。\n白話解釋：${tone}\n盤面作用：宮位定義事情發生在哪個生活範圍；星曜定義你在這個範圍用甚麼方式回應。\n工作／財運／感情／家庭影響：${name}同${r.ming?.name||'命宮'}互相牽動，工作安排可能改變收入、關係及家庭責任；要按你揀的「${state.topic}」核對實際事件，不把象意當成必然結果。\n可能時間窗口：先以 2026 流年及未來 60 日觀察重複出現的訊號，再配合大限、流月核對，唔用單一宮位預言確切日期。\n實際行動：記低一件同此宮有關、七日內可驗證的事，列出你能控制的下一步及一條不可接受的界線。\n星曜逐粒解釋：${palace.stars.length?palace.stars.map(s=>`${s}：${ziweiStarExplain(s)}`).join(' | '):'空宮：唔代表沒有事情，而是要借對宮及會照星曜閱讀。'}`;};
+const ziweiStarExplain=s=>{const n=String(s||''); if(ziweiDeepStar[n])return ziweiDeepStar[n]; if(n.includes('七殺'))return '七殺屬開創及決斷型主星：遇事傾向直接切入、承擔風險及打破舊局；落入不同宮位，會把這種強度帶到該生活領域，不等於必然凶。'; if(n.includes('紫微'))return '紫微是統籌、主導及承擔責任的主星：重視格局、位置及能否掌握全局；要連同會照星曜看你係得到授權，定係只係被推上前線。'; if(n.includes('天府'))return '天府偏向守成、管理及資源收納：重視穩定、庫存及可持續性；落在財帛或田宅時尤其要看你點樣管理而不是只看擁有幾多。'; if(n.includes('廉貞'))return '廉貞關於界線、慾望、規則及選擇：容易對模糊關係敏感，也會在原則與現實之間反覆衡量。'; if(n.includes('貪狼'))return '貪狼關於吸引力、社交、欲望及多元嘗試：優點是有感染力，風險是選項太多而分散承諾。'; if(n.includes('破軍'))return '破軍代表拆舊立新、重整及高變動：適合處理已經失效的安排，但要先設退出線，避免把衝動誤認成自由。'; if(n.includes('天相'))return '天相重視協調、規格、公平及呈現方式：能處理人與制度之間的接口，但容易因顧全大局而延後自己的決定。'; if(n.includes('天機'))return '天機偏分析、變通及訊息流動：善於看見可能性，但過度比較會令行動延遲。'; if(n.includes('太陰'))return '太陰偏內在安全感、細節、累積及照顧：敏感度高，做決定前會先評估環境是否可靠。'; if(n.includes('太陽'))return '太陽偏公開、承擔、帶領及被看見：容易主動照亮別人，但要留意責任是否有相應權限。'; if(n.includes('武曲'))return '武曲偏執行、數字、效率及資源控制：適合落地與管理，但表達感受時可能顯得過於直接。'; if(n.includes('天同'))return '天同偏和氣、享受、適應及減壓：能化解衝突，但面對必須取捨時容易拖延。'; return `「${n}」係輔助星曜或雜曜，代表一種需要放入落宮、會照星曜及四化才可判讀的傾向；單獨一粒星不能宣判吉凶，今次要核對的是它落在哪個生活領域及實際事件。`;};
+const ziweiPalaceText=(palace,r)=>{
+  const name=palace.name||'宮位',normal=name.replace(/宮$/,''),meaning=Object.entries(ziweiPalaceMeaning).find(([key])=>key.replace(/宮$/,'')===normal)?.[1]||'此宮的生活領域';
+  const stars=palace.stars||[],areas={
+    命:'先看你面對事情時如何選擇、承擔同表達，再比較外在環境如何回應。',
+    兄弟:'先核對同輩或手足之間互相支援的方式，同共享資源嘅界線。',
+    夫妻:'先看雙方如何談承諾、分配空間及回應需要；主星係互動傾向，唔代表指定人物。',
+    子女:'先看你點樣養成作品、照顧後輩或帶領下屬；不由此宮推斷生育結果。',
+    財帛:'先看收入取得、資源管理與承擔風險的方式，金額必須由實際收支核對。',
+    疾厄:'先整理壓力、作息與自我照顧方式；星曜唔作身體疾病診斷。',
+    遷移:'先看外出、轉環境與接觸外界時，邊種回應或條件最值得留意。',
+    僕役:'先看朋友、團隊與合作對象點樣配合，同責任是否互相對等。',
+    交友:'先看朋友、團隊與合作對象點樣配合，同責任是否互相對等。',
+    官祿:'先核對實際職責、決策權同成果標準，再睇星曜描述嘅工作方式。',
+    田宅:'先看居住、共同生活與資產安排，分清使用權、管理權同責任。',
+    福德:'先看你如何休息、追求滿足同消化壓力，核對付出是否可持續。',
+    父母:'先核對長輩、上司或制度提供嘅支持，同你要承擔嘅規則。'};
+  return `【${name}宮位】\n術語意思：${meaning}。\n\n白話解釋：${areas[normal]||meaning} 本宮見${stars.length?stars.join('、'):'空宮，需借對宮及會照閱讀'}。\n\n盤面作用：本宮指出事情發生在哪個領域；主星、輔星及雜曜補充方式，要連對宮與三方四正閱讀。\n\n與你問的「${state.topic}」有關：${areas[normal]||meaning}\n\n時間限制：今次展示本命十二宮，未另排運限，不能由本命宮位單獨推出事件日期。\n\n實際行動：用一項與「${meaning}」有關的真實安排作核對，記下誰參與、尚欠甚麼條件、你能調整哪一步。\n\n星曜逐粒解釋：\n${stars.map(s=>s+'：'+ziweiStarExplain(s)).join('\n\n')||'空宮：不代表沒有事情，需借對宮星曜與會照關係參考。'}`;
+};
 
 const qimenCalc=async(p,q)=>{
   try {const mod=await import('./public/qimen-engine.js'), hk=hkNowParts(), d=utcDate(hk,8), chart=mod.calculate(d,{type:'三元',method:'时家',location:p.place||'香港',purpose:q}); if(chart?.error) return {error:chart.message||'奇門排盤失敗'};return {chart,solarDate:`${hk.year}-${String(hk.month).padStart(2,'0')}-${String(hk.day).padStart(2,'0')}`,solarTime:`${String(hk.hour).padStart(2,'0')}:${String(hk.minute).padStart(2,'0')}`};}catch(e){return {error:`奇門排盤失敗：${e.message}`};}
@@ -371,14 +397,16 @@ const buildReading=(id,r,p)=>{
   return '';
 };
 
-const renderReading=async id=>{
+const renderReading=async (id,isCurrent=()=>true)=>{
   const p=profile(); state.method=id; state.terms.clear(); $('#termDrawer').classList.remove('is-open'); $('#termDrawer').setAttribute('aria-hidden','true'); const meta=methods.find(x=>x.id===id), no=methods.findIndex(x=>x.id===id)+1; $('#readingTitle').textContent=meta.name;$('#readingMethodNo').textContent=`0${no} / 08`;$('#readingBackdrop').style.backgroundImage=`linear-gradient(180deg,rgba(3,12,16,.5),rgba(3,12,16,.96)),url("${asset(meta.visual)}")`;$('#guideQuote').textContent='等我把你問緊嘅事，放返入盤面。';$('#readingContent').innerHTML=`<div class="loading-reading"><span class="loader"></span><p>墨川正在按規則排盤……</p></div>`;setScreen('reading');
   try {
     const q=question(); let r;
     if(id==='bazi') r=baziCalc(p); else if(id==='ziwei') r=ziweiCalc(p); else if(id==='indian') r=indianCalc(p); else if(id==='meihua') r=meihuaCalc(p,q,'time'); else if(id==='iching') r=meihuaCalc(p,q,'question'); else if(id==='liuren') r=liurenCalc(p); else if(id==='qimen') r=await qimenCalc(p,q); else {const [b,z,i,m,l]=[baziCalc(p),ziweiCalc(p),indianCalc(p),meihuaCalc(p,q,'time'),liurenCalc(p)];r={bazi:b,ziwei:z,indian:i,meihua:m,liuren:l};}
+    if(!isCurrent())return;
     if(id==='cross'){state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent='五種讀法未必講同一把聲；我會先指出邊度一致，邊度要你自己驗證。';} else {state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent=r.error?'資料未齊，我唔會扮有答案。':id==='liuren'?`手指停喺 ${r.god}。先看呢個落宮點樣落地。`:`${p.name||'你'}，${meta.name}先指出：${state.topic}唔可以只看一個表面。`;}
     linkGlossaryTerms($('#readingContent')); bindTerms(); bindPalaces();
   } catch(e) {
+    if(!isCurrent())return;
     console.error('reading-render-failed', e);
     $('#readingContent').innerHTML=`<section class="reading-error"><h2>呢一門暫時未能完成排盤</h2><p>計算過程出現問題，未有用一段通用文字充數。請按「再讀另一門」重試，或重新輸入資料。</p></section>`;
   }
@@ -403,6 +431,20 @@ const init=()=>{
 };
 init();
 const ziweiDeepStar={
+  '天姚':'主吸引力、感性表達與關係中的曖昧氣氛。先分清好感、想像與雙方真正同意的承諾。',
+  '鈴星':'主內藏壓力、醞釀後突然反應。適合提早處理細小不滿，避免累積到一次爆發。',
+  '火星':'主急速、衝動與突發反應。行動力強，重要決定要留一個停頓核對條件。',
+  '天傷':'主在人際或責任中感到耗損的象意。要核對合作界線與情緒負擔，不用此星判傷病。',
+  '恩光':'主被理解、認可與獲得支持。讓成果及需要清楚被看見，先確認支援具體如何落實。',
+  '龍池':'主才藝、風格與細節呈現。適合精修專長，亦要讓表現與實際交付一致。',
+  '祿存':'主保留、積累及既有資源。重點是守住可持續來源，同時留意因怕失去而不願調整。',
+  '三台':'主正式位置、層級與被看見的成果。適合把責任與資格寫清楚，避免只追名分。',
+  '八座':'主穩定位置、組織支持與既有框架。先確認是否有真實資源承托，而非只有稱號。',
+  '天貴':'主重視體面、被尊重及獲得提攜。要主動清楚表達需求，將人情支持落實成具體安排。',
+  '天喜':'主喜悅、和合與值得慶賀的互動。適合建立正向接觸，仍要用實際回應核對關係。',
+  '空亡':'紫微中的空曜提示未實現、留白或期待落差；此處並非小六壬的六神落宮，要連同本宮主星及對宮閱讀。',
+  '截空':'主中途落空、條件暫缺與計劃需要調整。先核對資源是否到位，重要安排留替代方案。',
+  '旬中':'主階段性的空窗與未落實。先視為待確認，勿把尚未回覆當成確定結果。',
   '七殺':'主決斷、開創及高壓取捨。落命宮時常見先斬後奏、寧願自己扛責任；優點是危局敢行動，風險是太快切斷協商。',
   '紫微':'主統籌、主導及承擔。重視格局、名分與資源掌控；落福德時容易把「應該由我處理」變成內在壓力。',
   '天府':'主守成、收納及資源管理。要看庫存、現金流和長期安全感，不是單純代表有錢或穩定。',
@@ -458,4 +500,4 @@ const ziweiDeepStar={
   '破碎':'主拆散、細節破口及安排不完整。逐項補漏洞，避免只修表面。',
   '天使':'主制度要求、照顧責任及需要被提醒的地方。把責任寫清楚，避免由一個人默默承擔。'
 };
-document.addEventListener('click',e=>{const b=e.target.closest('.term-link');if(!b||state.method!=='ziwei')return;const label=b.textContent.trim(),detail=ziweiDeepStar[label];if(detail){setTimeout(()=>{$('#termBody').textContent=`術語意思：${detail}\n\n白話解釋：${label}唔係單獨吉凶符號，要放返落入「${state.topic}」相關宮位，再同主星、對宮及四化一齊睇。\n\n盤面作用：它補充該宮位的行事方式、阻力或資源，實際輕重要由落宮及會照核對。\n\n工作／財運／感情／家庭影響：工作睇責任與合作；財運睇資源與風險；感情睇互動與界線；家庭睇分工與支持。\n\n可能時間窗口：由今日香港時間起觀察未來 7–60 日，記錄是否有同一類事件重複出現。\n\n實際行動：把${label}指出的傾向轉成一個七日內、成本可控、可以覆盤的小行動。`;},0);}});
+document.addEventListener('click',e=>{const b=e.target.closest('.term-link');if(!b||state.method!=='ziwei')return;const detail=ziweiDeepStar[b.textContent.trim()];if(detail)setTimeout(()=>{$('#termBody').textContent=detail;},0);});
