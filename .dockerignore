@@ -1,0 +1,7 @@
+# Keep unrelated projects, credentials, Git history and local outputs out of the build context.
+**
+!dist/
+!dist/**
+!selfhost/
+!selfhost/**
+!.dockerignore
