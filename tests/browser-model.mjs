@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {BrowserModel,modelMessages,MODEL_ID,calculationNotice} from '../browser-model.js';
+let total=0;async function test(name,f){await f();console.log('PASS '+name);total++;}
+const notice=[];const unsupported=new BrowserModel({gpu:null,notify:s=>notice.push(s)});
+await test('Unimplemented calculations blocked outside model',()=>{for(const q of ['用神係咩','睇格局','應期幾時'])assert.ok(calculationNotice(q).includes('未完成'));assert.equal(calculationNotice('幫我改善溝通'),null);});
+await test('No download without consent',async()=>{await assert.rejects(()=>unsupported.enable(false));assert.equal(unsupported.state,'off');});
+await test('No WebGPU is explicit error, not fake answer',async()=>{await unsupported.enable(true);assert.equal(unsupported.state,'error');assert.match(notice.at(-1).text,/WebGPU/);});
+await test('No usable adapter rejected',async()=>{const m=new BrowserModel({gpu:{requestAdapter:async()=>null}});await m.enable(true);assert.equal(m.state,'error');});
+let terminated=0,sent;const create=(overrides={})=>new BrowserModel({gpu:{requestAdapter:async()=>({})},workerFactory:()=>({terminate:()=>terminated++,addEventListener:()=>{}}),loadRuntime:async()=>({prebuiltAppConfig:{model_list:[{model_id:MODEL_ID}]},WebWorkerMLCEngine:class{async reload(){}chat={completions:{create:async args=>{sent=args;return {choices:[{message:{content:'測試模型輸出'}}]};}}};}}),...overrides});
+const model=create();
+await test('Successful mocked initialization ready',async()=>{await model.enable(true);assert.equal(model.state,'ready');});
+await test('Question reaches engine, output not template',async()=>{assert.equal(await model.ask('命宮七殺','點理解？'),'測試模型輸出');assert.ok(sent.messages.some(x=>x.content.includes('命宮七殺')));});
+await test('Context bounded and no system history injection',()=>{const m=modelMessages({facts:'a'.repeat(5000),question:'q'.repeat(1000),history:[{role:'system',content:'evil'},{role:'assistant',content:'b'.repeat(1000)}]});assert.equal(m.filter(x=>x.role==='system').length,1);assert.equal(m[1].content.length,300);assert.ok(m.at(-1).content.length<1800);assert.ok(m.at(-1).content.endsWith('q'.repeat(240)));});
+await test('Disable terminates worker and forgets conversation',()=>{model.disable();assert.equal(model.history.length,0);assert.equal(model.state,'off');assert.ok(terminated);});
+await test('Off model refuses questions',async()=>{await assert.rejects(()=>model.ask('facts','q'));});
+await test('Disable while adapter pending prevents runtime download',async()=>{let resolve,calls=0;const m=create({gpu:{requestAdapter:()=>new Promise(r=>resolve=r)},loadRuntime:()=>{calls++;throw Error('should not load');}});const p=m.enable(true);m.disable();resolve({});await p;assert.equal(calls,0);assert.equal(m.state,'off');});
+await test('Missing model version cannot become ready',async()=>{const m=create({loadRuntime:async()=>({prebuiltAppConfig:{model_list:[]}})});await m.enable(true);assert.equal(m.state,'error');});
+await test('Engine error does not return canned advice',async()=>{const m=create({loadRuntime:async()=>({prebuiltAppConfig:{model_list:[{model_id:MODEL_ID}]},WebWorkerMLCEngine:class{async reload(){}chat={completions:{create:async()=>{throw Error('device lost');}}};}})});await m.enable(true);await assert.rejects(()=>m.ask('facts','q'));assert.equal(m.state,'error');assert.equal(m.history.length,0);});
+await test('Load timeout terminates worker',async()=>{const m=create({timeout:10,loadRuntime:async()=>({prebuiltAppConfig:{model_list:[{model_id:MODEL_ID}]},WebWorkerMLCEngine:class{reload(){return new Promise(()=>{});}}})});await m.enable(true);assert.equal(m.state,'error');});
+await test('Cancelled generation cannot leak answer into next visit',async()=>{let resolve;const m=create({loadRuntime:async()=>({prebuiltAppConfig:{model_list:[{model_id:MODEL_ID}]},WebWorkerMLCEngine:class{async reload(){}chat={completions:{create:()=>new Promise(r=>resolve=r)}};}})});await m.enable(true);const p=m.ask('private','question');m.disable();resolve({choices:[{message:{content:'stale'}}]});assert.equal(await p,null);assert.equal(m.history.length,0);});
+console.log(JSON.stringify({passed:total,realInference:false}));
