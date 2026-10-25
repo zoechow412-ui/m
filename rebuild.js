@@ -1,6 +1,7 @@
 const $ = (s, root = document) => root.querySelector(s);
+import {chartExplorer} from './chart-explorer.js?v=20261025-explorer1';
 export { state, renderMethods, setScreen, renderReading, hkLabel, nowHK, ziweiDeepStar };
-import './office.js?v=20261025-night1';
+import './office.js?v=20261025-explorer1';
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const esc = value => String(trad(value ?? '')).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state = { screen:'intro', storyIndex:0, profileIndex:0, unknownTime:false, gender:'', topic:'工作', method:null, results:new Map(), terms:new Map(), palaceExplanations:new Map() };
@@ -174,7 +175,7 @@ const liurenCalc=p=>{
 const ziweiCalc=p=>{
   if(p.gender==='other') return {error:'你選擇不透露性別；此派紫微排限需要男／女順逆排法，系統不會替你猜。'};
   const lib=window.iztro; if(!lib?.astro?.bySolar) return {error:'紫微排盤套件未載入，沒有顯示假星曜。'};
-  try {const gender=p.gender==='male'?'男':'女',timeIndex=Math.floor((p.hour+1)/2)%12,chart=lib.astro.bySolar(`${p.year}-${String(p.month).padStart(2,'0')}-${String(p.day).padStart(2,'0')}`,timeIndex,gender,true,'zh-TW'),palaces=(chart.palaces||[]).slice(0,12).map(x=>({name:x.name||'宮位',stars:[...(x.majorStars||[]),...(x.minorStars||[]),...(x.adjectiveStars||[])].map(s=>s.name||s).filter(Boolean)})); const ming=palaces.find(x=>x.name.includes('命'))||palaces[0], guan=palaces.find(x=>x.name.includes('官祿')||x.name.includes('官禄')), cai=palaces.find(x=>x.name.includes('財帛')||x.name.includes('财帛')), couple=palaces.find(x=>x.name.includes('夫妻'));return {palaces,ming,guan,cai,couple,yearStem:['丙','丁','戊','己','庚','辛','壬','癸','甲','乙'][((p.year-4)%10+10)%10],chart};} catch(e){return {error:`紫微排盤失敗：${e.message}`};}
+  try {const gender=p.gender==='male'?'男':'女',timeIndex=Math.floor((p.hour+1)/2)%12,chart=lib.astro.bySolar(`${p.year}-${String(p.month).padStart(2,'0')}-${String(p.day).padStart(2,'0')}`,timeIndex,gender,true,'zh-TW'),palaces=(chart.palaces||[]).slice(0,12).map(x=>({name:x.name||'宮位',stars:[...(x.majorStars||[]),...(x.minorStars||[]),...(x.adjectiveStars||[])].map(s=>s.name||s).filter(Boolean)})); const ming=palaces.find(x=>x.name.includes('命'))||palaces[0], guan=palaces.find(x=>x.name.includes('官祿')||x.name.includes('官禄')), cai=palaces.find(x=>x.name.includes('財帛')||x.name.includes('财帛')), couple=palaces.find(x=>x.name.includes('夫妻'));return {palaces,ming,guan,cai,couple,yearStem:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'][((p.year-4)%10+10)%10],chart};} catch(e){return {error:`紫微排盤失敗：${e.message}`};}
 };
 
 const ziweiPalaceMeaning={命宮:'本人性格、選擇方式及人生主軸',兄弟宮:'同輩、手足、合作及資源分配',夫妻宮:'親密關係、伴侶互動及承諾模式',子女宮:'創作、作品、下屬及你養成的事物',財帛宮:'收入模式、理財方式及資源安全感',疾厄宮:'身心壓力、生活習慣及需要保養的位置',遷移宮:'外出、環境變動、客戶及外界給你的回應',僕役宮:'朋友、同事、團隊及你如何用人',官祿宮:'工作方向、責任、名聲及職業角色',田宅宮:'居住、家庭根基、資產及安全感',福德宮:'內在休息、慾望、精神狀態及享受方式',父母宮:'長輩、制度、上司、文書及保護資源'};
@@ -360,7 +361,7 @@ const dateWindow=(days=21)=>{const a=new Date(Date.now()+86400000),b=new Date(Da
 const baseLead=(title, evidence, line)=>`<div class="reading-lead"><p class="kicker">盤面先出現</p><h3>${esc(title)}</h3><p class="evidence-line">${evidence}</p><p>${line}</p></div>`;
 const genericError=(method, result)=>baseLead(`${method} 暫時不能下判斷`,`計算狀態：${esc(result.error)}`,`我唔會用一段似樣嘅形容詞填滿空白。請核對輸入資料後再試。`)+section('目前需要知道',`<p>呢一門依賴完整計算資料；今次沒有成功排出，故不顯示未核實嘅時間窗口或吉凶結論。</p>`);
 
-const buildReading=(id,r,p)=>{
+const legacyReading=(id,r,p)=>{
   const q=question(), name=esc(p.name), focus=state.topic;
   if(r.error) return genericError(methods.find(x=>x.id===id)?.name||id,r);
   if(id==='bazi'){
@@ -397,6 +398,7 @@ const buildReading=(id,r,p)=>{
   return '';
 };
 
+const buildReading=(id,r,p)=>chartExplorer(id,r,p,{term,section,esc,topic:state.topic,legacy:legacyReading(id,r,p),starDetail:ziweiStarExplain});
 const renderReading=async (id,isCurrent=()=>true)=>{
   const p=profile(); state.method=id; state.terms.clear(); $('#termDrawer').classList.remove('is-open'); $('#termDrawer').setAttribute('aria-hidden','true'); const meta=methods.find(x=>x.id===id), no=methods.findIndex(x=>x.id===id)+1; $('#readingTitle').textContent=meta.name;$('#readingMethodNo').textContent=`0${no} / 08`;$('#readingBackdrop').style.backgroundImage=`linear-gradient(180deg,rgba(3,12,16,.5),rgba(3,12,16,.96)),url("${asset(meta.visual)}")`;$('#guideQuote').textContent='等我把你問緊嘅事，放返入盤面。';$('#readingContent').innerHTML=`<div class="loading-reading"><span class="loader"></span><p>墨川正在按規則排盤……</p></div>`;setScreen('reading');
   try {
