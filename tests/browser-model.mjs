@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
-import {BrowserModel,modelMessages,MODEL_ID,calculationNotice} from '../browser-model.js';
+import {BrowserModel,modelMessages,MODEL_ID,calculationNotice,checkBrowserSupport} from '../browser-model.js';
 let total=0;async function test(name,f){await f();console.log('PASS '+name);total++;}
 const notice=[];const unsupported=new BrowserModel({gpu:null,notify:s=>notice.push(s)});
+await test('Preflight detects absent GPU without model download',async()=>{assert.equal((await checkBrowserSupport(null)).ok,false);});
+await test('Preflight rejects unavailable adapter with actionable text',async()=>{const r=await checkBrowserSupport({requestAdapter:async()=>null});assert.equal(r.ok,false);assert.match(r.text,/唔會下載/);assert.match(r.text,/瀏覽器或裝置/);});
+await test('Preflight accepts available adapter without claiming model ready',async()=>{const r=await checkBrowserSupport({requestAdapter:async()=>({})});assert.equal(r.ok,true);assert.match(r.text,/仍視乎/);});
+await test('Preflight handles adapter errors',async()=>{assert.equal((await checkBrowserSupport({requestAdapter:async()=>{throw Error('device');}})).ok,false);});
 await test('Unimplemented calculations blocked outside model',()=>{for(const q of ['用神係咩','睇格局','應期幾時'])assert.ok(calculationNotice(q).includes('未完成'));assert.equal(calculationNotice('幫我改善溝通'),null);});
 await test('No download without consent',async()=>{await assert.rejects(()=>unsupported.enable(false));assert.equal(unsupported.state,'off');});
 await test('No WebGPU is explicit error, not fake answer',async()=>{await unsupported.enable(true);assert.equal(unsupported.state,'error');assert.match(notice.at(-1).text,/WebGPU/);});
