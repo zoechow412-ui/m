@@ -8,5 +8,6 @@ assert.deepEqual(officeSeats.slice(4).map(s=>s.y),[42.5,42.5,42.5,42.5]);
 for(const width of [375,620,885,1200])for(const s of officeSeats){const spriteWidth=width*.18;const left=width*(s.x/100-.09);assert.ok(Math.abs(left+spriteWidth/2-width*s.x/100)<.001);assert.ok(left>=0);assert.ok(left+spriteWidth<=width);const stageHeight=width*2/3;assert.ok(Math.abs((spriteWidth*4/3)/stageHeight-.36)<.001);}
 const css=readFileSync(new URL('../office-scene.css',import.meta.url),'utf8');
 assert.ok(css.includes('.office-stage{min-height:0;height:auto;aspect-ratio:3/2;align-self:start}'));
-assert.ok(css.includes('.office-seat{left:calc(var(--seat-x) - 9%);width:18%}'));
+assert.ok(css.includes('.office-seat{left:calc(var(--seat-x) - 9%);width:18%;height:17.8%;aspect-ratio:auto}'));
+for(let i=0;i<4;i++)assert.ok(officeSeats[i].y+17.8<=officeSeats[i+4].y+.001);
 console.log('PASS Eight distinct chair anchors and width-based sprite alignment at four viewport widths');
