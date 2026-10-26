@@ -1,5 +1,7 @@
 # 免費瀏覽器 AI
 
+更新：CPU／WASM 路徑及新坐姿素材已另見 [CPU-SEATED-QA.md](CPU-SEATED-QA.md)。以下保留先前 GPU 版本紀錄，唔代表最新限制。
+
 2026-10-25。網站仍用原 Render Static Site；不建立 Oracle、Render Web Service 或付費模型API。
 
 ## 架構

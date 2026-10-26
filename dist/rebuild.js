@@ -1,7 +1,7 @@
 const $ = (s, root = document) => root.querySelector(s);
-import {chartExplorer} from './chart-explorer.js?v=20261026-office1';
+import {chartExplorer} from './chart-explorer.js?v=20261026-cpu2';
 export { state, renderMethods, setScreen, renderReading, hkLabel, nowHK, ziweiDeepStar };
-import './office.js?v=20261026-office1';
+import './office.js?v=20261026-cpu2';
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const esc = value => String(trad(value ?? '')).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state = { screen:'intro', storyIndex:0, profileIndex:0, unknownTime:false, gender:'', topic:'工作', method:null, results:new Map(), terms:new Map(), palaceExplanations:new Map() };

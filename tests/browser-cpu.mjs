@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {CPUWorkerEngine} from '../browser-cpu.js';
+const listeners={},requests=[],worker={addEventListener:(k,f)=>listeners[k]=f,postMessage:m=>requests.push(m)};
+let progress;
+const engine=new CPUWorkerEngine(worker,{initProgressCallback:p=>progress=p});
+const loading=engine.reload();assert.equal(requests[0].type,'load');
+listeners.message({data:{type:'progress',progress:.5,text:'half'}});assert.equal(progress.progress,.5);
+listeners.message({data:{id:requests[0].id,type:'result',result:true}});assert.equal(await loading,true);
+const answer=engine.chat.completions.create({messages:[{role:'user',content:'hello'}]});assert.equal(requests[1].payload.messages[0].content,'hello');
+listeners.message({data:{id:requests[1].id,type:'result',result:{choices:[{message:{content:'actual'}}]}}});assert.equal((await answer).choices[0].message.content,'actual');
+const failure=engine.reload();listeners.message({data:{id:requests[2].id,type:'error',message:'no memory'}});await assert.rejects(failure,/no memory/);
+const crashed=engine.reload();listeners.error();await assert.rejects(crashed,/工作程序停止/);assert.equal(engine.jobs.size,0);
+console.log('PASS CPU worker bridge: load, progress, inference, failure, crash cleanup');

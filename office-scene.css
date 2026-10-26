@@ -19,3 +19,16 @@
 @media(max-width:760px){#officePortrait{width:280px;height:374px;right:-81px;top:45px}.office-art{background-size:cover,auto 200%;background-position:center,0 0}}
 #nightRoom{height:calc(100dvh - 76px)}
 @media(max-width:760px){#nightRoom{height:calc(100dvh - 82px)}}
+#nightAIBackend{display:block;width:100%;max-width:100%;padding:10px;background:#252039;border:1px solid #8f78ac77;color:#eee7f6;font:inherit;border-radius:6px;margin:10px 0;box-sizing:border-box}
+/* Dedicated seated sprites, layered behind the actual illustrated desks. */
+.office-art,.office-real-desks{background-image:url('./public/night/office-eight-desks.png');background-size:100% 100%;background-position:center;background-repeat:no-repeat}
+.office-real-desks{position:absolute;inset:0;z-index:3;pointer-events:none;clip-path:polygon(0 35%,100% 35%,100% 51.5%,0 51.5%,0 52.5%,100% 52.5%,100% 76.5%,0 76.5%)}
+.office-hotspots#nightStaffList{inset:24% 0 25%}.office-seat{top:calc(var(--row)*36%);height:50%;isolation:auto}.office-seat .office-worker{z-index:1;inset:0 0 0}.office-worker .night-sprite{height:165%;top:0}.office-seat-label{z-index:5;top:6%;font-size:14px}.office-seat-invite{z-index:5}.office-seat .office-workdesk{display:none}.office-title{position:relative;z-index:5}.office-composer{z-index:6}.office-profile{position:relative;z-index:7}.office-stage:after{z-index:4;background:linear-gradient(#0b102433,transparent 35%,transparent 75%,#080c1a55)}
+@media(max-width:760px){.office-art,.office-real-desks{background-size:100% 100%;background-position:center}.office-hotspots#nightStaffList{inset:24% 0 25%}.office-seat-label{font-size:11px;padding:6px 3px}.office-profile{scroll-margin-top:12px}}
+.office-real-desks{z-index:2;clip-path:inset(35% 0 48.5%)}
+.office-front-desks{z-index:4;clip-path:inset(52.5% 0 23.5%)}
+.office-seat:nth-child(n+5) .office-worker{z-index:3}
+.office-seat-label,.office-seat-invite{z-index:6}.office-stage:after{z-index:5}.office-title{z-index:6}.office-composer{z-index:8}
+.office-hotspots#nightStaffList{inset:20% 0 29%}.office-real-desks{clip-path:inset(35% 0 47.5%)}.office-front-desks{clip-path:inset(52.5% 0 23.5%)}
+/* A clipped stage must not become a scroll container when inputs receive focus. */
+#nightRoom{overflow:clip}

@@ -1,5 +1,7 @@
 # Shared-office update — 2026-10-26
 
+Superseded by CPU-SEATED-QA.md: the seated sprites and office plate have now been generated, and CPU/WASM inference has been implemented and exercised. The older incomplete-items section below is retained as historical evidence only.
+
 ## Delivered
 - Native interactive 4×2 consultant workstations, left navigation, selected-consultant panel, question composer. No screenshot pretending to be UI.
 - Eight distinct profile descriptions; selection, in-memory consultant favorites, usage dialog, and existing private-room intake remain functional.
