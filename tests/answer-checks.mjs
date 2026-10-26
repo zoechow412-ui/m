@@ -6,4 +6,6 @@ assert.equal(validateDraftAnswer('寫一句訊息，約星期日三點','星期�
 assert.equal(validateDraftAnswer('寫訊息：星期六或星期日','星期日見。'),null);
 assert.equal(validateDraftAnswer('星期日同星期六有咩分別？','星期六係週末。'),null);
 assert.equal(validateDraftAnswer('解釋大安嘅意思','大安偏向穩定。'),null);
+assert.ok(validateDraftAnswer('大安係咪保證成功？','大安是保證成功的，但需要調整。'));
+assert.equal(validateDraftAnswer('大安係咪保證成功？','大安不是保證成功，而係偏向穩定嘅象意。'),null);
 console.log('PASS Draft weekday validation: reject wrong/missing dates, accept aliases and allowed choices, no template replacement');
