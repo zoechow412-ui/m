@@ -32,3 +32,11 @@
 .office-hotspots#nightStaffList{inset:20% 0 29%}.office-real-desks{clip-path:inset(35% 0 47.5%)}.office-front-desks{clip-path:inset(52.5% 0 23.5%)}
 /* A clipped stage must not become a scroll container when inputs receive focus. */
 #nightRoom{overflow:clip}
+/* Seat anchors follow the actual chair centres, not a uniform-height portrait grid. */
+.office-hotspots#nightStaffList{inset:0;pointer-events:none}
+.office-seat{left:calc(var(--seat-x) - 11%);top:var(--seat-y);width:22%;height:auto;aspect-ratio:3/4;pointer-events:auto}
+.office-seat .office-worker{inset:0;overflow:visible;transform-origin:50% 55%}
+.office-worker .night-sprite{inset:0;width:100%;height:100%;aspect-ratio:auto;translate:0 0;filter:drop-shadow(0 3px 6px #0008)}
+.office-seat-label{top:8%;left:0}
+@keyframes office-seat-breathe{50%{transform:translateY(-1px)}}
+.office-seat .office-worker{animation-name:office-seat-breathe}

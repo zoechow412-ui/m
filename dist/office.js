@@ -1,6 +1,6 @@
-import {state,renderReading,hkLabel,nowHK,ziweiDeepStar} from './rebuild.js?v=20261026-cpu2';
-import {mountBrowserAI} from './browser-model.js?v=20261026-cpu2';
-import {mountOfficeScene} from './office-scene.js?v=20261026-seated2';
+import {state,renderReading,hkLabel,nowHK,ziweiDeepStar} from './rebuild.js?v=20261026-aligned3';
+import {mountBrowserAI} from './browser-model.js?v=20261026-aligned3';
+import {mountOfficeScene} from './office-scene.js?v=20261026-aligned3';
 let officeScene,pendingQuestion='';
 const staff=[
  {id:'bazi',name:'子衡',role:'八字分析師',room:'四柱研究室',pair:1,row:0,tags:'四柱・十神・大運',hello:'我係子衡。想睇清一條長路，要先認清你嘅底盤。入房坐低，我逐步同你拆。',act:'翻閱四柱紀錄'},
