@@ -27,6 +27,17 @@
 .ub52-page-content{height:1075px;overflow:visible}
 .ub52-page-footer{position:absolute;left:44px;right:44px;bottom:22px;display:flex;justify-content:space-between;border-top:1px solid #c8d3d8;padding-top:8px;font-size:13px;color:#536773}
 .ub52-continuation{font-size:14px;color:#12566f;padding:8px 0}
+/* Export canvas is reduced from 842px to 595.28pt: compensate to get real PDF point sizes. */
+.ub52-page .invoice-ref-items td:first-child{font-size:22.63px!important;line-height:1.45!important}
+.ub52-page .invoice-ref-items td:not(:first-child){font-size:21.22px!important;white-space:normal!important;overflow-wrap:anywhere!important}
+.ub52-page .invoice-ref-items th{font-size:21.22px!important}
+.ub52-page .invoice-ref-meta>div{font-size:18.39px!important}
+.ub52-page .invoice-ref-party .body{font-size:21.22px!important}
+.ub52-page .invoice-ref-party .title,.ub52-page .invoice-ref-section-title{font-size:21.22px!important}
+.ub52-page .invoice-ref-summary td{font-size:21.22px!important}
+.ub52-page .invoice-ref-summary tr.deposit td{font-size:24.05px!important}
+.ub52-page .invoice-ref-payment>div{font-size:19.80px!important;line-height:1.5!important}
+.ub52-page .invoice-ref-sign{font-size:18.39px!important}
 .ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
 .ub52-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
 #ub52PriceDialog{border:1px solid #dbe4e9;border-radius:16px;width:min(600px,94vw);max-height:90vh;padding:24px;color:#183b53;box-sizing:border-box}
