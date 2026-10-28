@@ -33,4 +33,7 @@
 #ub52PriceDialog::backdrop{background:#112a3b77}
 #ub52PriceDialog form{display:grid;gap:13px}#ub52PriceDialog label{display:grid;gap:5px;font-size:15px}#ub52PriceDialog input,#ub52PriceDialog textarea,#ub52PriceDialog select{font:inherit;padding:10px;border:1px solid #bdcdd7;border-radius:8px;width:100%;box-sizing:border-box}
 .ub52-price-error{color:#a42e2e;min-height:22px}
+.preview-stage.ub52-reading{overflow:auto!important;max-height:80vh!important}
+.ub52-reading .quote-reference-sheet{transform:none!important}
+.ub52-reading .a4-scale-box{width:842px!important;height:auto!important}
 @media print{.ub52-page{break-after:page!important}.ub52-page:last-child{break-after:auto!important}}

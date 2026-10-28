@@ -73,7 +73,7 @@
  window.printA4=function(){return document.querySelector('.quote-reference-sheet')?exportQuote():previousPrint?.();};
  window.ub52RenderPricing=function(){
    tab='pricing';
-   app.innerHTML='<div class="page-head"><div><h1>工程項目／價目管理</h1><p>新增常用項目、修改名稱、單位及單價。新價用於之後加入報價的項目，已儲存單據保持原價。</p></div></div><div class="ub52-actions"><button class="btn green" onclick="ub52EditPrice()">新增工程項目</button><button class="btn light" onclick="setNav(\'quotation\')">返回報價</button></div><div class="ub52-price-list">'+(D.pricing||[]).map(x=>'<section class="ub52-price-row"><div><small>'+esc(x.price_tier==='trade'?'同行合作價':'客戶價')+' · '+esc(x.item_code)+'</small><h3>'+esc(x.description)+'</h3><p>'+hk(x.unit_price)+'／'+esc(x.unit||'項')+'</p><small>'+esc(x.pricing_rule||'')+'</small></div><button class="btn light" onclick="ub52EditPrice(\''+esc(x.id)+'\')">修改項目／價錢</button></section>').join('')+'</div>';
+   app.innerHTML='<div class="page-head"><div><h1>工程項目／價目管理</h1><p>新增常用項目、修改名稱、單位及單價。新價用於之後加入報價的項目，已儲存單據保持原價。</p></div></div><div class="ub52-actions"><button class="btn green" onclick="ub52EditPrice()">新增工程項目</button><button class="btn light" onclick="setNav(\'quotation\')">返回報價</button></div><div class="ub52-price-list">'+(D.pricing||[]).map(x=>'<section class="ub52-price-row"><div><small>'+esc(x.price_tier==='trade'?'同行合作價':'客戶價')+' · '+esc(x.item_code)+'</small><h3>'+esc(x.description)+'</h3><p>'+hk(x.unit_price)+'／'+esc(x.unit||'項')+'</p><small>'+esc(x.pricing_rule||'')+'</small></div><button class="btn light" onclick="ub52EditPrice(\''+esc(x.id)+'\')">修改項目／價錢</button></section>').join('')+'</div><section class="ub-history"><h2>最近改價紀錄</h2><div id="ubPriceHistory"></div></section>';window.loadPricingHistory?.();
  };
  window.renderPricing=window.ub52RenderPricing;
  window.ub52EditPrice=function(id){
@@ -95,6 +95,8 @@
    }catch(e){el('ub52-price-error').textContent='儲存失敗：'+e.message;}finally{saving=false;if(el('ub52-save-price'))el('ub52-save-price').disabled=false;}
  };
  function addEntry(){
+   const zoomHost=app.querySelector('.ub44-preview-head,.document-view-head .view-actions');
+   if(zoomHost&&app.querySelector('.quote-reference-sheet')&&!el('ub52-zoom')){const b=document.createElement('button');b.id='ub52-zoom';b.className='btn light';b.textContent='放大閱讀';b.onclick=()=>{const stage=app.querySelector('.preview-stage');if(!stage)return;const on=stage.classList.toggle('ub52-reading');b.textContent=on?'適合畫面':'放大閱讀';if(!on)window.scaleStage(stage);};zoomHost.append(b);}
    const nav=document.querySelector('.side-nav');if(nav&&!nav.querySelector('[data-nav="pricing"]')){const b=document.createElement('button');b.dataset.nav='pricing';b.textContent='工程項目／價目管理';b.onclick=()=>window.ub52RenderPricing();nav.append(b);}
    const editor=app.querySelector('.ub44-add-custom');if(editor&&!el('ub52-add-price')){const b=document.createElement('button');b.id='ub52-add-price';b.className='btn light';b.textContent='新增常用項目至價目表';b.onclick=()=>window.ub52EditPrice();editor.after(b);}
    const head=app.querySelector('.page-head,.ub44-page-head');if(head&&!el('ub52-catalog-link')&&!app.querySelector('.ub52-price-list')){const b=document.createElement('button');b.id='ub52-catalog-link';b.className='btn light';b.textContent='工程項目／價目管理';b.onclick=()=>window.ub52RenderPricing();head.append(b);}
