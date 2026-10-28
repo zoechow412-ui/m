@@ -95,6 +95,8 @@
    }catch(e){el('ub52-price-error').textContent='儲存失敗：'+e.message;}finally{saving=false;if(el('ub52-save-price'))el('ub52-save-price').disabled=false;}
  };
  function addEntry(){
+   const documentPaper=app.querySelector('.single-preview > .quote-reference-sheet');
+   if(documentPaper){const stage=document.createElement('div'),box=document.createElement('div');stage.className='preview-stage';box.className='a4-scale-box';documentPaper.replaceWith(stage);box.append(documentPaper);stage.append(box);requestAnimationFrame(()=>window.scaleStage(stage));}
    const zoomHost=app.querySelector('.ub44-preview-head,.document-view-head .view-actions');
    if(zoomHost&&app.querySelector('.quote-reference-sheet')&&!el('ub52-zoom')){const b=document.createElement('button');b.id='ub52-zoom';b.className='btn light';b.textContent='放大閱讀';b.onclick=()=>{const stage=app.querySelector('.preview-stage');if(!stage)return;const on=stage.classList.toggle('ub52-reading');b.textContent=on?'適合畫面':'放大閱讀';if(!on)window.scaleStage(stage);};zoomHost.append(b);}
    const nav=document.querySelector('.side-nav');if(nav&&!nav.querySelector('[data-nav="pricing"]')){const b=document.createElement('button');b.dataset.nav='pricing';b.textContent='工程項目／價目管理';b.onclick=()=>window.ub52RenderPricing();nav.append(b);}
