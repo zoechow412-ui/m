@@ -1,0 +1,36 @@
+/* Larger quotation text. Keep the approved document logo and colours. */
+.quote-reference-sheet{padding:44px!important;font-size:16px!important;line-height:1.5!important;min-height:1191px!important}
+.quote-reference-sheet:after{display:none!important}
+.quote-reference-sheet .invoice-ref-head{height:76px!important;grid-template-columns:1fr 160px!important}
+.quote-reference-sheet .invoice-ref-logo{padding-left:0!important}
+.quote-reference-sheet .invoice-ref-logo img{width:42px!important;height:56px!important}
+.quote-reference-sheet .invoice-ref-logo-copy b{font-size:17px!important;letter-spacing:0!important}
+.quote-reference-sheet .invoice-ref-logo-copy span{font-size:11px!important;letter-spacing:0!important}
+.quote-reference-sheet .invoice-ref-title b{font-size:25px!important}
+.quote-reference-sheet .invoice-ref-title span{font-size:22px!important}
+.quote-reference-sheet .invoice-ref-meta{grid-template-columns:132px 1fr 118px 1fr!important}
+.quote-reference-sheet .invoice-ref-meta>div{font-size:14px!important;padding:7px!important;min-height:32px!important;overflow-wrap:anywhere}
+.quote-reference-sheet .quote-ref-kind{font-size:14px!important;margin:8px 0!important}
+.quote-reference-sheet .invoice-ref-party .title,.quote-reference-sheet .invoice-ref-section-title{font-size:16px!important;padding:7px!important}
+.quote-reference-sheet .invoice-ref-party .body{font-size:16px!important;line-height:1.55!important;padding:10px 7px!important;min-height:88px!important}
+.quote-reference-sheet .invoice-ref-items th{font-size:16px!important;padding:9px 6px!important}
+.quote-reference-sheet .invoice-ref-items td{font-size:16px!important;line-height:1.5!important;padding:12px 6px!important;height:auto!important;border-bottom:1px solid #e4e9e8!important}
+.quote-reference-sheet .invoice-ref-items td:not(:first-child){font-size:15px!important}
+.quote-reference-sheet .invoice-ref-summary td{font-size:16px!important;padding:7px!important}
+.quote-reference-sheet .invoice-ref-summary tr.deposit td{font-size:18px!important}
+.quote-reference-sheet .invoice-ref-payment{grid-template-columns:155px 1fr!important}
+.quote-reference-sheet .invoice-ref-payment>div{font-size:15px!important;line-height:1.5!important;padding:8px!important}
+.quote-reference-sheet .invoice-ref-sign{font-size:14px!important;gap:40px!important;margin-top:26px!important}
+.quote-reference-sheet .invoice-ref-sign .sig-head{height:auto!important;min-height:52px!important}
+.quote-reference-sheet .invoice-ref-sign .date{margin-left:0!important;float:right!important}
+.ub52-page{position:relative!important;width:842px!important;height:1191px!important;min-height:1191px!important;padding:44px!important;margin:0!important;transform:none!important;box-shadow:none!important;overflow:hidden!important}
+.ub52-page-content{height:1075px;overflow:visible}
+.ub52-page-footer{position:absolute;left:44px;right:44px;bottom:22px;display:flex;justify-content:space-between;border-top:1px solid #c8d3d8;padding-top:8px;font-size:13px;color:#536773}
+.ub52-continuation{font-size:14px;color:#12566f;padding:8px 0}
+.ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
+.ub52-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+#ub52PriceDialog{border:1px solid #dbe4e9;border-radius:16px;width:min(600px,94vw);max-height:90vh;padding:24px;color:#183b53;box-sizing:border-box}
+#ub52PriceDialog::backdrop{background:#112a3b77}
+#ub52PriceDialog form{display:grid;gap:13px}#ub52PriceDialog label{display:grid;gap:5px;font-size:15px}#ub52PriceDialog input,#ub52PriceDialog textarea,#ub52PriceDialog select{font:inherit;padding:10px;border:1px solid #bdcdd7;border-radius:8px;width:100%;box-sizing:border-box}
+.ub52-price-error{color:#a42e2e;min-height:22px}
+@media print{.ub52-page{break-after:page!important}.ub52-page:last-child{break-after:auto!important}}
