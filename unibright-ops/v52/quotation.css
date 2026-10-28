@@ -36,6 +36,9 @@
 .ub52-page .invoice-ref-party .title,.ub52-page .invoice-ref-section-title{font-size:21.22px!important}
 .ub52-page .invoice-ref-summary td{font-size:21.22px!important}
 .ub52-page .invoice-ref-summary tr.deposit td{font-size:24.05px!important}
+.ub52-page .invoice-ref-summary{width:64%!important;margin-left:auto!important}
+.ub52-page .invoice-ref-summary td:first-child{width:44%!important}
+.ub52-page .invoice-ref-summary td:last-child{white-space:nowrap!important}
 .ub52-page .invoice-ref-payment>div{font-size:19.80px!important;line-height:1.5!important}
 .ub52-page .invoice-ref-sign{font-size:18.39px!important}
 .ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
