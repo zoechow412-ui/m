@@ -45,25 +45,29 @@
  const previousExport=window.exportCurrentPDF,previousPrint=window.printA4;
  const library=src=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(Error('PDF 引擎載入失敗'));document.head.append(s);});
  async function exportQuote(){
-   const source=document.querySelector('.quote-reference-sheet');if(!source)return previousExport?.();if(exporting)return;exporting=true;let host;
+   const source=document.querySelector('.quote-reference-sheet');if(!source)return previousExport?.();if(exporting)return;exporting=true;let host,frame;
    try{
      toast('正在建立清晰分頁報價 PDF…');
-     if(!window.html2canvas)await library('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+     if(!window.htmlToImage)await library('https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js');
      if(!window.jspdf?.jsPDF)await library('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
      await document.fonts.ready;
      host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
      const pages=paginate(source,host);await Promise.all([...host.querySelectorAll('img')].map(x=>x.decode().catch(()=>{})));
+     frame=document.createElement('iframe');frame.style.cssText='position:fixed;left:-20000px;top:0;width:1440px;height:1191px;border:0';document.body.append(frame);
+     const doc=frame.contentDocument;
+     doc.open();doc.write('<!doctype html><html><head><base href="'+location.origin+'/">'+[...document.querySelectorAll('link[rel="stylesheet"],style')].map(x=>x.outerHTML).join('')+'<style>html,body{margin:0!important;padding:0!important;background:white!important}.ub52-page{margin:0!important}</style></head><body></body></html>');doc.close();
+     await Promise.all([...doc.querySelectorAll('link[rel="stylesheet"]')].map(link=>link.sheet?Promise.resolve():new Promise((resolve,reject)=>{link.onload=resolve;link.onerror=()=>reject(Error('文件樣式未完整載入'));})));
      const pdf=new window.jspdf.jsPDF({unit:'pt',format:[PDF_W,PDF_H],orientation:'portrait',compress:true});
      for(const [i,page] of pages.entries()){
-       host.replaceChildren(page);
+       const renderPage=page.cloneNode(true);doc.body.replaceChildren(renderPage);frame.contentWindow.scrollTo(0,0);await doc.fonts.ready;await Promise.all([...renderPage.querySelectorAll('img')].map(x=>x.decode().catch(()=>{})));
        if(i)pdf.addPage([PDF_W,PDF_H],'portrait');
-       const canvas=await window.html2canvas(page,{scale:2,backgroundColor:'#fff',useCORS:true,logging:false,width:842,height:PAGE_H,windowWidth:1440,scrollX:0,scrollY:0});
+       const canvas=await window.htmlToImage.toCanvas(renderPage,{pixelRatio:2,backgroundColor:'#fff',width:842,height:PAGE_H,skipFonts:true});
        pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,PDF_W,PDF_H,undefined,'FAST');
      }
      const no=source.querySelector('.invoice-ref-meta')?.querySelectorAll('div')[1]?.textContent||'UNIBRIGHT-Quotation';
      pdf.save(no.replace(/[\\/:*?"<>|]/g,'-')+'.pdf');
      document.getElementById('app').dataset.pdfExport=JSON.stringify({pages:pages.length,width:PDF_W,height:PDF_H,status:'downloaded'});toast('報價 PDF 已下載，共 '+pages.length+' 頁');return true;
-   }catch(e){alert('報價 PDF 未能匯出：'+e.message);return false;}finally{host?.remove();exporting=false;}
+   }catch(e){alert('報價 PDF 未能匯出：'+e.message);return false;}finally{host?.remove();frame?.remove();exporting=false;}
  }
  window.exportCurrentPDF=window.downloadCurrentPDF=exportQuote;
  window.printA4=function(){return document.querySelector('.quote-reference-sheet')?exportQuote():previousPrint?.();};
