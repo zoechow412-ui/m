@@ -1,4 +1,5 @@
 /* Larger quotation text. Keep the approved document logo and colours. */
+.quote-reference-sheet .invoice-ref-sign+.invoice-ref-section-title{margin-top:16px!important}
 .quote-reference-sheet .ub52-company-confirm>div:first-child,.quote-reference-sheet .ub52-client-confirm>div:first-child{display:none!important}
 .quote-reference-sheet .invoice-ref-sign,.quote-reference-sheet .ub52-sign-field>span,.quote-reference-sheet .ub52-company-identity>div{font-weight:700!important}
 .quote-reference-sheet .ub52-client-confirm>div:first-child{visibility:hidden!important}
