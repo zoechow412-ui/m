@@ -3,6 +3,14 @@
  const PAGE_H=1191,CONTENT_H=1075,PDF_W=595.28,PDF_H=841.89,enc=encodeURIComponent;
  window.UNIBRIGHT_V52_BUILD='20261029-signature-1421';
  let exporting=false,priceId='',saving=false;
+ window.ub52MoveItem=function(index,delta){
+   const target=index+delta;
+   if(!Number.isInteger(index)||![-1,1].includes(delta)||index<0||index>=draft.length||target<0||target>=draft.length)return;
+   const [item]=draft.splice(index,1);draft.splice(target,0,item);
+   window.ub44DrawItems();
+   requestAnimationFrame(()=>document.querySelectorAll('#quoteItems .ub44-item')[target]?.scrollIntoView({block:'nearest'}));
+   toast('已移至第 '+(target+1)+' 項，儲存修改後保留次序');
+ };
  const el=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const clone=x=>x?.cloneNode(true);
  function tableShell(table){const t=clone(table);t.querySelector('tbody')?.replaceChildren();return t;}
@@ -101,6 +109,13 @@
    }catch(e){el('ub52-price-error').textContent='儲存失敗：'+e.message;}finally{saving=false;if(el('ub52-save-price'))el('ub52-save-price').disabled=false;}
  };
  function addEntry(){
+   const itemCards=[...app.querySelectorAll('#quoteItems .ub44-item')];
+   itemCards.forEach((card,index)=>{
+     const top=card.querySelector('.ub44-item-top');if(!top||top.querySelector('.ub52-item-order'))return;
+     const controls=document.createElement('div');controls.className='ub52-item-order';
+     for(const [label,delta] of [['上移',-1],['下移',1]]){const b=document.createElement('button');b.type='button';b.className='btn light';b.textContent=label;b.setAttribute('aria-label',label+'項目 '+(index+1));b.disabled=delta===-1?index===0:index===itemCards.length-1;b.onclick=()=>window.ub52MoveItem(index,delta);controls.append(b);}
+     top.querySelector('.ub44-remove')?.before(controls);
+   });
    for(const paper of app.querySelectorAll('.quote-reference-sheet')){
      for(const body of paper.querySelectorAll('.invoice-ref-party .body')){
        for(const node of [...body.childNodes])if(node.nodeType===Node.TEXT_NODE&&/^\s*聯絡人\s*[：:]/.test(node.textContent)){if(node.nextSibling?.nodeName==='BR')node.nextSibling.remove();node.remove();}

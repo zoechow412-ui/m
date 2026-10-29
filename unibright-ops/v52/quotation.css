@@ -1,4 +1,5 @@
 /* Larger quotation text. Keep the approved document logo and colours. */
+.ub52-item-order{display:flex;gap:6px;margin-left:auto;margin-right:8px}.ub52-item-order .btn{font-size:13px;padding:6px 10px}.ub52-item-order button:disabled{opacity:.4;cursor:not-allowed}.ub44-item-top{flex-wrap:wrap;gap:6px}
 .quote-reference-sheet{padding:44px!important;font-size:16px!important;line-height:1.5!important;min-height:1191px!important}
 .quote-reference-sheet:after{display:none!important}
 .quote-reference-sheet .invoice-ref-head{height:76px!important;grid-template-columns:1fr 160px!important}
