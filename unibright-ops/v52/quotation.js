@@ -133,10 +133,8 @@
    });
    for(const paper of app.querySelectorAll('.quote-reference-sheet')){
      const payment=paper.querySelector('.invoice-ref-payment'),sign=paper.querySelector('.invoice-ref-sign');
-     if(payment&&sign&&(payment.compareDocumentPosition(sign)&Node.DOCUMENT_POSITION_FOLLOWING)){
-       const title=payment.previousElementSibling;
-       if(title?.classList.contains('invoice-ref-section-title'))paper.append(title);
-       paper.append(payment);
+     if(payment&&sign&&(sign.compareDocumentPosition(payment)&Node.DOCUMENT_POSITION_FOLLOWING)){
+       paper.append(sign);
      }
      for(const body of paper.querySelectorAll('.invoice-ref-party .body')){
        for(const node of [...body.childNodes])if(node.nodeType===Node.TEXT_NODE&&/^\s*聯絡人\s*[：:]/.test(node.textContent)){if(node.nextSibling?.nodeName==='BR')node.nextSibling.remove();node.remove();}
