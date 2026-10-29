@@ -104,7 +104,7 @@
    }
    for(const sign of app.querySelectorAll('.quote-reference-sheet .invoice-ref-sign')){
      const company=sign.children[0];
-     if(company&&!company.querySelector('.ub52-company-stamp')){const line=company.querySelector('.sig-line');if(line){const img=document.createElement('img');img.className='ub52-company-stamp';img.src='/v52/company-stamp-signature.png';img.alt='UNIBRIGHT 公司印章及授權簽名';line.replaceChildren(img);}}
+     if(company&&!company.querySelector('.ub52-authorized-panel')){company.innerHTML='<div class="ub52-sign-heading">公司授權簽署 AUTHORIZED SIGNATURE</div><div class="ub52-company-name">UNIBRIGHT CONSTRUCTION (HK) LIMITED</div><div class="ub52-authorized-panel"><div class="ub52-stamp-crop"><img src="/v52/company-stamp-signature.png" alt="UNIBRIGHT 公司印章"></div><div class="ub52-handwriting-crop"><img src="/v52/authorized-handwriting.png" alt="公司授權人原版手寫簽名"></div></div><div class="ub52-auth-caption">公司印章及授權簽名 Company Chop &amp; Signature</div>';}
      if(sign.querySelector('.ub52-client-confirm'))continue;
      const client=sign.children[1];if(client){client.className='ub52-client-confirm';client.innerHTML='<div>客戶確認 CLIENT CONFIRMATION</div><div class="ub52-sign-field"><span>客戶全名 Full Name</span><div></div></div><div class="ub52-sign-field"><span>客戶簽署 Signature</span><div></div></div><div class="ub52-sign-field"><span>簽署日期 Date</span><div></div></div>';}
    }

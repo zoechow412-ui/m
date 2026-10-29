@@ -48,6 +48,17 @@
 .quote-reference-sheet .ub52-sign-field>div{height:30px!important;width:100%!important;border-bottom:1px solid #777!important}
 .quote-reference-sheet .invoice-ref-sign .sig-line:has(.ub52-company-stamp){width:100%!important;height:160px!important;display:flex!important;align-items:center!important;border:0!important;margin-bottom:8px!important}
 .quote-reference-sheet .ub52-company-stamp{display:block!important;width:225px!important;height:150px!important;object-fit:contain!important;max-width:100%!important}
+.quote-reference-sheet .invoice-ref-sign{align-items:start!important;gap:30px!important}
+.quote-reference-sheet .ub52-sign-heading,.quote-reference-sheet .ub52-client-confirm>div:first-child{font-size:14px!important;font-weight:700!important;border-bottom:1px solid #c8d3d8!important;padding-bottom:8px!important;min-height:24px!important}
+.quote-reference-sheet .ub52-company-name{font-size:12px!important;margin-top:12px!important;white-space:nowrap!important}
+.quote-reference-sheet .ub52-authorized-panel{display:flex!important;align-items:center!important;gap:10px!important;height:145px!important;margin-top:8px!important}
+.quote-reference-sheet .ub52-stamp-crop{position:relative!important;width:125px!important;height:125px!important;overflow:hidden!important;flex:none!important}
+.quote-reference-sheet .ub52-stamp-crop img{position:absolute!important;width:231px!important;height:154px!important;max-width:none!important;left:-2px!important;top:-15px!important}
+.quote-reference-sheet .ub52-handwriting-crop{position:relative!important;width:145px!important;height:110px!important;overflow:hidden!important;flex:none!important}
+.quote-reference-sheet .ub52-handwriting-crop img{display:block!important;width:145px!important;height:105px!important;object-fit:contain!important;max-width:none!important}
+.quote-reference-sheet .ub52-auth-caption{font-size:12px!important;margin-top:8px!important}
+.quote-reference-sheet .ub52-client-confirm .ub52-sign-field{margin-top:10px!important}
+.quote-reference-sheet .ub52-client-confirm .ub52-sign-field:nth-child(3)>div{height:55px!important}
 .ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
 .ub52-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
 #ub52PriceDialog{border:1px solid #dbe4e9;border-radius:16px;width:min(600px,94vw);max-height:90vh;padding:24px;color:#183b53;box-sizing:border-box}
