@@ -45,14 +45,18 @@
  }
  window.ub52PaginateQuotation=paginate;
  const previousExport=window.exportCurrentPDF,previousPrint=window.printA4;
- const library=src=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(Error('PDF 引擎載入失敗'));document.head.append(s);});
+ const library=src=>new Promise((resolve,reject)=>{const s=document.createElement('script');const timeout=setTimeout(()=>reject(Error('PDF 引擎載入逾時，請重新整理後再試')),12000);s.src=src;s.onload=()=>{clearTimeout(timeout);resolve();};s.onerror=()=>{clearTimeout(timeout);reject(Error('PDF 引擎載入失敗'));};document.head.append(s);});
  async function exportQuote(){
    const source=document.querySelector('.quote-reference-sheet');if(!source)return previousExport?.();if(exporting)return;exporting=true;let host,frame;
    try{
      toast('正在建立清晰分頁報價 PDF…');
+     app.dataset.pdfPhase='loading-renderer';
      if(!window.htmlToImage)await library('/v52/html-to-image-1.11.13.js');
+     app.dataset.pdfPhase='loading-pdf';
      if(!window.jspdf?.jsPDF)await library('/v52/jspdf-2.5.1.js');
+     app.dataset.pdfPhase='fonts';
      await document.fonts.ready;
+     app.dataset.pdfPhase='pagination';
      host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
      const pages=paginate(source,host);await Promise.all([...host.querySelectorAll('img')].map(x=>x.decode().catch(()=>{})));
      frame=document.createElement('iframe');frame.style.cssText='position:fixed;left:-20000px;top:0;width:1440px;height:1191px;border:0';document.body.append(frame);
