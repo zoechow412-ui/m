@@ -46,6 +46,8 @@
 .quote-reference-sheet .ub52-sign-field{margin-top:14px!important}
 .quote-reference-sheet .ub52-sign-field>span{font-size:14px!important;display:block!important}
 .quote-reference-sheet .ub52-sign-field>div{height:30px!important;width:100%!important;border-bottom:1px solid #777!important}
+.quote-reference-sheet .invoice-ref-sign .sig-line:has(.ub52-company-stamp){width:100%!important;height:160px!important;display:flex!important;align-items:center!important}
+.quote-reference-sheet .ub52-company-stamp{display:block!important;width:245px!important;height:160px!important;object-fit:contain!important;max-width:100%!important}
 .ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
 .ub52-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
 #ub52PriceDialog{border:1px solid #dbe4e9;border-radius:16px;width:min(600px,94vw);max-height:90vh;padding:24px;color:#183b53;box-sizing:border-box}

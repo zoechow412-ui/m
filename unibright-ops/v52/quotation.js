@@ -97,7 +97,14 @@
    }catch(e){el('ub52-price-error').textContent='儲存失敗：'+e.message;}finally{saving=false;if(el('ub52-save-price'))el('ub52-save-price').disabled=false;}
  };
  function addEntry(){
+   for(const paper of app.querySelectorAll('.quote-reference-sheet')){
+     for(const body of paper.querySelectorAll('.invoice-ref-party .body')){
+       for(const node of [...body.childNodes])if(node.nodeType===Node.TEXT_NODE&&/^\s*聯絡人\s*[：:]/.test(node.textContent)){if(node.nextSibling?.nodeName==='BR')node.nextSibling.remove();node.remove();}
+     }
+   }
    for(const sign of app.querySelectorAll('.quote-reference-sheet .invoice-ref-sign')){
+     const company=sign.children[0];
+     if(company&&!company.querySelector('.ub52-company-stamp')){const line=company.querySelector('.sig-line');if(line){const img=document.createElement('img');img.className='ub52-company-stamp';img.src='/v52/company-stamp-signature.png';img.alt='UNIBRIGHT 公司印章及授權簽名';line.replaceChildren(img);}}
      if(sign.querySelector('.ub52-client-confirm'))continue;
      const client=sign.children[1];if(client){client.className='ub52-client-confirm';client.innerHTML='<div>客戶確認 CLIENT CONFIRMATION</div><div class="ub52-sign-field"><span>客戶全名 Full Name</span><div></div></div><div class="ub52-sign-field"><span>客戶簽署 Signature</span><div></div></div><div class="ub52-sign-field"><span>簽署日期 Date</span><div></div></div>';}
    }
