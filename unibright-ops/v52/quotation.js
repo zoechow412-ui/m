@@ -13,6 +13,13 @@
  };
  const el=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const clone=x=>x?.cloneNode(true);
+ async function readyImages(root){
+   await Promise.all([...root.querySelectorAll('img')].map(async img=>{
+     if(img.complete&&img.naturalWidth)return;
+     await Promise.race([img.decode(),new Promise((_,reject)=>setTimeout(()=>reject(Error('文件圖片載入逾時，請稍後再試')),10000))]);
+     if(!img.naturalWidth)throw Error('公司標誌或印章未載入，已停止匯出以免缺圖');
+   }));
+ }
  function tableShell(table){const t=clone(table);t.querySelector('tbody')?.replaceChildren();return t;}
  // Build real pages from whole rows, rather than cutting a bitmap through text.
  function paginate(source,host){
@@ -65,15 +72,16 @@
      app.dataset.pdfPhase='fonts';
      await document.fonts.ready;
      app.dataset.pdfPhase='pagination';
+     addEntry();await readyImages(source);
      host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
-     const pages=paginate(source,host);await Promise.all([...host.querySelectorAll('img')].map(x=>x.decode().catch(()=>{})));
+     const pages=paginate(source,host);await readyImages(host);
      frame=document.createElement('iframe');frame.style.cssText='position:fixed;left:-20000px;top:0;width:1440px;height:1191px;border:0';document.body.append(frame);
      const doc=frame.contentDocument;
      doc.open();doc.write('<!doctype html><html><head><base href="'+location.origin+'/">'+[...document.querySelectorAll('link[rel="stylesheet"],style')].map(x=>x.outerHTML).join('')+'<style>html,body{margin:0!important;padding:0!important;background:white!important}.ub52-page{margin:0!important}</style></head><body></body></html>');doc.close();
      await Promise.all([...doc.querySelectorAll('link[rel="stylesheet"]')].map(link=>link.sheet?Promise.resolve():new Promise((resolve,reject)=>{link.onload=resolve;link.onerror=()=>reject(Error('文件樣式未完整載入'));})));
      const pdf=new window.jspdf.jsPDF({unit:'pt',format:[PDF_W,PDF_H],orientation:'portrait',compress:true});
      for(const [i,page] of pages.entries()){
-       const renderPage=page.cloneNode(true);doc.body.replaceChildren(renderPage);frame.contentWindow.scrollTo(0,0);await doc.fonts.ready;await Promise.all([...renderPage.querySelectorAll('img')].map(x=>x.decode().catch(()=>{})));
+       const renderPage=page.cloneNode(true);doc.body.replaceChildren(renderPage);frame.contentWindow.scrollTo(0,0);await doc.fonts.ready;await readyImages(renderPage);
        if(i)pdf.addPage([PDF_W,PDF_H],'portrait');
        const canvas=await window.htmlToImage.toCanvas(renderPage,{pixelRatio:2,backgroundColor:'#fff',width:842,height:PAGE_H,skipFonts:true});
        pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,PDF_W,PDF_H,undefined,'FAST');
