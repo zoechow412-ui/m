@@ -59,6 +59,11 @@
 .quote-reference-sheet .ub52-auth-caption{font-size:12px!important;margin-top:8px!important}
 .quote-reference-sheet .ub52-client-confirm .ub52-sign-field{margin-top:10px!important}
 .quote-reference-sheet .ub52-client-confirm .ub52-sign-field:nth-child(3)>div{height:55px!important}
+.quote-reference-sheet .ub52-company-confirm .ub52-sign-field,.quote-reference-sheet .ub52-client-confirm .ub52-sign-field{margin-top:10px!important}
+.quote-reference-sheet .ub52-company-confirm .ub52-sign-field:nth-child(3)>div,.quote-reference-sheet .ub52-client-confirm .ub52-sign-field:nth-child(3)>div{height:130px!important}
+.quote-reference-sheet .ub52-authorized-panel{position:relative!important;display:block!important;isolation:isolate!important;margin:0!important;width:100%!important;overflow:hidden!important}
+.quote-reference-sheet .ub52-authorized-panel .ub52-handwriting-crop{position:absolute!important;left:68px!important;top:12px!important;z-index:1!important}
+.quote-reference-sheet .ub52-authorized-panel .ub52-stamp-crop{position:absolute!important;left:25px!important;top:0!important;z-index:2!important;mix-blend-mode:multiply!important}
 .ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
 .ub52-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
 #ub52PriceDialog{border:1px solid #dbe4e9;border-radius:16px;width:min(600px,94vw);max-height:90vh;padding:24px;color:#183b53;box-sizing:border-box}
