@@ -30,8 +30,10 @@
    const tail=document.createElement('div');tail.className='ub52-document-tail';
    children.slice(idx+1).forEach(node=>tail.append(clone(node)));body.append(tail);
    if(bottom(tail)>CONTENT_H){
-     tail.remove();const lastTable=table,rows=[...lastTable.querySelectorAll('tbody tr')];
-     const carry=rows.length>1?rows.slice(-Math.min(3,rows.length-1)):[];carry.forEach(row=>row.remove());
+     tail.remove();
+     // Carry only one item with the totals, keeping the preceding page filled.
+     const lastTable=table,rows=[...lastTable.querySelectorAll('tbody tr')];
+     const carry=rows.length>1?rows.slice(-1):[];carry.forEach(row=>row.remove());
      next();if(carry.length){table=tableShell(items);body.append(table);carry.forEach(row=>table.querySelector('tbody').append(row));}
      body.append(tail);
      while(bottom(tail)>CONTENT_H&&carry.length){const row=carry.shift();lastTable.querySelector('tbody').append(row);}

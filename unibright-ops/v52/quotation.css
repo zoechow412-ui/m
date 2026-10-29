@@ -10,7 +10,7 @@
 .quote-reference-sheet .invoice-ref-title span{font-size:22px!important}
 .quote-reference-sheet .invoice-ref-meta{grid-template-columns:132px 1fr 118px 1fr!important}
 .quote-reference-sheet .invoice-ref-meta>div{font-size:14px!important;padding:7px!important;min-height:32px!important;overflow-wrap:anywhere}
-.quote-reference-sheet .quote-ref-kind{font-size:14px!important;margin:8px 0!important}
+.quote-reference-sheet .quote-ref-kind{display:none!important}
 .quote-reference-sheet .invoice-ref-party .title,.quote-reference-sheet .invoice-ref-section-title{font-size:16px!important;padding:7px!important}
 .quote-reference-sheet .invoice-ref-party .body{font-size:16px!important;line-height:1.55!important;padding:10px 7px!important;min-height:88px!important}
 .quote-reference-sheet .invoice-ref-items th{font-size:16px!important;padding:9px 6px!important}
@@ -28,20 +28,21 @@
 .ub52-page-footer{position:absolute;left:44px;right:44px;bottom:22px;display:flex;justify-content:space-between;border-top:1px solid #c8d3d8;padding-top:8px;font-size:13px;color:#536773}
 .ub52-continuation{font-size:14px;color:#12566f;padding:8px 0}
 /* Export canvas is reduced from 842px to 595.28pt: compensate to get real PDF point sizes. */
-.ub52-page .invoice-ref-items td:first-child{font-size:22.63px!important;line-height:1.45!important}
-.ub52-page .invoice-ref-items td:not(:first-child){font-size:21.22px!important;white-space:normal!important;overflow-wrap:anywhere!important}
-.ub52-page .invoice-ref-items th{font-size:21.22px!important}
-.ub52-page .invoice-ref-meta>div{font-size:18.39px!important}
-.ub52-page .invoice-ref-party .body{font-size:21.22px!important}
-.ub52-page .invoice-ref-party .title,.ub52-page .invoice-ref-section-title{font-size:21.22px!important}
-.ub52-page .invoice-ref-summary td{font-size:21.22px!important}
-.ub52-page .invoice-ref-summary tr.deposit td{font-size:24.05px!important}
+.ub52-page .invoice-ref-items td:first-child{font-size:18.4px!important;line-height:1.4!important}
+.ub52-page .invoice-ref-items td:not(:first-child){font-size:17px!important;white-space:normal!important;overflow-wrap:normal!important}
+.ub52-page .invoice-ref-items td{padding:8px 6px!important}
+.ub52-page .invoice-ref-items th{font-size:17px!important}
+.ub52-page .invoice-ref-meta>div{font-size:15px!important}
+.ub52-page .invoice-ref-party .body{font-size:17px!important;min-height:65px!important}
+.ub52-page .invoice-ref-party .title,.ub52-page .invoice-ref-section-title{font-size:17px!important}
+.ub52-page .invoice-ref-summary td{font-size:17px!important}
+.ub52-page .invoice-ref-summary tr.deposit td{font-size:19px!important}
 .ub52-page .invoice-ref-summary{width:100%!important}
 .ub52-page .invoice-ref-summary table{width:64%!important;margin-left:auto!important}
 .ub52-page .invoice-ref-summary td:first-child{width:44%!important}
 .ub52-page .invoice-ref-summary td:last-child{white-space:nowrap!important}
-.ub52-page .invoice-ref-payment>div{font-size:19.80px!important;line-height:1.5!important}
-.ub52-page .invoice-ref-sign{font-size:18.39px!important}
+.ub52-page .invoice-ref-payment>div{font-size:16px!important;line-height:1.45!important}
+.ub52-page .invoice-ref-sign{font-size:15px!important}
 .ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
 .ub52-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
 #ub52PriceDialog{border:1px solid #dbe4e9;border-radius:16px;width:min(600px,94vw);max-height:90vh;padding:24px;color:#183b53;box-sizing:border-box}
