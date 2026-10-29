@@ -1,7 +1,7 @@
 (()=>{
  'use strict';
  const PAGE_H=1191,CONTENT_H=1075,PDF_W=595.28,PDF_H=841.89,enc=encodeURIComponent;
- window.UNIBRIGHT_V52_BUILD='20261029-signature-1415';
+ window.UNIBRIGHT_V52_BUILD='20261029-signature-1421';
  let exporting=false,priceId='',saving=false;
  const el=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const clone=x=>x?.cloneNode(true);
@@ -110,7 +110,7 @@
      const company=sign.children[0];
      if(company&&!company.querySelector('.ub52-authorized-panel')){company.className='ub52-company-confirm';company.innerHTML='<div class="ub52-sign-heading">公司確認 COMPANY CONFIRMATION</div><div class="ub52-sign-field ub52-company-identity"><span>恆輝建築（香港）有限公司</span><div>UNIBRIGHT CONSTRUCTION (H.K.) LIMITED</div></div><div class="ub52-sign-field"><span>公司簽署及蓋章 Signature &amp; Company Chop</span><div class="ub52-authorized-panel"><div class="ub52-handwriting-crop"><img src="/v52/authorized-handwriting.png" alt="公司授權人原版手寫簽名"></div><div class="ub52-stamp-crop"><img src="/v52/company-stamp-signature.png" alt="UNIBRIGHT 公司印章"></div></div></div><div class="ub52-sign-field"><span>簽署日期 Date</span><div></div></div>';}
      if(sign.querySelector('.ub52-client-confirm'))continue;
-     const client=sign.children[1];if(client){client.className='ub52-client-confirm';client.innerHTML='<div>客戶確認 CLIENT CONFIRMATION</div><div class="ub52-sign-field"><span>客戶姓名 Full Name</span><div></div></div><div class="ub52-sign-field"><span>客戶簽署 Signature</span><div></div></div><div class="ub52-sign-field"><span>簽署日期 Date</span><div></div></div>';}
+     const client=sign.children[1];if(client){client.className='ub52-client-confirm';client.innerHTML='<div>客戶確認 CLIENT CONFIRMATION</div><div class="ub52-sign-field"><span>客戶名稱 Customer Name</span><div></div></div><div class="ub52-sign-field"><span>客戶簽名／印章 Signature / Company Chop</span><div></div></div><div class="ub52-sign-field"><span>簽署日期 Date</span><div></div></div>';}
    }
    const documentPaper=app.querySelector('.single-preview > .quote-reference-sheet');
    if(documentPaper){const stage=document.createElement('div'),box=document.createElement('div');stage.className='preview-stage';box.className='a4-scale-box';documentPaper.replaceWith(stage);box.append(documentPaper);stage.append(box);requestAnimationFrame(()=>window.scaleStage(stage));}
