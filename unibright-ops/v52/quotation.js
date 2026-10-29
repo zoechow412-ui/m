@@ -50,8 +50,8 @@
    const source=document.querySelector('.quote-reference-sheet');if(!source)return previousExport?.();if(exporting)return;exporting=true;let host,frame;
    try{
      toast('正在建立清晰分頁報價 PDF…');
-     if(!window.htmlToImage)await library('https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js');
-     if(!window.jspdf?.jsPDF)await library('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+     if(!window.htmlToImage)await library('/v52/html-to-image-1.11.13.js');
+     if(!window.jspdf?.jsPDF)await library('/v52/jspdf-2.5.1.js');
      await document.fonts.ready;
      host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
      const pages=paginate(source,host);await Promise.all([...host.querySelectorAll('img')].map(x=>x.decode().catch(()=>{})));
