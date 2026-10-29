@@ -97,6 +97,10 @@
    }catch(e){el('ub52-price-error').textContent='儲存失敗：'+e.message;}finally{saving=false;if(el('ub52-save-price'))el('ub52-save-price').disabled=false;}
  };
  function addEntry(){
+   for(const sign of app.querySelectorAll('.quote-reference-sheet .invoice-ref-sign')){
+     if(sign.querySelector('.ub52-client-confirm'))continue;
+     const client=sign.children[1];if(client){client.className='ub52-client-confirm';client.innerHTML='<div>客戶確認 CLIENT CONFIRMATION</div><div class="ub52-sign-field"><span>客戶全名 Full Name</span><div></div></div><div class="ub52-sign-field"><span>客戶簽署 Signature</span><div></div></div><div class="ub52-sign-field"><span>簽署日期 Date</span><div></div></div>';}
+   }
    const documentPaper=app.querySelector('.single-preview > .quote-reference-sheet');
    if(documentPaper){const stage=document.createElement('div'),box=document.createElement('div');stage.className='preview-stage';box.className='a4-scale-box';documentPaper.replaceWith(stage);box.append(documentPaper);stage.append(box);requestAnimationFrame(()=>window.scaleStage(stage));}
    const zoomHost=app.querySelector('.ub44-preview-head,.document-view-head .view-actions');
