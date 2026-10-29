@@ -1,4 +1,6 @@
 /* Larger quotation text. Keep the approved document logo and colours. */
+.quote-reference-sheet .ub52-company-confirm>div:first-child,.quote-reference-sheet .ub52-client-confirm>div:first-child{display:none!important}
+.quote-reference-sheet .invoice-ref-sign,.quote-reference-sheet .ub52-sign-field>span,.quote-reference-sheet .ub52-company-identity>div{font-weight:700!important}
 .quote-reference-sheet .ub52-client-confirm>div:first-child{visibility:hidden!important}
 .ub52-order-help{padding:10px 12px;background:#edf6f8;color:#12566f;border-left:3px solid #12566f;font-size:14px;line-height:1.5}
 .ub44-item input[type=number]{appearance:textfield;-moz-appearance:textfield}.ub44-item input[type=number]::-webkit-inner-spin-button,.ub44-item input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
