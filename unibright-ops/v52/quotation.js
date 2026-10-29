@@ -110,7 +110,9 @@
  };
  function addEntry(){
    const itemCards=[...app.querySelectorAll('#quoteItems .ub44-item')];
+   if(itemCards.length&&!el('ub52-order-help')){const note=document.createElement('p');note.id='ub52-order-help';note.className='ub52-order-help';note.textContent='項目排序已啟用：用每項右上角「上移／下移」調位，再按「儲存修改」。';el('quoteItems').prepend(note);}
    itemCards.forEach((card,index)=>{
+     for(const input of card.querySelectorAll('input[type="number"]')){if(input.dataset.ub52WheelGuard)continue;input.dataset.ub52WheelGuard='1';input.addEventListener('wheel',()=>{if(document.activeElement===input)input.blur();},{passive:true});}
      const top=card.querySelector('.ub44-item-top');if(!top||top.querySelector('.ub52-item-order'))return;
      const controls=document.createElement('div');controls.className='ub52-item-order';
      for(const [label,delta] of [['上移',-1],['下移',1]]){const b=document.createElement('button');b.type='button';b.className='btn light';b.textContent=label;b.setAttribute('aria-label',label+'項目 '+(index+1));b.disabled=delta===-1?index===0:index===itemCards.length-1;b.onclick=()=>window.ub52MoveItem(index,delta);controls.append(b);}
