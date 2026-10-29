@@ -1,7 +1,7 @@
 (()=>{
  'use strict';
  const PAGE_H=1191,CONTENT_H=1075,PDF_W=595.28,PDF_H=841.89,enc=encodeURIComponent;
- window.UNIBRIGHT_V52_BUILD='20261028-readable-quote-catalog';
+ window.UNIBRIGHT_V52_BUILD='20261029-signature-1415';
  let exporting=false,priceId='',saving=false;
  const el=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const clone=x=>x?.cloneNode(true);
