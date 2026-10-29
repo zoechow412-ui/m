@@ -109,6 +109,11 @@
    }catch(e){el('ub52-price-error').textContent='儲存失敗：'+e.message;}finally{saving=false;if(el('ub52-save-price'))el('ub52-save-price').disabled=false;}
  };
  function addEntry(){
+   for(const card of app.querySelectorAll('.quote-card')){
+     const buttons=[...card.querySelectorAll('button')],preview=buttons.find(b=>/預覽|PDF/.test(b.textContent)),edit=buttons.find(b=>/修改訂單/.test(b.textContent));
+     const id=(preview?.getAttribute('onclick')?.match(/viewQuote\(['"]([^'"]+)/)||[])[1];
+     if(edit&&id&&edit.dataset.ub52Edit!==id){edit.removeAttribute('onclick');edit.onclick=()=>window.editQuote(id);edit.dataset.ub52Edit=id;}
+   }
    const itemCards=[...app.querySelectorAll('#quoteItems .ub44-item')];
    if(itemCards.length&&!el('ub52-order-help')){const note=document.createElement('p');note.id='ub52-order-help';note.className='ub52-order-help';note.textContent='項目排序已啟用：用每項右上角「上移／下移」調位，再按「儲存修改」。';el('quoteItems').prepend(note);}
    itemCards.forEach((card,index)=>{
