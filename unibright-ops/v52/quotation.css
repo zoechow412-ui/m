@@ -52,7 +52,7 @@
 .quote-reference-sheet .ub52-sign-heading,.quote-reference-sheet .ub52-client-confirm>div:first-child{font-size:14px!important;font-weight:700!important;border-bottom:1px solid #c8d3d8!important;padding-bottom:8px!important;min-height:24px!important}
 .quote-reference-sheet .ub52-company-name{font-size:12px!important;margin-top:12px!important;white-space:nowrap!important}
 .quote-reference-sheet .ub52-authorized-panel{display:flex!important;align-items:center!important;gap:10px!important;height:145px!important;margin-top:8px!important}
-.quote-reference-sheet .ub52-stamp-crop{position:relative!important;width:125px!important;height:125px!important;overflow:hidden!important;flex:none!important}
+.quote-reference-sheet .ub52-stamp-crop{position:relative!important;width:122px!important;height:125px!important;overflow:hidden!important;flex:none!important}
 .quote-reference-sheet .ub52-stamp-crop img{position:absolute!important;width:231px!important;height:154px!important;max-width:none!important;left:-2px!important;top:-15px!important}
 .quote-reference-sheet .ub52-handwriting-crop{position:relative!important;width:145px!important;height:110px!important;overflow:hidden!important;flex:none!important}
 .quote-reference-sheet .ub52-handwriting-crop img{display:block!important;width:145px!important;height:105px!important;object-fit:contain!important;max-width:none!important}
