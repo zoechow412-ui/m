@@ -1,0 +1,120 @@
+/* Larger quotation text. Keep the approved document logo and colours. */
+.quote-reference-sheet{display:flex!important;flex-direction:column!important}
+.quote-reference-sheet>*{flex-shrink:0!important}
+.quote-reference-sheet>.invoice-ref-section-title:has(+.invoice-ref-payment){margin-top:auto!important;padding-top:7px!important}
+.ub52-page-content{display:flex!important;flex-direction:column!important}
+.ub52-page-content>*{flex-shrink:0!important}
+.ub52-document-tail{display:flex!important;flex-direction:column!important;flex:1 0 auto!important}
+.ub52-document-tail>.invoice-ref-section-title:has(+.invoice-ref-payment){margin-top:auto!important}
+.quote-reference-sheet .invoice-ref-sign+.invoice-ref-section-title{margin-top:auto!important}
+.quote-reference-sheet .ub52-company-confirm>div:first-child,.quote-reference-sheet .ub52-client-confirm>div:first-child{display:none!important}
+.quote-reference-sheet .invoice-ref-sign,.quote-reference-sheet .ub52-sign-field>span,.quote-reference-sheet .ub52-company-identity>div{font-weight:700!important}
+.quote-reference-sheet .ub52-client-confirm>div:first-child{visibility:hidden!important}
+.ub52-order-help{padding:10px 12px;background:#edf6f8;color:#12566f;border-left:3px solid #12566f;font-size:14px;line-height:1.5}
+.ub44-item input[type=number]{appearance:textfield;-moz-appearance:textfield}.ub44-item input[type=number]::-webkit-inner-spin-button,.ub44-item input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.ub52-item-order{display:flex;gap:6px;margin-left:auto;margin-right:8px}.ub52-item-order .btn{font-size:13px;padding:6px 10px}.ub52-item-order button:disabled{opacity:.4;cursor:not-allowed}.ub44-item-top{flex-wrap:wrap;gap:6px}
+.quote-reference-sheet{padding:44px!important;font-size:16px!important;line-height:1.5!important;min-height:1191px!important}
+.quote-reference-sheet:after{display:none!important}
+.quote-reference-sheet .invoice-ref-head{height:76px!important;grid-template-columns:1fr 160px!important}
+.quote-reference-sheet .invoice-ref-logo{padding-left:0!important}
+.quote-reference-sheet .invoice-ref-logo img{width:42px!important;height:56px!important}
+.quote-reference-sheet .invoice-ref-logo-copy b{font-size:17px!important;letter-spacing:0!important}
+.quote-reference-sheet .invoice-ref-logo-copy span{font-size:11px!important;letter-spacing:0!important}
+.quote-reference-sheet .invoice-ref-title b{font-size:25px!important}
+.quote-reference-sheet .invoice-ref-title span{font-size:22px!important}
+.quote-reference-sheet .invoice-ref-meta{grid-template-columns:132px 1fr 118px 1fr!important}
+.quote-reference-sheet .invoice-ref-meta>div{font-size:14px!important;padding:7px!important;min-height:32px!important;overflow-wrap:anywhere}
+.quote-reference-sheet .quote-ref-kind{display:none!important}
+.quote-reference-sheet .invoice-ref-party .title,.quote-reference-sheet .invoice-ref-section-title{font-size:16px!important;padding:7px!important}
+.quote-reference-sheet .invoice-ref-party .body{font-size:16px!important;line-height:1.55!important;padding:10px 7px!important;min-height:88px!important}
+.quote-reference-sheet .invoice-ref-items th{font-size:16px!important;padding:9px 6px!important}
+.quote-reference-sheet .invoice-ref-items td{font-size:16px!important;line-height:1.5!important;padding:12px 6px!important;height:auto!important;border-bottom:1px solid #e4e9e8!important}
+.quote-reference-sheet .invoice-ref-items td:not(:first-child){font-size:15px!important}
+.quote-reference-sheet .invoice-ref-summary td{font-size:16px!important;padding:7px!important}
+.quote-reference-sheet .invoice-ref-summary tr.deposit td{font-size:18px!important}
+.quote-reference-sheet .invoice-ref-payment{grid-template-columns:155px 1fr!important}
+.quote-reference-sheet .invoice-ref-payment>div{font-size:15px!important;line-height:1.5!important;padding:8px!important}
+.quote-reference-sheet .invoice-ref-sign{font-size:14px!important;gap:40px!important;margin-top:26px!important}
+.quote-reference-sheet .invoice-ref-sign .sig-head{height:auto!important;min-height:52px!important}
+.quote-reference-sheet .invoice-ref-sign .date{margin-left:0!important;float:right!important}
+.ub52-page{position:relative!important;width:842px!important;height:1191px!important;min-height:1191px!important;padding:44px!important;margin:0!important;transform:none!important;box-shadow:none!important;overflow:hidden!important}
+.ub52-page-content{height:1075px;overflow:visible}
+.ub52-page-footer{position:absolute;left:44px;right:44px;bottom:22px;display:flex;justify-content:space-between;border-top:1px solid #c8d3d8;padding-top:8px;font-size:13px;color:#536773}
+.ub52-continuation{font-size:14px;color:#12566f;padding:8px 0}
+/* Export canvas is reduced from 842px to 595.28pt: compensate to get real PDF point sizes. */
+.ub52-page .invoice-ref-items td:first-child{font-size:18.4px!important;line-height:1.4!important}
+.ub52-page .invoice-ref-items td:not(:first-child){font-size:17px!important;white-space:normal!important;overflow-wrap:normal!important}
+.ub52-page .invoice-ref-items td{padding:8px 6px!important}
+.ub52-page .invoice-ref-items th{font-size:17px!important}
+.ub52-page .invoice-ref-meta>div{font-size:15px!important}
+.ub52-page .invoice-ref-party .body{font-size:17px!important;min-height:65px!important}
+.ub52-page .invoice-ref-party .title,.ub52-page .invoice-ref-section-title{font-size:17px!important}
+.ub52-page .invoice-ref-summary td{font-size:17px!important}
+.ub52-page .invoice-ref-summary tr.deposit td{font-size:19px!important}
+.ub52-page .invoice-ref-summary{width:100%!important}
+.ub52-page .invoice-ref-summary table{width:64%!important;margin-left:auto!important}
+.ub52-page .invoice-ref-summary td:first-child{width:44%!important}
+.ub52-page .invoice-ref-summary td:last-child{white-space:nowrap!important}
+.ub52-page .invoice-ref-payment>div{font-size:16px!important;line-height:1.45!important}
+.ub52-page .invoice-ref-sign{font-size:15px!important}
+.quote-reference-sheet .ub52-sign-field{margin-top:14px!important}
+.quote-reference-sheet .ub52-sign-field>span{font-size:14px!important;display:block!important}
+.quote-reference-sheet .ub52-sign-field>div{height:30px!important;width:100%!important;border-bottom:1px solid #777!important}
+.quote-reference-sheet .invoice-ref-sign .sig-line:has(.ub52-company-stamp){width:100%!important;height:160px!important;display:flex!important;align-items:center!important;border:0!important;margin-bottom:8px!important}
+.quote-reference-sheet .ub52-company-stamp{display:block!important;width:225px!important;height:150px!important;object-fit:contain!important;max-width:100%!important}
+.quote-reference-sheet .invoice-ref-sign{align-items:start!important;gap:30px!important}
+.quote-reference-sheet .ub52-sign-heading,.quote-reference-sheet .ub52-client-confirm>div:first-child{font-size:14px!important;font-weight:700!important;border-bottom:1px solid #c8d3d8!important;padding-bottom:8px!important;min-height:24px!important}
+.quote-reference-sheet .ub52-company-name{font-size:12px!important;margin-top:12px!important;white-space:nowrap!important}
+.quote-reference-sheet .ub52-authorized-panel{display:flex!important;align-items:center!important;gap:10px!important;height:145px!important;margin-top:8px!important}
+.quote-reference-sheet .ub52-stamp-crop{position:relative!important;width:122px!important;height:125px!important;overflow:hidden!important;flex:none!important}
+.quote-reference-sheet .ub52-stamp-crop img{position:absolute!important;width:231px!important;height:154px!important;max-width:none!important;left:-2px!important;top:-15px!important}
+.quote-reference-sheet .ub52-handwriting-crop{position:relative!important;width:145px!important;height:110px!important;overflow:hidden!important;flex:none!important}
+.quote-reference-sheet .ub52-handwriting-crop img{display:block!important;width:145px!important;height:105px!important;object-fit:contain!important;max-width:none!important}
+.quote-reference-sheet .ub52-auth-caption{font-size:12px!important;margin-top:8px!important}
+.quote-reference-sheet .ub52-client-confirm .ub52-sign-field{margin-top:10px!important}
+.quote-reference-sheet .ub52-client-confirm .ub52-sign-field:nth-child(3)>div{height:55px!important}
+.quote-reference-sheet .ub52-company-confirm .ub52-sign-field,.quote-reference-sheet .ub52-client-confirm .ub52-sign-field{margin-top:10px!important}
+.quote-reference-sheet .ub52-company-confirm .ub52-sign-field:nth-child(3)>div,.quote-reference-sheet .ub52-client-confirm .ub52-sign-field:nth-child(3)>div{height:130px!important}
+.quote-reference-sheet .ub52-authorized-panel{position:relative!important;display:block!important;isolation:isolate!important;margin:0!important;width:100%!important;overflow:hidden!important}
+.quote-reference-sheet .ub52-authorized-panel .ub52-handwriting-crop{position:absolute!important;left:68px!important;top:12px!important;z-index:1!important}
+.quote-reference-sheet .ub52-authorized-panel .ub52-stamp-crop{position:absolute!important;left:25px!important;top:0!important;z-index:2!important;mix-blend-mode:multiply!important}
+.quote-reference-sheet .ub52-sign-field>div{width:230px!important;max-width:100%!important}
+.quote-reference-sheet .ub52-company-identity>div{border:0!important;width:100%!important;font-size:12px!important;line-height:30px!important;white-space:nowrap!important}
+.ub52-price-list{display:grid;gap:12px}.ub52-price-row{display:flex;gap:15px;justify-content:space-between;align-items:center;border:1px solid #dbe4e9;border-radius:12px;padding:16px;background:white}.ub52-price-row p{margin:5px 0}.ub52-price-row small{color:#617586}
+.ub52-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+#ub52PriceDialog{border:1px solid #dbe4e9;border-radius:16px;width:min(600px,94vw);max-height:90vh;padding:24px;color:#183b53;box-sizing:border-box}
+#ub52PriceDialog::backdrop{background:#112a3b77}
+#ub52PriceDialog form{display:grid;gap:13px}#ub52PriceDialog label{display:grid;gap:5px;font-size:15px}#ub52PriceDialog input,#ub52PriceDialog textarea,#ub52PriceDialog select{font:inherit;padding:10px;border:1px solid #bdcdd7;border-radius:8px;width:100%;box-sizing:border-box}
+.ub52-price-error{color:#a42e2e;min-height:22px}
+.preview-stage.ub52-reading{overflow:auto!important;max-height:80vh!important}
+.ub52-reading .quote-reference-sheet{transform:none!important}
+.ub52-reading .a4-scale-box{width:842px!important;height:auto!important}
+@media print{.ub52-page{break-after:page!important}.ub52-page:last-child{break-after:auto!important}}
+/* Compact spacing only: retain the approved readable type sizes and artwork. */
+.quote-reference-sheet .invoice-ref-head{height:60px!important}
+.quote-reference-sheet .invoice-ref-party .body{min-height:0!important;padding:7px!important;line-height:1.35!important}
+.quote-reference-sheet .invoice-ref-items td{padding:6px!important;line-height:1.3!important}
+.ub52-page .invoice-ref-items td:first-child{line-height:1.3!important}
+.quote-reference-sheet .invoice-ref-items th{padding:6px!important}
+.quote-reference-sheet .invoice-ref-summary td{padding:4px 7px!important}
+.quote-reference-sheet .invoice-ref-payment>div{padding:5px 8px!important;line-height:1.35!important}
+.quote-reference-sheet .invoice-ref-sign{margin-top:14px!important}
+.quote-reference-sheet .ub52-company-confirm .ub52-sign-field:nth-child(3)>div,.quote-reference-sheet .ub52-client-confirm .ub52-sign-field:nth-child(3)>div{height:100px!important}
+.quote-reference-sheet .ub52-authorized-panel .ub52-stamp-crop{width:98px!important;height:100px!important;left:20px!important;mix-blend-mode:normal!important}
+.quote-reference-sheet .ub52-stamp-crop img{width:184.8px!important;height:123.2px!important;left:-1.6px!important;top:-12px!important;mix-blend-mode:multiply!important}
+.quote-reference-sheet .ub52-authorized-panel .ub52-handwriting-crop{left:52px!important;top:2px!important}
+.quote-reference-sheet .ub52-stamp-crop{mix-blend-mode:multiply!important}
+/* Reduce document body by two physical PDF points (842px -> 595.28pt). */
+.quote-reference-sheet .invoice-ref-items td{font-size:13.17px!important}
+.quote-reference-sheet .invoice-ref-items td:not(:first-child){font-size:12.17px!important}
+.quote-reference-sheet .invoice-ref-party .body,.quote-reference-sheet .invoice-ref-summary td{font-size:13.17px!important}
+.quote-reference-sheet .invoice-ref-payment>div{font-size:12.17px!important}
+.quote-reference-sheet .invoice-ref-meta>div{font-size:11.17px!important}
+.quote-reference-sheet .invoice-ref-sign,.quote-reference-sheet .ub52-sign-field>span{font-size:11.17px!important}
+.quote-reference-sheet .ub52-company-identity>div{font-size:9.17px!important}
+.ub52-page .invoice-ref-items td:first-child{font-size:15.57px!important}
+.ub52-page .invoice-ref-items td:not(:first-child){font-size:14.17px!important}
+.ub52-page .invoice-ref-party .body,.ub52-page .invoice-ref-summary td{font-size:14.17px!important}
+.ub52-page .invoice-ref-summary tr.deposit td{font-size:16.17px!important}
+.ub52-page .invoice-ref-payment>div{font-size:13.17px!important}
+.ub52-page .invoice-ref-meta>div,.ub52-page .invoice-ref-sign{font-size:12.17px!important}
