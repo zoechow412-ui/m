@@ -1,3 +1,4 @@
+import {HongKongDate as Date} from './hk-civil-date.js';
 // src/constants.ts
 var TIAN_GAN = ["\u7532", "\u4E59", "\u4E19", "\u4E01", "\u620A", "\u5DF1", "\u5E9A", "\u8F9B", "\u58EC", "\u7678"];
 var DI_ZHI = ["\u5B50", "\u4E11", "\u5BC5", "\u536F", "\u8FB0", "\u5DF3", "\u5348", "\u672A", "\u7533", "\u9149", "\u620C", "\u4EA5"];
@@ -4136,6 +4137,7 @@ function normalizeError(error) {
 }
 function calculate(date, options = {}) {
   try {
+    date = new Date(date.getTime());
     const opts = withShouXingOptions2(options);
     return calculateFromSnapshot(createShouXingCalendarSnapshot(date, opts), date, opts);
   } catch (error) {
@@ -4144,6 +4146,7 @@ function calculate(date, options = {}) {
 }
 function calculateBrief(date, options = {}) {
   try {
+    date = new Date(date.getTime());
     const opts = withShouXingOptions2(options);
     return calculateBriefFromSnapshot(createShouXingCalendarSnapshot(date, opts), date, opts);
   } catch (error) {
