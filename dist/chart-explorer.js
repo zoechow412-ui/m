@@ -85,5 +85,10 @@ export function chartExplorer(id,r,p,ui){
  // Preserve calculated ziwei content; remove fixed psychological assertions and fabricated windows.
  let html=legacy.replace(/<section class="reading-section"[^>]*>[\s\S]*?<\/section>/g,part=>/可能時間窗口|工作／財運／感情／家庭等影響/.test(part)?'':part);
  html=html.replace(/你表面上[^<]+?(?=<|$)/g,'以下按今次實際盤面逐項閱讀，不假設你有未講出的心理。');
+ if(id==='ziwei'){
+  html=html.replace(/<section class="reading-section"[^>]*>[\s\S]*?<\/section>/g,part=>/三方四正｜交叉作用/.test(part)?'':part);
+  const names=['命宮','財帛','官祿','遷移'];
+  html+=block('命宮三方四正｜本盤會照',names.map(name=>{const palace=r.palaces?.find(x=>norm(x.name).replace(/宮$/,'')===name.replace(/宮$/,''));return `${t(name,`${name}係命宮三方四正的一部分：命宮為本宮，財帛與官祿為三合，遷移為對宮。夫妻宮不是命宮三方四正，感情問題須另行參看。`)}：${esc(palace?.stars?.join('、')||'空宮；須參看對宮及會照，不能視為沒有影響')}`;}).join('<br>'));
+ }
  return html+block('解讀範圍與時間','本命盤只表達本命配置；本卦、動爻及落宮只表達本次起課。此處沒有推算出指定事件日期，不用固定日數包裝成應期。');
 }

@@ -2,6 +2,10 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const code='const baziStructure=(()=>{'+fs.readFileSync('bazi-structure.js','utf8').replace(/export /g,'')+';return baziStructure;})();\n'+fs.readFileSync('chart-explorer.js','utf8').replace(/^import .*;\r?\n/gm,'').replace(/export /g,'');
 const ctx={};vm.createContext(ctx);vm.runInContext(code+';this.api={chartExplorer,tenGod,houseOf,houses,planets,qimenDefs};',ctx);const {chartExplorer,tenGod,houseOf,houses,planets,qimenDefs}=ctx.api;
 let checks=0;function test(name,f){f();checks++;console.log('PASS '+name);}
+test('Ziwei life-palace four axes exclude spouse and include migration',()=>{
+ const result=chartExplorer('ziwei',{palaces:[{name:'命宮',stars:['天梁']},{name:'財帛',stars:['太陽']},{name:'官祿',stars:['天機']},{name:'遷移',stars:['紫微']}]},{},{term:(l)=>l,section:(t,b)=>`<section>${t}${b}</section>`,esc:String,topic:'家庭',legacy:'<section class="reading-section"><h4>三方四正｜交叉作用</h4>夫妻宮：錯誤</section>'});
+ assert.ok(!result.includes('夫妻宮：錯誤'));assert.ok(result.includes('遷移：紫微'));
+});
 test('Twelve distinct house meanings',()=>{assert.equal(houses.length,12);assert.equal(new Set(houses.map(x=>x[1])).size,12);});
 test('Whole sign boundaries and wrap',()=>{assert.equal(houseOf(0,359),2);assert.equal(houseOf(359,359),1);assert.equal(houseOf(29.999,0),1);assert.equal(houseOf(30,0),2);});
 test('All ten gods exist for every day master',()=>{for(const d of '甲乙丙丁戊己庚辛壬癸')assert.equal(new Set([...'甲乙丙丁戊己庚辛壬癸'].map(t=>tenGod(d,t))).size,10);});
