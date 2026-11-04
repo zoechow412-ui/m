@@ -1,4 +1,5 @@
 // Local, chart-bound explanations. No generative API or remote birth-data submission.
+import {baziStructure} from './bazi-structure.js';
 export const planets={
  太陽:['主導、認同與目標','你希望以甚麼身份被看見。工作可核對決策權，家庭可核對誰習慣作主；不是單靠太陽星座判個性。','將想承擔的角色與實際權限分開列出。'],
  月亮:['情緒、習慣與安全感','壓力下慣常怎樣反應，甚麼生活節奏令你安心。感情要核對如何回應需要，家庭要核對照顧及休息安排。','記錄一次令你安心及一次令你繃緊的互動，找出可觀察的差別。'],
@@ -41,7 +42,14 @@ export function chartExplorer(id,r,p,ui){
  const qimenText=value=>norm(value).split(/\s+/).filter(Boolean).map(x=>qimenDefs[x]||`尚未提供「${x}」獨立細斷，保留原符號，不用通用吉凶填補。`).join('\n\n');
  const {term,section,esc,topic,legacy,starDetail}=ui;
  const t=(label,text,key)=>term(label,text,key||`${id}-explore-${label}`);
- const block=(title,text)=>section(title,`<p>${text}</p>`);
+ const block=(title,text)=>{
+  let extra='';
+  if(id==='bazi'&&title==='八字｜四柱與十神逐字查看'){
+   const s=baziStructure(r.rows,tenGod);
+   extra=`<p>${t('月令本氣','月支主要藏干，是觀察季節結構的起點。本氣十神不等於已完成格局判定。')}：${esc(s.month+'藏'+s.principal+'，相對日主為'+s.principalGod)}。</p><p>${t('通根','日主同五行出現在地支藏干。根的位置、氣別與刑沖制化要分開核對，不能只數根數判旺衰。')}：${esc(s.roots.map(x=>x.pillar+x.branch+'藏'+x.stem+'（'+x.role+'）').join('；')||'未見同五行藏干；不因此直接判從弱')}。</p><p>${t('透干','月支藏干出現在年、月或時干。此處不把日干自身計作透干；多個藏干可以同時透出，取格仍需核對制化。')}：${esc(s.exposed.map(x=>x.stem+'（'+x.god+'）'+(x.pillars.length?'透於'+x.pillars.join('、'):'未透')).join('；'))}。</p>`;
+  }
+  return section(title,`<p>${text}</p>${extra}`);
+ };
  const note='以下係傳統象意及生活核對方式，唔係已發生事實；問事日期取香港即時時間，出生盤則只用你輸入嘅出生資料。';
  if(r.error)return legacy;
  if(id==='indian'){

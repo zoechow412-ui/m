@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const code=fs.readFileSync('chart-explorer.js','utf8').replace(/export /g,'');
+const code='const baziStructure=(()=>{'+fs.readFileSync('bazi-structure.js','utf8').replace(/export /g,'')+';return baziStructure;})();\n'+fs.readFileSync('chart-explorer.js','utf8').replace(/^import .*;\r?\n/gm,'').replace(/export /g,'');
 const ctx={};vm.createContext(ctx);vm.runInContext(code+';this.api={chartExplorer,tenGod,houseOf,houses,planets,qimenDefs};',ctx);const {chartExplorer,tenGod,houseOf,houses,planets,qimenDefs}=ctx.api;
 let checks=0;function test(name,f){f();checks++;console.log('PASS '+name);}
 test('Twelve distinct house meanings',()=>{assert.equal(houses.length,12);assert.equal(new Set(houses.map(x=>x[1])).size,12);});
