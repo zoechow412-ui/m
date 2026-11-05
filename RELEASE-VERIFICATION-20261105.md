@@ -19,3 +19,13 @@ No scientific predictive accuracy is claimed. Full useful-god/pattern/event timi
 ## Deployment
 
 Only selected root files and matching dist release assets are staged. No unrelated user assets or concurrent project files are included. Public verification follows deployment.
+
+## Public checks completed
+
+- Published commits: 25b6f20, ba76d62, 7876b08 on the existing Render site.
+- All eight consultant room/input/calculation/report flows exercised with synthetic data.
+- Before the final Ziwei explorer repair, all 134 unique term buttons in the combined sample report were opened and closed successfully.
+- Public testing exposed and fixed two defects: life-palace four-axis section incorrectly included spouse instead of migration; combined report omitted Ziwei palace controls.
+- Latest public version: all twelve Ziwei palace explanations opened and contained the actual palace stars. First 30 of 66 star controls independently opened with no missing-definition placeholder. Remaining star-control batch was interrupted by a browser CDP timeout and is NOT counted as passed.
+- Latest public JavaScript confirmed to contain the independent Ziwei explorer and interpretation policy returned HTTP 200.
+- Explorer regression suite now has 14 passing checks. This does not certify chart interpretation or future-event accuracy.
