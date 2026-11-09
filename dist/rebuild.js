@@ -1,7 +1,8 @@
 const $ = (s, root = document) => root.querySelector(s);
-import {chartExplorer} from './chart-explorer.js?v=20261026-aligned3';
+import {castCoins} from './coin-casting.js?v=20261103-core1';
+import {chartExplorer} from './chart-explorer.js?v=20261103-core1';
 export { state, renderMethods, setScreen, renderReading, hkLabel, nowHK, ziweiDeepStar };
-import './office.js?v=20261026-aligned3';
+import './office.js?v=20261103-core1';
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const esc = value => String(trad(value ?? '')).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state = { screen:'intro', storyIndex:0, profileIndex:0, unknownTime:false, gender:'', topic:'工作', method:null, results:new Map(), terms:new Map(), palaceExplanations:new Map() };
@@ -58,10 +59,10 @@ const termDetail=(label,explanation)=>{const role=termRole[label];return `術語
 const registerGlossary=()=>Object.entries(glossary).forEach(([label,explanation])=>{if(!state.terms.has(label))state.terms.set(label,{label,explanation:termDetail(label,explanation)});});
 const linkGlossaryTerms=root=>{registerGlossary();const labels=Object.keys(glossary).sort((a,b)=>b.length-a.length),re=new RegExp(`(${labels.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')})`,'g'),walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{if(node.parentElement?.closest('.term-link,.palace-open,script,style'))return;const text=node.nodeValue;if(!re.test(text)){re.lastIndex=0;return;}re.lastIndex=0;const frag=document.createDocumentFragment();let last=0;for(const match of text.matchAll(re)){const i=match.index; if(i>last)frag.append(text.slice(last,i));const b=document.createElement('button');b.type='button';b.className='term-link';b.dataset.term=match[0];b.textContent=match[0];frag.append(b);last=i+match[0].length;}if(last<text.length)frag.append(text.slice(last));node.replaceWith(frag);});};
 const nowHK = () => {
-  const value = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Hong_Kong',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date());
+  const value = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Hong_Kong',hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date());
   return value.replace(' ','T');
 };
-const hkNowParts = () => Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));
+const hkNowParts = () => Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));
 const hkLabel = raw => raw ? raw.replace('T',' ') : '香港時間未指定';
 const inputDateTime = raw => { const m = String(raw||'').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/); return m ? {year:+m[1],month:+m[2],day:+m[3],hour:+m[4],minute:+m[5]} : null; };
 const profile = () => {
@@ -88,7 +89,7 @@ const methods = [
   {id:'liuren',name:'掐指一算',sub:'小六壬 · 月日時 · 落宮',visual:'mokawa-pose-liuren.png'},
   {id:'iching',name:'易經',sub:'六爻 · 動爻 · 卦辭 · 變卦',visual:'mokawa-bg-astral.png'},
   {id:'qimen',name:'奇門遁甲',sub:'九宮 · 八門 · 九星 · 八神',visual:'mokawa-pose-compass.png'},
-  {id:'cross',name:'綜合解讀',sub:'八法交叉 · 找出真正矛盾',visual:'mokawa-bg-consultation.png'}
+  {id:'cross',name:'綜合解讀',sub:'七門分列 · 一致性待核對',visual:'mokawa-bg-consultation.png'}
 ];
 const renderMethods = () => { $('#hkClock').textContent=`香港時間 ${hkLabel(nowHK())}`; $('#methodGrid').innerHTML=methods.map((m,i)=>`<button class="method-card ${i===0?'is-featured':''}" data-method="${m.id}" style="animation-delay:${i*55}ms" type="button"><span class="method-no">0${i+1}</span><h3>${m.name}</h3><p>${m.sub}</p></button>`).join(''); };
 
@@ -101,7 +102,7 @@ const tenGod = (day, other) => {
   const rel={木:{木:'比劫',火:'食傷',土:'財',金:'官殺',水:'印'},火:{木:'印',火:'比劫',土:'食傷',金:'財',水:'官殺'},土:{木:'官殺',火:'印',土:'比劫',金:'食傷',水:'財'},金:{木:'財',火:'官殺',土:'印',金:'比劫',水:'食傷'},水:{木:'食傷',火:'財',土:'官殺',金:'印',水:'比劫'}};
   const group=rel[stemElement[day]]?.[stemElement[other]]||'關係';
   const same=yinStem(day)===yinStem(other);
-  return ({比劫:same?'比肩':'劫財',食傷:same?'食神':'傷官',財:same?'正財':'偏財',官殺:same?'正官':'七殺',印:same?'正印':'偏印'})[group]||group;
+  return ({比劫:same?'比肩':'劫財',食傷:same?'食神':'傷官',財:same?'偏財':'正財',官殺:same?'七殺':'正官',印:same?'偏印':'正印'})[group]||group;
 };
 const baziCalc = p => {
   if(!window.Solar) return {error:'八字計算套件未載入，沒有用文字冒充結果。'};
@@ -111,7 +112,7 @@ const baziCalc = p => {
     const dayGan=ec.getDayGan(), dayBranch=ec.getDay().slice(1), visible=rows.flatMap(r=>[r[1][0],r[1][1]]), counts={木:0,火:0,土:0,金:0,水:0};
     visible.forEach((x,i)=>{const e=i%2===0?stemElement[x]:branchElement[x];if(e)counts[e]+=i%2===0?2:1;});
     [...rows.map(r=>r[1][1])].flatMap(b=>[...(hiddenStems[b]||'')]).forEach(x=>{if(stemElement[x])counts[stemElement[x]]+=.5;});
-    const max=Math.max(...Object.values(counts)), strength=counts[stemElement[dayGan]]>=max-1?'有根偏旺':counts[stemElement[dayGan]]<=1.5?'偏弱需借力':'中和要看運勢';
+    const strength='未完成月令、通根及制化核對，暫不定旺衰';
     const relations=[]; const has=(a,b)=>visible.includes(a)||visible.includes(b);
     [['子','午','沖'],['卯','酉','沖'],['寅','亥','合'],['巳','申','合'],['辰','酉','合'],['午','未','合']].forEach(([a,b,n])=>{if([dayBranch,...rows.map(r=>r[1][1])].includes(a)&&[dayBranch,...rows.map(r=>r[1][1])].includes(b))relations.push(`${a}${b}${n}`);});
     let luck=p.gender==='other'?'未提供順逆排法，今次不計大運':'大運資料要按起運歲數另行核對';
@@ -155,27 +156,33 @@ const indianCalc = p => {
 const trigram={1:{name:'乾',symbol:'☰',bits:[1,1,1],element:'金'},2:{name:'兌',symbol:'☱',bits:[1,1,0],element:'金'},3:{name:'離',symbol:'☲',bits:[1,0,1],element:'火'},4:{name:'震',symbol:'☳',bits:[1,0,0],element:'木'},5:{name:'巽',symbol:'☴',bits:[0,1,1],element:'木'},6:{name:'坎',symbol:'☵',bits:[0,1,0],element:'水'},7:{name:'艮',symbol:'☶',bits:[0,0,1],element:'土'},8:{name:'坤',symbol:'☷',bits:[0,0,0],element:'土'}};
 const kuaNames=[['乾為天','天澤履','天火同人','天雷無妄','天風姤','天水訟','天山遯','天地否'],['澤天夬','兌為澤','澤火革','澤雷隨','澤風大過','澤水困','澤山咸','澤地萃'],['火天大有','火澤睽','離為火','火雷噬嗑','火風鼎','火水未濟','火山旅','火地晉'],['雷天大壯','雷澤歸妹','雷火豐','震為雷','雷風恆','雷水解','雷山小過','雷地豫'],['風天小畜','風澤中孚','風火家人','風雷益','巽為風','風水渙','風山漸','風地觀'],['水天需','水澤節','水火既濟','水雷屯','水風井','坎為水','水山蹇','水地比'],['山天大畜','山澤損','山火賁','山雷頤','山風蠱','山水蒙','艮為山','山地剝'],['地天泰','地澤臨','地火明夷','地雷復','地風升','地水師','地山謙','坤為地']];
 const bitsToTri=bits=>Object.keys(trigram).find(k=>trigram[k].bits.join('')===bits.join(''))||8;
-let hexagrams=[]; fetch('./public/hexagrams.json').then(r=>r.json()).then(d=>{hexagrams=d['周易']||[];}).catch(()=>{});
+let hexagrams=[]; const hexagramsReady=fetch('./public/hexagrams.json').then(r=>{if(!r.ok)throw Error('卦庫載入失敗');return r.json();}).then(d=>{hexagrams=d['周易']||[];return hexagrams.length===64;}).catch(()=>false);
 const trad=s=>String(s||'').replaceAll('为','為').replaceAll('风','風').replaceAll('泽','澤').replaceAll('归','歸').replaceAll('讼','訟').replaceAll('无','無').replaceAll('观','觀').replaceAll('临','臨').replaceAll('复','復').replaceAll('师','師').replaceAll('谦','謙').replaceAll('剥','剝').replaceAll('遁','遯').replaceAll('贲','賁').replaceAll('颐','頤').replaceAll('蛊','蠱').replaceAll('损','損').replaceAll('既济','既濟').replaceAll('未济','未濟').replaceAll('个','個').replaceAll('阳','陽').replaceAll('阴','陰').replaceAll('节','節').replaceAll('气','氣').replaceAll('门','門').replaceAll('惊','驚').replaceAll('开','開').replaceAll('伤','傷').replaceAll('腾','騰').replaceAll('冲','沖').replaceAll('长','長').replaceAll('炉','爐').replaceAll('蜡','蠟').replaceAll('积','積').replaceAll('时','時').replaceAll('数','數').replaceAll('应','應').replaceAll('对','對').replaceAll('传','傳').replaceAll('结','結').replaceAll('间','間').replaceAll('变','變').replaceAll('经','經').replaceAll('体','體').replaceAll('内','內').replaceAll('现','現').replaceAll('实','實').replaceAll('术','術').replaceAll('须','須').replaceAll('从','從').replaceAll('后','後').replaceAll('见','見').replaceAll('证','證').replaceAll('说','說').replaceAll('简','簡').replaceAll('學','學');
 const hexText=num=>{const raw=hexagrams.find(x=>String(x).startsWith(`第${num}卦`)); if(!raw)return {judgement:'本地卦典尚未載入。',image:'卦文暫未載入。'};const a=raw.split('\n');return {judgement:trad(a[1]||''),image:trad(a[3]||''),explain:trad(a[4]||''),topic:trad((a.find(x=>/事业|經商|婚恋|婚戀/.test(x))||a[5]||'').trim())};};
-const hexBuild=(upper,lower,moving,basis)=>{const lines=trigram[lower].bits.concat(trigram[upper].bits), next=lines.map((v,i)=>i===moving-1?1-v:v), mutualLower=bitsToTri([lines[1],lines[2],lines[3]]), mutualUpper=bitsToTri([lines[2],lines[3],lines[4]]), changedLower=bitsToTri(next.slice(0,3)),changedUpper=bitsToTri(next.slice(3));return {upper,lower,moving,main:kuaNames[upper-1][lower-1],mutual:kuaNames[changedUpper?mutualUpper-1:mutualUpper-1][mutualLower-1],changed:kuaNames[changedUpper-1][changedLower-1],basis,mainText:hexText(kuaNumber(upper,lower)),mutualText:hexText(kuaNumber(mutualUpper,mutualLower)),changedText:hexText(kuaNumber(changedUpper,changedLower))};};
+const hexBuild=(upper,lower,moving,basis,changes=[moving])=>{const lines=trigram[lower].bits.concat(trigram[upper].bits), next=lines.map((v,i)=>changes.includes(i+1)?1-v:v), mutualLower=bitsToTri([lines[1],lines[2],lines[3]]), mutualUpper=bitsToTri([lines[2],lines[3],lines[4]]), changedLower=bitsToTri(next.slice(0,3)),changedUpper=bitsToTri(next.slice(3));return {upper,lower,moving,main:kuaNames[upper-1][lower-1],mutual:kuaNames[changedUpper?mutualUpper-1:mutualUpper-1][mutualLower-1],changed:kuaNames[changedUpper-1][changedLower-1],basis,mainText:hexText(kuaNumber(upper,lower)),mutualText:hexText(kuaNumber(mutualUpper,mutualLower)),changedText:hexText(kuaNumber(changedUpper,changedLower))};};
 const kuaNumber=(upper,lower)=>{const name=kuaNames[upper-1][lower-1]; const raw=hexagrams.find(x=>trad(String(x).split('\n')[0]).includes(name)); return raw?Number(String(raw).match(/^第(\d+)/)?.[1]):((upper-1)*8+lower);};
 const meihuaCalc=(p, q, mode='time')=>{
   if(!window.Solar) return {error:'梅花易數需要農曆換算套件，尚未載入。'};
-  try { const hk=hkNowParts(), lunar=window.Solar.fromYmdHms(hk.year,hk.month,hk.day,hk.hour,hk.minute,0).getLunar(), month=Math.abs(lunar.getMonth()), day=lunar.getDay(), yearBranch=((hk.year-4)%12+12)%12+1, hourIndex=Math.floor((hk.hour+1)/2)%12+1, total=yearBranch+month+day, solarDate=`${hk.year}-${String(hk.month).padStart(2,'0')}-${String(hk.day).padStart(2,'0')}`,solarTime=`${String(hk.hour).padStart(2,'0')}:${String(hk.minute).padStart(2,'0')}`; let upper,lower,moving,basis;
+  try { const hk=hkNowParts(), lunar=window.Solar.fromYmdHms(hk.year,hk.month,hk.day,hk.hour,hk.minute,0).getLunar(), month=Math.abs(lunar.getMonth()), day=lunar.getDay(), yearBranch=((lunar.getYear()-4)%12+12)%12+1, hourIndex=Math.floor((hk.hour+1)/2)%12+1, total=yearBranch+month+day, solarDate=`${hk.year}-${String(hk.month).padStart(2,'0')}-${String(hk.day).padStart(2,'0')}`,solarTime=`${String(hk.hour).padStart(2,'0')}:${String(hk.minute).padStart(2,'0')}`; let upper,lower,moving,basis;
     if(mode==='question'){const seed=[...q].reduce((n,c)=>n+c.charCodeAt(0),hk.year+hk.month+hk.day+hk.hour+hk.minute); upper=(seed%8)||8;lower=((seed+hourIndex)%8)||8;moving=((seed+month+day)%6)||6;basis=`問題起卦：香港陽曆 ${solarDate} ${solarTime}；以「${q}」字序及當刻時間作起卦種子`;} else {upper=(total%8)||8;lower=((total+hourIndex)%8)||8;moving=((total+hourIndex)%6)||6;basis=`時間起卦：香港陽曆 ${solarDate} ${solarTime}；農曆 ${lunar.getYear()} 年 ${month} 月 ${day} 日；時辰數 ${hourIndex}`;}
     return {...hexBuild(upper,lower,moving,basis),solarDate,solarTime};
   } catch(e){return {error:`梅花易數起卦失敗：${e.message}`};}
 };
+const ichingCalc=()=>{
+ try {const cast=castCoins(), lower=Number(bitsToTri(cast.lines.slice(0,3))),upper=Number(bitsToTri(cast.lines.slice(3))), stamp=hkLabel(nowHK());
+ const r=hexBuild(upper,lower,cast.movingLines[0]||0,'三枚虛擬銅錢擲六次，由初爻向上；'+stamp,cast.movingLines);
+ return {...r,...cast,moving:cast.movingLines.join('、')||'無',solarDate:stamp,basis:r.basis+'；爻值 '+cast.values.join('、')+'（6老陰、7少陽、8少陰、9老陽）'};
+ }catch(e){return {error:e.message};}
+};
 const liurenCalc=p=>{
   if(!window.Solar) return {error:'小六壬需要農曆日期換算套件，尚未載入。'};
-  try {const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(new Date()),now=Object.fromEntries(parts.filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)])),solarDate=`${now.year}-${String(now.month).padStart(2,'0')}-${String(now.day).padStart(2,'0')}`,solarTime=`${String(now.hour).padStart(2,'0')}:${String(now.minute).padStart(2,'0')}`,lunar=window.Solar.fromYmdHms(now.year,now.month,now.day,now.hour,now.minute,0).getLunar(),month=Math.abs(lunar.getMonth()),day=lunar.getDay(),hour=Math.floor((now.hour+1)/2)%12+1,names=['大安','留連','速喜','赤口','小吉','空亡'],m=(month-1)%6,d=(m+day-1)%6,h=(d+hour-1)%6;return {month,day,hour,names,positions:[m,d,h],god:names[h],solarDate,solarTime,trace:`香港陽曆 ${solarDate} ${solarTime} 起課；換算農曆第 ${month} 月第 ${day} 日：大安起正月落 ${names[m]} → 月上起日落 ${names[d]} → 日上起時辰數 ${hour} 落 ${names[h]}`};}catch(e){return {error:`掐指一算失敗：${e?.message||String(e)}`};}
+  try {const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(new Date()),now=Object.fromEntries(parts.filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)])),solarDate=`${now.year}-${String(now.month).padStart(2,'0')}-${String(now.day).padStart(2,'0')}`,solarTime=`${String(now.hour).padStart(2,'0')}:${String(now.minute).padStart(2,'0')}`,lunar=window.Solar.fromYmdHms(now.year,now.month,now.day,now.hour,now.minute,0).getLunar(),month=Math.abs(lunar.getMonth()),day=lunar.getDay(),hour=Math.floor((now.hour+1)/2)%12+1,names=['大安','留連','速喜','赤口','小吉','空亡'],m=(month-1)%6,d=(m+day-1)%6,h=(d+hour-1)%6;return {month,day,hour,names,positions:[m,d,h],god:names[h],solarDate,solarTime,trace:`香港陽曆 ${solarDate} ${solarTime} 起課；換算農曆第 ${month} 月第 ${day} 日：大安起正月落 ${names[m]} → 月上起日落 ${names[d]} → 日上起時辰數 ${hour} 落 ${names[h]}`};}catch(e){return {error:`掐指一算失敗：${e?.message||String(e)}`};}
 };
 
 const ziweiCalc=p=>{
   if(p.gender==='other') return {error:'你選擇不透露性別；此派紫微排限需要男／女順逆排法，系統不會替你猜。'};
   const lib=window.iztro; if(!lib?.astro?.bySolar) return {error:'紫微排盤套件未載入，沒有顯示假星曜。'};
-  try {const gender=p.gender==='male'?'男':'女',timeIndex=Math.floor((p.hour+1)/2)%12,chart=lib.astro.bySolar(`${p.year}-${String(p.month).padStart(2,'0')}-${String(p.day).padStart(2,'0')}`,timeIndex,gender,true,'zh-TW'),palaces=(chart.palaces||[]).slice(0,12).map(x=>({name:x.name||'宮位',stars:[...(x.majorStars||[]),...(x.minorStars||[]),...(x.adjectiveStars||[])].map(s=>s.name||s).filter(Boolean)})); const ming=palaces.find(x=>x.name.includes('命'))||palaces[0], guan=palaces.find(x=>x.name.includes('官祿')||x.name.includes('官禄')), cai=palaces.find(x=>x.name.includes('財帛')||x.name.includes('财帛')), couple=palaces.find(x=>x.name.includes('夫妻'));return {palaces,ming,guan,cai,couple,yearStem:['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'][((p.year-4)%10+10)%10],chart};} catch(e){return {error:`紫微排盤失敗：${e.message}`};}
+  try {const gender=p.gender==='male'?'男':'女',timeIndex=p.hour===23?12:Math.floor((p.hour+1)/2),chart=lib.astro.bySolar(`${p.year}-${String(p.month).padStart(2,'0')}-${String(p.day).padStart(2,'0')}`,timeIndex,gender,true,'zh-TW'),palaces=(chart.palaces||[]).slice(0,12).map(x=>({name:x.name||'宮位',stars:[...(x.majorStars||[]),...(x.minorStars||[]),...(x.adjectiveStars||[])].map(s=>s.name||s).filter(Boolean)})); const ming=palaces.find(x=>x.name.includes('命'))||palaces[0], guan=palaces.find(x=>x.name.includes('官祿')||x.name.includes('官禄')), cai=palaces.find(x=>x.name.includes('財帛')||x.name.includes('财帛')), couple=palaces.find(x=>x.name.includes('夫妻'));return {palaces,ming,guan,cai,couple,yearStem:window.Solar.fromYmdHms(p.year,p.month,p.day,p.hour,p.minute,0).getLunar().getYearGan(),chart};} catch(e){return {error:`紫微排盤失敗：${e.message}`};}
 };
 
 const ziweiPalaceMeaning={命宮:'本人性格、選擇方式及人生主軸',兄弟宮:'同輩、手足、合作及資源分配',夫妻宮:'親密關係、伴侶互動及承諾模式',子女宮:'創作、作品、下屬及你養成的事物',財帛宮:'收入模式、理財方式及資源安全感',疾厄宮:'身心壓力、生活習慣及需要保養的位置',遷移宮:'外出、環境變動、客戶及外界給你的回應',僕役宮:'朋友、同事、團隊及你如何用人',官祿宮:'工作方向、責任、名聲及職業角色',田宅宮:'居住、家庭根基、資產及安全感',福德宮:'內在休息、慾望、精神狀態及享受方式',父母宮:'長輩、制度、上司、文書及保護資源'};
@@ -402,10 +409,10 @@ const buildReading=(id,r,p)=>chartExplorer(id,r,p,{term,section,esc,topic:state.
 const renderReading=async (id,isCurrent=()=>true)=>{
   const p=profile(); state.method=id; state.terms.clear(); $('#termDrawer').classList.remove('is-open'); $('#termDrawer').setAttribute('aria-hidden','true'); const meta=methods.find(x=>x.id===id), no=methods.findIndex(x=>x.id===id)+1; $('#readingTitle').textContent=meta.name;$('#readingMethodNo').textContent=`0${no} / 08`;$('#readingBackdrop').style.backgroundImage=`linear-gradient(180deg,rgba(3,12,16,.5),rgba(3,12,16,.96)),url("${asset(meta.visual)}")`;$('#guideQuote').textContent='等我把你問緊嘅事，放返入盤面。';$('#readingContent').innerHTML=`<div class="loading-reading"><span class="loader"></span><p>墨川正在按規則排盤……</p></div>`;setScreen('reading');
   try {
-    const q=question(); let r;
-    if(id==='bazi') r=baziCalc(p); else if(id==='ziwei') r=ziweiCalc(p); else if(id==='indian') r=indianCalc(p); else if(id==='meihua') r=meihuaCalc(p,q,'time'); else if(id==='iching') r=meihuaCalc(p,q,'question'); else if(id==='liuren') r=liurenCalc(p); else if(id==='qimen') r=await qimenCalc(p,q); else {const [b,z,i,m,l]=[baziCalc(p),ziweiCalc(p),indianCalc(p),meihuaCalc(p,q,'time'),liurenCalc(p)];r={bazi:b,ziwei:z,indian:i,meihua:m,liuren:l};}
+    const q=question(); if(['meihua','iching','cross'].includes(id)&&!(await hexagramsReady))throw Error('六十四卦資料未完整載入，未有起卦。'); let r;
+    if(id==='bazi') r=baziCalc(p); else if(id==='ziwei') r=ziweiCalc(p); else if(id==='indian') r=indianCalc(p); else if(id==='meihua') r=meihuaCalc(p,q,'time'); else if(id==='iching') r=ichingCalc(); else if(id==='liuren') r=liurenCalc(p); else if(id==='qimen') r=await qimenCalc(p,q); else {const [b,z,i,m,l]=[baziCalc(p),ziweiCalc(p),indianCalc(p),meihuaCalc(p,q,'time'),liurenCalc(p)];r={bazi:b,ziwei:z,indian:i,meihua:m,liuren:l,iching:ichingCalc(),qimen:await qimenCalc(p,q)};}
     if(!isCurrent())return;
-    if(id==='cross'){state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent='五種讀法未必講同一把聲；我會先指出邊度一致，邊度要你自己驗證。';} else {state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent=r.error?'資料未齊，我唔會扮有答案。':id==='liuren'?`手指停喺 ${r.god}。先看呢個落宮點樣落地。`:`${p.name||'你'}，${meta.name}先指出：${state.topic}唔可以只看一個表面。`;}
+    if(id==='cross'){state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent='七門讀法未必講同一把聲；我會先指出邊度一致，邊度要你自己驗證。';} else {state.results.set(id,r);$('#readingContent').innerHTML=buildReading(id,r,p);$('#guideQuote').textContent=r.error?'資料未齊，我唔會扮有答案。':id==='liuren'?`手指停喺 ${r.god}。先看呢個落宮點樣落地。`:`${p.name||'你'}，${meta.name}先指出：${state.topic}唔可以只看一個表面。`;}
     linkGlossaryTerms($('#readingContent')); bindTerms(); bindPalaces();
   } catch(e) {
     if(!isCurrent())return;

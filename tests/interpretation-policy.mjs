@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readingPolicies,interpretationPolicy} from '../interpretation-policy.js';
+assert.equal(Object.keys(readingPolicies).length,8);
+assert.equal(new Set(Object.values(readingPolicies)).size,8);
+assert.match(interpretationPolicy('八字 四柱'),/不能用五行數量代替旺衰/);
+assert.match(interpretationPolicy('紫微 命宮'),/每個宮位及每粒星要分開/);
+assert.match(interpretationPolicy('印度 Dasha'),/不混用/);
+assert.match(interpretationPolicy('梅花'),/本次記錄時間/);
+assert.match(interpretationPolicy('小六壬'),/不等於六個同時結果/);
+assert.match(interpretationPolicy('易經'),/全部動爻/);
+assert.match(interpretationPolicy('奇門'),/不得只見吉門/);
+assert.match(interpretationPolicy('綜合'),/不把重複訊號/);
+assert.match(interpretationPolicy(''),/不預設工作/);
+console.log('PASS 11 reading-policy checks (not predictive validation)');

@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {baziStructure} from '../bazi-structure.js';
+import {tenGod} from '../chart-explorer.js';
+const result=baziStructure([['年柱','甲子'],['月柱','丙寅'],['日柱','甲辰'],['時柱','戊午']],tenGod);
+assert.equal(result.principal,'甲');
+assert.equal(result.principalGod,'比肩');
+assert.deepEqual(result.exposed[0].pillars,['年柱']);
+assert.equal(result.roots.length,2);
+assert.ok(result.roots.some(x=>x.stem==='乙'&&x.pillar==='日柱'));
+assert.throws(()=>baziStructure([],tenGod));
+console.log('PASS structural evidence: month qi, exposed stems, roots, invalid input');

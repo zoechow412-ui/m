@@ -1,4 +1,5 @@
 // Local, chart-bound explanations. No generative API or remote birth-data submission.
+import {baziStructure} from './bazi-structure.js';
 export const planets={
  太陽:['主導、認同與目標','你希望以甚麼身份被看見。工作可核對決策權，家庭可核對誰習慣作主；不是單靠太陽星座判個性。','將想承擔的角色與實際權限分開列出。'],
  月亮:['情緒、習慣與安全感','壓力下慣常怎樣反應，甚麼生活節奏令你安心。感情要核對如何回應需要，家庭要核對照顧及休息安排。','記錄一次令你安心及一次令你繃緊的互動，找出可觀察的差別。'],
@@ -41,7 +42,14 @@ export function chartExplorer(id,r,p,ui){
  const qimenText=value=>norm(value).split(/\s+/).filter(Boolean).map(x=>qimenDefs[x]||`尚未提供「${x}」獨立細斷，保留原符號，不用通用吉凶填補。`).join('\n\n');
  const {term,section,esc,topic,legacy,starDetail}=ui;
  const t=(label,text,key)=>term(label,text,key||`${id}-explore-${label}`);
- const block=(title,text)=>section(title,`<p>${text}</p>`);
+ const block=(title,text)=>{
+  let extra='';
+  if(id==='bazi'&&title==='八字｜四柱與十神逐字查看'){
+   const s=baziStructure(r.rows,tenGod);
+   extra=`<p>${t('月令本氣','月支主要藏干，是觀察季節結構的起點。本氣十神不等於已完成格局判定。')}：${esc(s.month+'藏'+s.principal+'，相對日主為'+s.principalGod)}。</p><p>${t('通根','日主同五行出現在地支藏干。根的位置、氣別與刑沖制化要分開核對，不能只數根數判旺衰。')}：${esc(s.roots.map(x=>x.pillar+x.branch+'藏'+x.stem+'（'+x.role+'）').join('；')||'未見同五行藏干；不因此直接判從弱')}。</p><p>${t('透干','月支藏干出現在年、月或時干。此處不把日干自身計作透干；多個藏干可以同時透出，取格仍需核對制化。')}：${esc(s.exposed.map(x=>x.stem+'（'+x.god+'）'+(x.pillars.length?'透於'+x.pillars.join('、'):'未透')).join('；'))}。</p>`;
+  }
+  return section(title,`<p>${text}</p>${extra}`);
+ };
  const note='以下係傳統象意及生活核對方式，唔係已發生事實；問事日期取香港即時時間，出生盤則只用你輸入嘅出生資料。';
  if(r.error)return legacy;
  if(id==='indian'){
@@ -61,14 +69,21 @@ export function chartExplorer(id,r,p,ui){
   const rows=r.rows.map(([title,gz])=>{const gan=gz[0],zhi=gz[1],god=tenGod(r.dayGan,gan);return `<article class="palace-card"><h4>${esc(title)} ${t(gz,`${title}：天干${gan}（${stems[gan]?.join('，')}），地支${zhi}，藏干${branches[zhi]}。天干表示表層分類，藏干補充地支內部組成；不是某一字決定一生。`)}</h4><p>天干 ${t(gan,`${gan}屬${stems[gan]?.join('，')}。此為傳統象徵，不是單字性格判斷。`)}／地支 ${t(zhi,`${zhi}藏${branches[zhi]}。本盤${title}地支，要配合月令與其他支的刑沖合害；藏干不等於已經發生的事件。`)}</p><p>${title==='日柱'?t('日主','日柱天干代表八字關係計算的中心，不是全盤旺衰結論。'):t(god,godNotes[god])}</p><p>藏干：${[...(branches[zhi]||'')].map(x=>t(x+' · '+tenGod(r.dayGan,x),`${x}：${stems[x].join('，')}。相對日主${r.dayGan}為${tenGod(r.dayGan,x)}：${godNotes[tenGod(r.dayGan,x)]}`)).join(' ')}</p></article>`;}).join('');
   return block('八字｜四柱與十神逐字查看',`${esc(r.evidence)}。日主 ${esc(r.dayGan)}${esc(r.dayElement)}。`)+section('四柱｜點干支、藏干與十神',`<div class="palace-grid">${rows}</div>`)+block('五行與旺衰限制',`權重：${esc(Object.entries(r.counts).map(([k,v])=>k+v).join('、'))}。本機權重只是出現量提示，不能代替月令得令、通根、透干、制化及格局判定；不把「最多」直接當喜用神。`)+block('本盤地支互動',`${esc(r.relations.join('、')||'所列組合未見')}。合不保證成化，沖不保證分離；先指出涉及哪兩柱，再用生活變動核對。`)+block('計出嘅大運',`${esc(r.luck)}。起運採套件排法，未做完整用神及流月應期推斷，不編造近期日期。`)+block('貼地核對',`你問「${esc(topic)}」：資源可看印、同伴可看比劫、輸出可看食傷、財務可看財、規則可看官殺。點本盤實際十神讀各自意思；呢啲係關係分類，唔係事實結論。${note}`);
  }
+ if(id==='ziwei'){
+  const palaceMeaning={命宮:'本人面對事情的方式與定位',兄弟:'同輩、手足及平行協作',夫妻:'一對一關係與承諾',子女:'子女互動、培育與創作',財帛:'資源取得、運用與承擔',疾厄:'傳統身心勞耗象意，不作醫療診斷',遷移:'外出、外部環境與對外互動',僕役:'朋友、團隊與合作網絡',交友:'朋友、團隊與合作網絡',官祿:'工作、職責與對外角色',田宅:'居住、家庭基礎與資源維持',福德:'內在感受、休息與精神需要',父母:'長輩、制度及支持關係'};
+  const ps=r.palaces||[],canonical=x=>norm(x).replace(/宮$/,'');
+  const palaceCards=ps.map((palace,i)=>{const name=canonical(palace.name),stars=palace.stars||[],meaning=palaceMeaning[name]||'本盤所列生活領域';const detail=`${name}宮：${meaning}。\n\n本盤星曜：${stars.join('、')||'空宮；不等於沒有事情，要參照對宮及會照'}。\n\n${stars.map(s=>s+'：'+(starDetail?.(s)||'尚未載入此星獨立資料，不以通用解釋填補。')).join('\n\n')}\n\n盤面作用：宮位定領域，星曜描述傳統象意；需再核對對宮、三合與四化。\n\n實際核對：你問${topic}，先列出與「${meaning}」相關的實際人物、安排及待確認條件。\n\n時間：本命配置不等於事件日期；未排大限流年流月時，不推指定日期。`;return `<article class="palace-card"><h4>${t(name+'宮',detail,'ziwei-palace-'+i)}</h4><p>${esc(meaning)}</p><div>${stars.map((s,j)=>t(s,starDetail?.(s)||'尚未載入此星獨立資料，不以通用解釋填補。','ziwei-star-'+i+'-'+j)).join(' ')||'空宮'}</div></article>`;}).join('');
+  const axes=['命宮','財帛','官祿','遷移'].map(name=>{const palace=ps.find(x=>canonical(x.name)===canonical(name));return `${esc(name)}：${esc(palace?.stars?.join('、')||'空宮，需借對宮及會照')}`;}).join('<br>');
+  return block('紫微｜本盤十二宮','以下只列實際排盤資料。每宮與每粒星可獨立打開；本命配置不是已發生事實。')+section('十二宮｜逐宮與逐星詳解',`<div class="palace-grid">${palaceCards}</div>`)+block(t('三方四正','以命宮為本宮，財帛與官祿為三合，遷移為對宮。夫妻宮不是命宮三方四正；感情問題須另外參照夫妻與福德。'),axes)+block('運限與解讀範圍','本版此報告未排完整大限、流年及流月，不用本命十二宮編造應期，也不把四化概念當成已計算的四化飛宮。');
+ }
  if(id==='cross'){
-  const methods=[['八字','bazi'],['紫微','ziwei'],['印度占星','indian'],['梅花','meihua'],['掐指一算','liuren']];return block('綜合解讀｜五層分開核對','不是將不同術數拼成同一個答案。出生盤與當刻問事盤採不同時間，不能互相充當證據。')+methods.map(([name,key])=>section(name,chartExplorer(key,r[key]||{error:'未完成'},p,{...ui,legacy:'<p>本層未完成，沒有推論。</p>'}))).join('')+block('一致與分歧','目前未實作可核驗的跨術數一致性推論，以上分別展示各自依據。不要把相似文字當成兩個模型獨立證實同一事件。');
+  const methods=[['八字','bazi'],['紫微','ziwei'],['印度占星','indian'],['梅花','meihua'],['掐指一算','liuren'],['易經','iching'],['奇門遁甲','qimen']];return block('綜合解讀｜七門分開核對','不是將不同術數拼成同一個答案。出生盤與當刻問事盤採不同時間，不能互相充當證據。')+methods.map(([name,key])=>section(name,chartExplorer(key,r[key]||{error:'未完成'},p,{...ui,legacy:'<p>本層未完成，沒有推論。</p>'}))).join('')+block('一致與分歧','目前未實作可核驗的跨術數一致性推論，以上分別展示各自依據。不要把相似文字當成兩個模型獨立證實同一事件。');
  }
  if(id==='meihua'||id==='iching'){
   const tri={1:['乾','金','主導、規則與健行'],2:['兌','金','表達、交流與取悅'],3:['離','火','看見、依附與辨明'],4:['震','木','啟動、驚動與反應'],5:['巽','木','滲透、溝通與漸進'],6:['坎','水','流動、險阻與核實'],7:['艮','土','停頓、界線與整理'],8:['坤','土','承托、配合與基礎']};
   const upper=tri[r.upper],lower=tri[r.lower],body=r.moving<=3?upper:lower,use=r.moving<=3?lower:upper;
   const list=[['本卦',r.main,r.mainText],['互卦',r.mutual,r.mutualText],['變卦',r.changed,r.changedText]];
-  return block((id==='meihua'?'梅花易數':'易經')+'｜今次起卦',`${esc(r.basis)}。${id==='iching'?'本模式以問題文字與當刻時間作程式種子，並非擲幣或蓍草古法；相同輸入及時間會得到相同結果。':''}`)+list.map(([kind,name,text])=>block(t(kind+' · '+name,`${kind}：${name}\n\n卦辭：${text?.judgement||'未載入'}\n\n卦象說明：${text?.explain||'未載入'}\n\n讀法：${kind==='本卦'?'用作當前局面的象徵結構，先核對問題與所處階段。':kind==='互卦'?'由中間爻位重組，用作內部過程的參考，並非另一件必然事件。':'動爻陰陽翻轉後所得，用作變動方向參考，不是保證終局。'}\n\n實際核對：將解釋與你已知的事實分開，哪一項條件真有改變、哪一項仍只是猜測？`),`${esc(text?.judgement||'未載入')}<br>${esc(text?.explain||'')}`)).join('')+block('上下卦、體用與動爻',`上卦 ${t(upper[0],upper[0]+'屬'+upper[1]+'，取象為'+upper[2])}，下卦 ${t(lower[0],lower[0]+'屬'+lower[1]+'，取象為'+lower[2])}。${t('動爻第'+r.moving+'爻',`六爻由下往上數，第${r.moving}爻翻轉。今次只有一個動爻；動爻位置不是事件發生的日期。`)}。${id==='meihua'?`按單動爻體用法，不動的一卦為體 ${body[0]}（${body[1]}），動的一卦為用 ${use[0]}（${use[1]}）。體用生剋尚須配季節旺衰，不以一個五行關係宣判成敗。`:'此處不混用不同多動爻解法。'}`)+block('落到你問嘅事',`你關心「${esc(topic)}」。先點本卦看局面，再點互卦看過程、變卦看轉向；寫出一項實況符合、一項不符合，避免只讀自己想相信的部分。沒有計到指定應期，不以固定幾日代替計算。`);
+  return block((id==='meihua'?'梅花易數':'易經')+'｜今次起卦',`${esc(r.basis)}。${id==='iching'?'本模式以瀏覽器安全隨機數模擬三枚銅錢，每爻擲一次共六爻；本次爻值及動爻已保存。不是實物投擲，也不是文字加總。':''}`)+list.map(([kind,name,text])=>block(t(kind+' · '+name,`${kind}：${name}\n\n卦辭：${text?.judgement||'未載入'}\n\n卦象說明：${text?.explain||'未載入'}\n\n讀法：${kind==='本卦'?'用作當前局面的象徵結構，先核對問題與所處階段。':kind==='互卦'?'由中間爻位重組，用作內部過程的參考，並非另一件必然事件。':'動爻陰陽翻轉後所得，用作變動方向參考，不是保證終局。'}\n\n實際核對：將解釋與你已知的事實分開，哪一項條件真有改變、哪一項仍只是猜測？`),`${esc(text?.judgement||'未載入')}<br>${esc(text?.explain||'')}`)).join('')+block('上下卦、體用與動爻',`上卦 ${t(upper[0],upper[0]+'屬'+upper[1]+'，取象為'+upper[2])}，下卦 ${t(lower[0],lower[0]+'屬'+lower[1]+'，取象為'+lower[2])}。${t(r.moving==='無'?'本卦無動爻':'動爻第'+r.moving+'爻',`六爻由下往上數。${r.moving==='無'?'本次六爻不變，變卦與本卦相同。':'本次翻轉第'+r.moving+'爻；有多個動爻時全部翻轉。'} 動爻位置不是事件發生的日期。`)}。${id==='meihua'?`按單動爻體用法，不動的一卦為體 ${body[0]}（${body[1]}），動的一卦為用 ${use[0]}（${use[1]}）。體用生剋尚須配季節旺衰，不以一個五行關係宣判成敗。`:'此處不混用不同多動爻解法。'}`)+block('落到你問嘅事',`你關心「${esc(topic)}」。先點本卦看局面，再點互卦看過程、變卦看轉向；寫出一項實況符合、一項不符合，避免只讀自己想相信的部分。沒有計到指定應期，不以固定幾日代替計算。`);
  }
  if(id==='liuren'){
   const defs={大安:['穩定、守常','先完成已有承諾，核對是否真有必要改動。'],留連:['拖延、反覆','列出欠缺的資料、負責補充的人及實際追問期限。'],速喜:['訊息、短促進展','有回覆時先確認內容與條件，不把快當成已承諾。'],赤口:['口舌、理解差異','將事實與猜測分開，重要回覆先核實字眼。'],小吉:['小助力、可行一步','提出具體而細小的協助要求，觀察對方是否做到。'],空亡:['未落實、資訊空缺','先補資料，未確認前不要按期待承擔成本。']};const actual=defs[r.god];
@@ -77,5 +92,10 @@ export function chartExplorer(id,r,p,ui){
  // Preserve calculated ziwei content; remove fixed psychological assertions and fabricated windows.
  let html=legacy.replace(/<section class="reading-section"[^>]*>[\s\S]*?<\/section>/g,part=>/可能時間窗口|工作／財運／感情／家庭等影響/.test(part)?'':part);
  html=html.replace(/你表面上[^<]+?(?=<|$)/g,'以下按今次實際盤面逐項閱讀，不假設你有未講出的心理。');
+ if(id==='ziwei'){
+  html=html.replace(/<section class="reading-section"[^>]*>[\s\S]*?<\/section>/g,part=>/三方四正｜交叉作用/.test(part)?'':part);
+  const names=['命宮','財帛','官祿','遷移'];
+  html+=block('命宮三方四正｜本盤會照',names.map(name=>{const palace=r.palaces?.find(x=>norm(x.name).replace(/宮$/,'')===name.replace(/宮$/,''));return `${t(name,`${name}係命宮三方四正的一部分：命宮為本宮，財帛與官祿為三合，遷移為對宮。夫妻宮不是命宮三方四正，感情問題須另行參看。`)}：${esc(palace?.stars?.join('、')||'空宮；須參看對宮及會照，不能視為沒有影響')}`;}).join('<br>'));
+ }
  return html+block('解讀範圍與時間','本命盤只表達本命配置；本卦、動爻及落宮只表達本次起課。此處沒有推算出指定事件日期，不用固定日數包裝成應期。');
 }
