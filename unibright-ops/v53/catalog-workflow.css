@@ -1,0 +1,10 @@
+.ub53-options{margin:14px 0;padding:16px;border:1px solid #ccdce3;background:#f4f8fa;border-radius:12px}.ub53-options h3{margin:0 0 12px}.ub53-options p,.ub53-options small{font-size:13px;line-height:1.6;color:#456070}.ub53-options input,.ub53-options select{width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #c7d8e2;border-radius:8px;background:white;color:#173a52;font:inherit}
+/* Explicitly retain the original chop and signature in preview and export. */
+.quote-reference-sheet .ub52-authorized-panel{visibility:visible!important;opacity:1!important;min-height:100px!important}
+.quote-reference-sheet .ub52-stamp-crop,.quote-reference-sheet .ub52-handwriting-crop,.quote-reference-sheet .ub52-stamp-crop img,.quote-reference-sheet .ub52-handwriting-crop img{visibility:visible!important;opacity:1!important;display:block!important}
+/* Measure closing content at its natural height: flex-fill/auto margins previously forced spurious pages. */
+.ub52-page .ub52-page-content{display:block!important;height:1075px!important;min-height:0!important}
+.ub52-page .ub52-document-tail{display:block!important;flex:none!important;min-height:0!important;height:auto!important}
+.ub52-page .invoice-ref-section-title:has(+.invoice-ref-payment){margin-top:14px!important}
+.ub52-page .invoice-ref-head,.ub52-page .invoice-ref-meta{transform:none!important;position:relative!important;top:auto!important}
+.quote-reference-sheet.ub52-page{display:block!important;min-height:1191px!important;max-height:1191px!important;height:1191px!important;zoom:1!important}
