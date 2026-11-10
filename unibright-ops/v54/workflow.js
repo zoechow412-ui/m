@@ -92,10 +92,16 @@
  };
  function paymentHTML(config,total){const rows=C.stages(total,config.stages);return '<div class="label">付款方式</div><div>'+e(config.method)+'</div>'+(config.bank?'<div class="label">銀行資料</div><div>'+e(config.bank)+'</div>':'')+(config.fps?'<div class="label">轉數快 FPS</div><div>'+e(config.fps)+'</div>':'')+'<div class="label">付款安排</div><div>'+rows.map((x,i)=>'第 '+(i+1)+' 期 '+e(x.percent)+'% · '+hk(x.amount)+' · '+e(x.label)).join('<br>')+'</div>'}
  const quoteHTML=window.quoteDocumentHTML;
+ function itemDescription(description,prefix=''){
+   const [name,...lines]=String(description||'').split(/\r?\n/);
+   return '<span class="ub54-item-name">'+e(prefix+name)+'</span>'+(lines.length?'<span class="ub54-item-detail">'+e(lines.join('\n'))+'</span>':'');
+ }
  window.quoteDocumentHTML=function(q,p,items,...rest){
    const box=document.createElement('div');box.innerHTML=quoteHTML(q,p,items,...rest);const paper=box.querySelector('article');if(!paper)return box.innerHTML;
+   paper.querySelectorAll('.invoice-ref-items tbody tr').forEach((row,i)=>{if(items[i])row.cells[0].innerHTML=itemDescription(items[i].description,(i+1)+'. ')});
    const m=previewDraft?currentMeta():metaFor(q),opts=(m.options||[]).filter(x=>!x.selected);
    if(opts.length){const table=document.createElement('table');table.className='invoice-ref-items ub54-optional-table';table.innerHTML='<colgroup><col style="width:55%"><col style="width:10%"><col style="width:10%"><col style="width:25%"></colgroup><thead><tr><th>額外工程項目（自選）</th><th>單位</th><th>數量</th><th>金額</th></tr></thead><tbody>'+opts.map(x=>'<tr><td>□ '+e(x.description)+'</td><td>'+e(x.unit)+'</td><td>'+e(x.quantity)+'</td><td>'+hk(C.money(Number(x.quantity)*Number(x.unit_price)))+'</td></tr>').join('')+'</tbody>';const note=document.createElement('p');note.className='ub54-optional-note';note.textContent='以下項目供客戶選擇，費用另計。';paper.querySelector('.invoice-ref-summary').before(table,note);}
+   paper.querySelectorAll('.ub54-optional-table tbody tr').forEach((row,i)=>{row.cells[0].innerHTML=itemDescription(opts[i].description,'□ ')});
    if(m.payment)paper.querySelector('.invoice-ref-payment').innerHTML=paymentHTML(m.payment,q.total);
    return box.innerHTML;
  };
