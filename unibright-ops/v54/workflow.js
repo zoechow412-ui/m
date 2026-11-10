@@ -12,7 +12,7 @@
  window.ub50UpdatePreview=window.ub44UpdatePreview=window.updateQuotePreview=update;
  const baseDraw=window.ub44DrawItems;
  window.ub44DrawItems=function(){baseDraw();document.querySelectorAll('#quoteItems .ub44-item').forEach((card,i)=>{
-   const label=document.createElement('label');label.className='ub54-choice';label.innerHTML='<input type="checkbox" '+(!draft[i].optional||draft[i].selected?'checked':'')+' onchange="ub54Choose('+i+',this.checked)"> 選用並計入總價（未剔選則列為單點待選項目）';card.querySelector('.ub44-item-top').after(label);
+   const label=document.createElement('label');label.className='ub54-choice';label.innerHTML='<input type="checkbox" '+(!draft[i].optional||draft[i].selected?'checked':'')+' onchange="ub54Choose('+i+',this.checked)"><span>計入總價</span>';card.querySelector('.ub44-item-top').firstElementChild.after(label);
  });};
  window.ub54Choose=(i,on)=>{draft[i].optional=true;draft[i].selected=on;update()};
  const basePick=window.ub44PickItem;

@@ -43,15 +43,16 @@
  function wire(){
    const field=$('qnumber');if(!field||$('ub53-options'))return;
    const block=document.createElement('section');block.id='ub53-options';block.className='ub53-options';
-   block.innerHTML='<h3>地區編號及房數</h3><div class="ub44-form-grid"><label>工程地區<select id="ub53-district">'+districts.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join('')+'</select></label><label>其他地區英文簡稱<input id="ub53-custom-district" placeholder="例如 MK" maxlength="12" disabled></label><label>房數<select id="ub53-rooms"><option value="">請選擇房數</option>'+Array.from({length:50},(_,i)=>'<option value="'+(i+1)+'">'+(i+1)+' 房</option>').join('')+'</select></label></div><p>新加入項目按所選房數填入數量；防火門及煙霧偵測器＝房數＋1，滅火筒＝1。現有項目須按下方按鈕才會更新，仍可逐項手動修改。</p><div class="ub52-actions"><button type="button" class="btn light" id="ub53-apply">套用房數至現有項目</button><button type="button" class="btn light" id="ub53-renumber">產生新格式報價編號</button></div><small>編號格式：MK/ZOE/YYYYMMDD/001。舊單編號不會自動改動；新工程的工程編號採用相同參考編號。</small>';
+   block.innerHTML='<div class="ub44-form-grid"><label>工程地區<select id="ub53-district">'+districts.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join('')+'</select></label><label id="ub53-custom-label" hidden>地區簡稱<input id="ub53-custom-district" placeholder="例如 MK" maxlength="12" disabled></label><label>房數<select id="ub53-rooms"><option value="">請選擇房數</option>'+Array.from({length:50},(_,i)=>'<option value="'+(i+1)+'">'+(i+1)+' 房</option>').join('')+'</select></label></div><div class="ub52-actions"><button type="button" class="btn light" id="ub53-apply">套用房數</button><button type="button" class="btn light" id="ub53-renumber">更新編號</button></div>';
    field.closest('.ub44-form-grid').before(block);
    $('ub53-apply').onclick=window.ub53ApplyRooms;
    $('ub53-renumber').onclick=()=>{if(!district()){toast('請選擇地區或填寫英文簡稱');return;}window.ub53Number(true);};
-   $('ub53-district').onchange=()=>{$('ub53-custom-district').disabled=$('ub53-district').value!=='OTHER';window.ub53Number();syncProject();};
+   $('ub53-district').onchange=()=>{const custom=$('ub53-district').value==='OTHER';$('ub53-custom-district').disabled=!custom;$('ub53-custom-label').hidden=!custom;window.ub53Number();syncProject();};
    $('ub53-custom-district').oninput=()=>{window.ub53Number();syncProject();};
    field.addEventListener('input',()=>field.dataset.manual='1');
    $('qdate').addEventListener('change',()=>{window.ub53Number();syncProject();});
    const match=field.value.match(/^(?:QO\/)?([A-Z0-9]+)\/ZOE\//);if(match){$('ub53-district').value=districts.some(([v])=>v===match[1])?match[1]:'OTHER';$('ub53-custom-district').value=match[1];$('ub53-custom-district').disabled=$('ub53-district').value!=='OTHER';}
+   $('ub53-custom-label').hidden=$('ub53-district').value!=='OTHER';
    window.ub44DrawCatalog();
  }
  function syncProject(){if(!window.__ub44EditQuote&&$('qproject')?.value==='NEW'&&$('npno')&&newNumber()){$('npno').value=$('qnumber').value;window.ub44UpdatePreview();}}
