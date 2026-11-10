@@ -34,26 +34,19 @@
    function bottom(node){return node.getBoundingClientRect().bottom-body.getBoundingClientRect().top;}
    function appendBlock(block){body.append(block);if(bottom(block)>CONTENT_H){block.remove();next();body.append(block);if(bottom(block)>CONTENT_H)throw Error('單一條款或項目內容過長，請分成較短項目後匯出');}}
    next();
-   const children=[...source.children],idx=children.indexOf(items);
-   for(const node of children.slice(0,idx))appendBlock(clone(node));
-   for(const row of items.querySelectorAll('tbody tr')){
-     if(!table){table=tableShell(items);body.append(table);}
-     const r=clone(row);table.querySelector('tbody').append(r);
-     if(bottom(table)>CONTENT_H){r.remove();if(!table.querySelector('tbody').children.length)table.remove();next();table=tableShell(items);body.append(table);table.querySelector('tbody').append(r);if(bottom(table)>CONTENT_H)throw Error('單一工程描述過長，請拆成兩個項目');}
-   }
-   // Totals, payment terms and signatures travel together, avoiding a signature-only page.
-   const tail=document.createElement('div');tail.className='ub52-document-tail';
-   children.slice(idx+1).forEach(node=>tail.append(clone(node)));body.append(tail);
-   if(bottom(tail)>CONTENT_H){
-     tail.remove();
-     // Keep several final items with the closing section when space permits.
-     const lastTable=table,rows=[...lastTable.querySelectorAll('tbody tr')];
-     const carry=rows.length>1?rows.slice(-Math.min(3,rows.length-1)):[];carry.forEach(row=>row.remove());
-     next();if(carry.length){table=tableShell(items);body.append(table);carry.forEach(row=>table.querySelector('tbody').append(row));}
-     body.append(tail);
-     while(bottom(tail)>CONTENT_H&&carry.length){const row=carry.shift();lastTable.querySelector('tbody').append(row);}
-     if(table&&!table.querySelector('tbody').children.length)table.remove();
-     if(bottom(tail)>CONTENT_H)throw Error('付款條款內容過長，請分成較短段落後匯出');
+   // Greedy reading order: never move finished rows backwards to make room for the entire closing section.
+   const children=[...source.children];
+   for(let index=0;index<children.length;index++){
+     const node=children[index];
+     if(node.matches('table.invoice-ref-items')){
+       table=tableShell(node);body.append(table);
+       for(const row of node.querySelectorAll('tbody tr')){
+         const r=clone(row);table.querySelector('tbody').append(r);
+         if(bottom(table)>CONTENT_H){r.remove();if(!table.querySelector('tbody').children.length)table.remove();next();table=tableShell(node);body.append(table);table.querySelector('tbody').append(r);if(bottom(table)>CONTENT_H)throw Error('單一工程描述過長，請拆成較短項目');}
+       }
+     }else if(node.matches('.invoice-ref-section-title')&&children[index+1]?.matches('.invoice-ref-payment')){
+       const group=document.createElement('div');group.className='ub54-payment-block';group.append(clone(node),clone(children[++index]));appendBlock(group);
+     }else appendBlock(clone(node));
    }
    pages.forEach((p,i)=>{const footer=document.createElement('div');footer.className='ub52-page-footer';const no=meta?.querySelectorAll('div')[1]?.textContent||'';footer.innerHTML='<span>'+esc(no)+'</span><span>第 '+(i+1)+' / '+pages.length+' 頁</span>';p.append(footer);});
    return pages;
@@ -66,7 +59,7 @@
    try{
      toast('正在建立清晰分頁報價 PDF…');
      app.dataset.pdfPhase='loading-renderer';
-     if(!window.htmlToImage)await library('/v52/html-to-image-1.11.13.js');
+     if(!window.html2canvas)await library('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
      app.dataset.pdfPhase='loading-pdf';
      if(!window.jspdf?.jsPDF)await library('/v52/jspdf-2.5.1.js');
      app.dataset.pdfPhase='fonts';
@@ -76,15 +69,14 @@
      host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
      const pages=paginate(source,host);await readyImages(host);
      app.dataset.pdfLayout=JSON.stringify(pages.map(p=>({height:p.getBoundingClientRect().height,children:[...p.querySelector('.ub52-page-content').children].map(x=>({type:x.className,y:x.getBoundingClientRect().top-p.getBoundingClientRect().top,h:x.getBoundingClientRect().height}))})));
-     frame=document.createElement('iframe');frame.style.cssText='position:fixed;left:-20000px;top:0;width:1440px;height:1191px;border:0';document.body.append(frame);
-     const doc=frame.contentDocument;
-     doc.open();doc.write('<!doctype html><html><head><base href="'+location.origin+'/">'+[...document.querySelectorAll('link[rel="stylesheet"],style')].map(x=>x.outerHTML).join('')+'<style>html,body{margin:0!important;padding:0!important;background:white!important}.ub52-page{margin:0!important}</style></head><body></body></html>');doc.close();
-     await Promise.all([...doc.querySelectorAll('link[rel="stylesheet"]')].map(link=>link.sheet?Promise.resolve():new Promise((resolve,reject)=>{link.onload=resolve;link.onerror=()=>reject(Error('文件樣式未完整載入'));})));
      const pdf=new window.jspdf.jsPDF({unit:'pt',format:[PDF_W,PDF_H],orientation:'portrait',compress:true});
+     host.replaceChildren();
      for(const [i,page] of pages.entries()){
-       const renderPage=page.cloneNode(true);doc.body.replaceChildren(renderPage);frame.contentWindow.scrollTo(0,0);await doc.fonts.ready;await readyImages(renderPage);
+       host.replaceChildren(page);
+       await readyImages(page);
+       await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
        if(i)pdf.addPage([PDF_W,PDF_H],'portrait');
-       const canvas=await window.htmlToImage.toCanvas(renderPage,{pixelRatio:2,backgroundColor:'#fff',width:842,height:PAGE_H,skipFonts:true});
+       const canvas=await window.html2canvas(page,{scale:2,backgroundColor:'#fff',logging:false,useCORS:true,width:842,height:PAGE_H,windowWidth:1440,scrollX:0,scrollY:0});
        pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,PDF_W,PDF_H,undefined,'FAST');
      }
      const no=source.querySelector('.invoice-ref-meta')?.querySelectorAll('div')[1]?.textContent||'UNIBRIGHT-Quotation';

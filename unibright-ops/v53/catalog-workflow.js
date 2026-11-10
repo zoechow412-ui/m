@@ -34,7 +34,7 @@
  function district(){return $('ub53-district')?.value==='OTHER'?($('ub53-custom-district')?.value||'').trim().toUpperCase():$('ub53-district')?.value||'';}
  function newNumber(){
    const code=district(),date=($('qdate')?.value||today()).replaceAll('-','');if(!/^[A-Z0-9]{1,12}$/.test(code))return '';
-   const prefix=code+'/ZOE/'+date+'/';let seq=1;const used=new Set((D.quotes||[]).map(x=>x.quotation_no));while(used.has(prefix+String(seq).padStart(3,'0')))seq++;return prefix+String(seq).padStart(3,'0');
+   const prefix='QO/'+code+'/ZOE/'+date+'/';let seq=1;const used=new Set((D.quotes||[]).map(x=>x.quotation_no));while(used.has(prefix+String(seq).padStart(3,'0')))seq++;return prefix+String(seq).padStart(3,'0');
  }
  window.ub53Number=function(force=false){
    const input=$('qnumber');if(!input)return;if(!force&&(window.__ub44EditQuote||input.dataset.manual==='1'))return;
@@ -51,7 +51,7 @@
    $('ub53-custom-district').oninput=()=>{window.ub53Number();syncProject();};
    field.addEventListener('input',()=>field.dataset.manual='1');
    $('qdate').addEventListener('change',()=>{window.ub53Number();syncProject();});
-   const match=field.value.match(/^([A-Z0-9]+)\/ZOE\//);if(match){$('ub53-district').value=districts.some(([v])=>v===match[1])?match[1]:'OTHER';$('ub53-custom-district').value=match[1];$('ub53-custom-district').disabled=$('ub53-district').value!=='OTHER';}
+   const match=field.value.match(/^(?:QO\/)?([A-Z0-9]+)\/ZOE\//);if(match){$('ub53-district').value=districts.some(([v])=>v===match[1])?match[1]:'OTHER';$('ub53-custom-district').value=match[1];$('ub53-custom-district').disabled=$('ub53-district').value!=='OTHER';}
    window.ub44DrawCatalog();
  }
  function syncProject(){if(!window.__ub44EditQuote&&$('qproject')?.value==='NEW'&&$('npno')&&newNumber()){$('npno').value=$('qnumber').value;window.ub44UpdatePreview();}}
