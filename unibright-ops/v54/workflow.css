@@ -9,3 +9,6 @@
 .invoice-reference-sheet .ub52-stamp-crop img{display:block!important;position:absolute!important;width:184.8px!important;height:123.2px!important;max-width:none!important;left:-1.6px!important;top:-12px!important;visibility:visible!important;opacity:1!important}
 .quote-reference-sheet .invoice-ref-sign{break-inside:avoid!important}.ub52-page .invoice-ref-items td:first-child{white-space:pre-line!important}.ub52-page .ub54-optional-table{margin-top:12px!important}
 .ub54-terms-dialog{border:1px solid #c9d9e2;border-radius:14px;padding:24px;width:min(640px,94vw);max-height:90vh;overflow:auto;box-sizing:border-box;color:#183b53}.ub54-terms-dialog::backdrop{background:#173a5266}.ub54-terms-dialog label{display:grid;gap:6px;margin:10px 0}.ub54-terms-dialog input,.ub54-terms-dialog select{box-sizing:border-box;width:100%;padding:9px;border:1px solid #c9d9e2;border-radius:8px;font:inherit}.ub54-terms-error{color:#a12323}
+.quote-reference-sheet .ub52-company-confirm .ub52-sign-field,.quote-reference-sheet .ub52-client-confirm .ub52-sign-field{margin-top:6px!important}
+.quote-reference-sheet .ub52-company-identity>div{height:20px!important;line-height:20px!important}
+.quote-reference-sheet .ub52-sign-field:last-child>div{height:24px!important}

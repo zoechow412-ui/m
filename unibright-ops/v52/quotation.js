@@ -66,17 +66,19 @@
      await document.fonts.ready;
      app.dataset.pdfPhase='pagination';
      addEntry();await readyImages(source);
-     host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
+     host=document.createElement('div');host.style.cssText='position:absolute;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
      const pages=paginate(source,host);await readyImages(host);
      app.dataset.pdfLayout=JSON.stringify(pages.map(p=>({height:p.getBoundingClientRect().height,children:[...p.querySelector('.ub52-page-content').children].map(x=>({type:x.className,y:x.getBoundingClientRect().top-p.getBoundingClientRect().top,h:x.getBoundingClientRect().height}))})));
      const pdf=new window.jspdf.jsPDF({unit:'pt',format:[PDF_W,PDF_H],orientation:'portrait',compress:true});
-     host.replaceChildren();
+     frame=document.createElement('iframe');frame.style.cssText='position:fixed;left:-10000px;top:0;width:1440px;height:1191px;border:0';document.body.append(frame);
+     const renderDoc=frame.contentDocument;renderDoc.open();renderDoc.write('<!doctype html><html><head></head><body style="margin:0;background:white"></body></html>');renderDoc.close();
+     await Promise.all([...document.querySelectorAll('link[rel="stylesheet"],style')].map(style=>new Promise((resolve,reject)=>{const copy=style.cloneNode(true);if(copy.tagName==='LINK'){copy.href=style.href;copy.onload=resolve;copy.onerror=()=>reject(Error('PDF 樣式載入失敗'));}renderDoc.head.append(copy);if(copy.tagName!=='LINK')resolve();})));
      for(const [i,page] of pages.entries()){
-       host.replaceChildren(page);
-       await readyImages(page);
+       const renderPage=page.cloneNode(true);renderDoc.body.replaceChildren(renderPage);
+       await renderDoc.fonts.ready;await readyImages(renderPage);
        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
        if(i)pdf.addPage([PDF_W,PDF_H],'portrait');
-       const canvas=await window.html2canvas(page,{scale:2,backgroundColor:'#fff',logging:false,useCORS:true,width:842,height:PAGE_H,windowWidth:1440,scrollX:0,scrollY:0});
+       const canvas=await window.html2canvas(renderPage,{scale:2,backgroundColor:'#fff',logging:false,useCORS:true,width:842,height:PAGE_H,windowWidth:1440,scrollX:0,scrollY:0});
        pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,PDF_W,PDF_H,undefined,'FAST');
      }
      const no=source.querySelector('.invoice-ref-meta')?.querySelectorAll('div')[1]?.textContent||'UNIBRIGHT-Quotation';
