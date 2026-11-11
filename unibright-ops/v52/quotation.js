@@ -31,7 +31,7 @@
      body=document.createElement('div');body.className='ub52-page-content';page.append(body);host.append(page);pages.push(page);table=null;
      if(pages.length>1){body.append(clone(header),clone(meta));const label=document.createElement('div');label.className='ub52-continuation';label.textContent='報價單續頁 / QUOTATION CONTINUED';body.append(label);}
    }
-   function bottom(node){return node.getBoundingClientRect().bottom-body.getBoundingClientRect().top;}
+   function bottom(node){return node.getClientRects().length?node.getBoundingClientRect().bottom-body.getBoundingClientRect().top:0;}
    function appendBlock(block){body.append(block);if(bottom(block)>CONTENT_H){block.remove();next();body.append(block);if(bottom(block)>CONTENT_H)throw Error('單一條款或項目內容過長，請分成較短項目後匯出');}}
    next();
    // Greedy reading order: never move finished rows backwards to make room for the entire closing section.
@@ -66,7 +66,7 @@
      await document.fonts.ready;
      app.dataset.pdfPhase='pagination';
      addEntry();await readyImages(source);
-     host=document.createElement('div');host.style.cssText='position:absolute;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
+     host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
      const pages=paginate(source,host);await readyImages(host);
      app.dataset.pdfLayout=JSON.stringify(pages.map(p=>({height:p.getBoundingClientRect().height,children:[...p.querySelector('.ub52-page-content').children].map(x=>({type:x.className,y:x.getBoundingClientRect().top-p.getBoundingClientRect().top,h:x.getBoundingClientRect().height}))})));
      const pdf=new window.jspdf.jsPDF({unit:'pt',format:[PDF_W,PDF_H],orientation:'portrait',compress:true});
@@ -84,7 +84,7 @@
      const no=source.querySelector('.invoice-ref-meta')?.querySelectorAll('div')[1]?.textContent||'UNIBRIGHT-Quotation';
      pdf.save(no.replace(/[\\/:*?"<>|]/g,'-')+'.pdf');
      document.getElementById('app').dataset.pdfExport=JSON.stringify({pages:pages.length,width:PDF_W,height:PDF_H,status:'downloaded'});toast('報價 PDF 已下載，共 '+pages.length+' 頁');return true;
-   }catch(e){alert('報價 PDF 未能匯出：'+e.message);return false;}finally{host?.remove();frame?.remove();exporting=false;}
+   }catch(e){app.dataset.pdfError=e.message;toast('報價 PDF 未能匯出：'+e.message);alert('報價 PDF 未能匯出：'+e.message);return false;}finally{host?.remove();frame?.remove();exporting=false;}
  }
  window.exportCurrentPDF=window.downloadCurrentPDF=exportQuote;
  window.printA4=function(){return document.querySelector('.quote-reference-sheet')?exportQuote():previousPrint?.();};

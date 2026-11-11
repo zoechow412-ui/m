@@ -3,9 +3,9 @@
  const $=id=>document.getElementById(id),C=window.UB54,enc=encodeURIComponent;
  const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const defaults=()=>({method:'銀行轉帳／FPS／支票',bank:'中國工商銀行（亞洲）有限公司 720502009151',fps:'120437801',stages:[{percent:50,label:'確認訂單時支付訂金'},{percent:50,label:'完工後7天內支付尾款'}]});
- let payment=defaults(),previewDraft=null,saving=false,quoteContext=null,paymentContext=null;
+ let payment=defaults(),previewDraft=null,saving=false,quoteContext=null,paymentContext=null,photoUploads=0;
  function metaFor(q){return q?.notes?C.read(q.notes):{}}
- function currentMeta(){return {payment,options:(previewDraft||draft||[]).flatMap((x,i)=>x.optional?[{...x,sort_order:i+1}]:[])}}
+ function currentMeta(){const rows=previewDraft||draft||[];return {payment,item_photos:C.photoMeta(rows),options:rows.flatMap((x,i)=>x.optional?[{...x,sort_order:i+1}]:[])}}
  function activeRows(rows){return rows.filter(x=>!x.optional||x.selected)}
  const baseUpdate=window.ub50UpdatePreview;
  function update(){const all=draft;previewDraft=all;draft=activeRows(all);try{baseUpdate()}finally{draft=all;previewDraft=null}}
@@ -13,8 +13,18 @@
  const baseDraw=window.ub44DrawItems;
  window.ub44DrawItems=function(){baseDraw();document.querySelectorAll('#quoteItems .ub44-item').forEach((card,i)=>{
    const label=document.createElement('label');label.className='ub54-choice';label.innerHTML='<input type="checkbox" '+(!draft[i].optional||draft[i].selected?'checked':'')+' onchange="ub54Choose('+i+',this.checked)"><span>計入總價</span>';card.querySelector('.ub44-item-top').firstElementChild.after(label);
+   const photos=document.createElement('section');photos.className='ub54-photo-editor';photos.innerHTML='<div class="ub54-photo-toolbar"><b>工程位置相片</b><label class="btn light">上載相片<input aria-label="項目 '+(i+1)+' 工程位置相片" type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="ub54UploadPhotos('+i+',this)"></label></div><div class="ub54-photo-grid">'+(draft[i].photos||[]).map((p,j)=>'<figure><img src="'+e(photoSource(p.src))+'" alt="工程位置相片 '+(j+1)+'"><input aria-label="項目 '+(i+1)+' 相片 '+(j+1)+' 位置說明" placeholder="位置說明，例如：走廊入口右側" value="'+e(p.caption)+'" oninput="ub54PhotoCaption('+i+','+j+',this.value)"><button type="button" class="btn light" onclick="ub54RemovePhoto('+i+','+j+')">移除相片</button></figure>').join('')+'</div>';card.append(photos);
  });};
  window.ub54Choose=(i,on)=>{draft[i].optional=true;draft[i].selected=on;update()};
+ function photoSource(src){return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(src||'')?src:''}
+ async function compactPhoto(file){
+   if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('請使用 JPG、PNG 或 WebP 相片');
+   if(file.size>20*1024*1024)throw Error('每張原相請勿超過 20MB');
+   const url=URL.createObjectURL(file),img=new Image();try{img.src=url;await img.decode();const scale=Math.min(1,1280/Math.max(img.naturalWidth,img.naturalHeight)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);let quality=.82,src=canvas.toDataURL('image/jpeg',quality);while(src.length>300000&&quality>.3){quality-=.1;src=canvas.toDataURL('image/jpeg',quality);}if(src.length>450000)throw Error('相片太複雜，請先裁切後再上載');return {src,caption:''};}finally{URL.revokeObjectURL(url)}
+ }
+ window.ub54UploadPhotos=async(i,input)=>{const row=draft[i],files=[...input.files||[]];if(!files.length)return;if((row.photos?.length||0)+files.length>4){toast('每個項目最多 4 張位置相片');input.value='';return;}photoUploads++;input.disabled=true;try{const added=[];for(const file of files)added.push(await compactPhoto(file));if(draft.includes(row)){const size=draft.reduce((n,x)=>n+(x.photos||[]).reduce((s,p)=>s+p.src.length,0),0)+added.reduce((n,p)=>n+p.src.length,0);if(size>8000000)throw Error('本報價相片已達容量上限，請先移除部分相片');row.photos=[...(row.photos||[]),...added];window.ub44DrawItems();update();toast('相片已加入，儲存報價後保留');}}catch(err){toast('相片未加入：'+err.message)}finally{photoUploads--;input.disabled=false;input.value='';}};
+ window.ub54PhotoCaption=(i,j,value)=>{draft[i].photos[j].caption=value;update()};
+ window.ub54RemovePhoto=(i,j)=>{draft[i].photos.splice(j,1);window.ub44DrawItems();update()};
  const basePick=window.ub44PickItem;
  window.ub44PickItem=function(code){basePick(code);if($('ub54-add-mode')?.value==='optional'&&draft.length){draft[draft.length-1].optional=true;draft[draft.length-1].selected=false;window.ub44DrawItems()}};
  window.pickItem=window.ub44PickItem;
@@ -23,7 +33,7 @@
  window.editQuote=async function(id){try{
    const q=(D.quotes||[]).find(x=>x.id===id)||(await api('quotations','?id=eq.'+enc(id)+'&select=*'))[0];if(!q)throw Error('找不到報價');
    const rows=await api('quotation_items','?quotation_id=eq.'+enc(id)+'&select=*&order=sort_order'),m=metaFor(q);payment=m.payment||defaults();
-   const opts=m.options||[];draft=rows.map(x=>({...x,optional:opts.some(o=>o.selected&&o.sort_order===x.sort_order),selected:true}));
+   const opts=m.options||[];draft=C.restorePhotos(rows,m).map(x=>({...x,optional:opts.some(o=>o.selected&&o.sort_order===x.sort_order),selected:true}));
    for(const x of opts.filter(x=>!x.selected))draft.push({...x,id:undefined});draft.sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
    window.__ub44EditQuote=q;window.__ub43EditQuote=null;window.__ub43EditQuoteId='';tier=q.price_tier||'customer';window.ub50RenderEditor();
  }catch(err){alert('開啟報價失敗：'+err.message)}};
@@ -65,7 +75,7 @@
    }return rawApi(table,query,options);
  };
  window.saveQuote=async function(){
-   if(saving)return;const all=draft;
+   if(saving)return;if(photoUploads){toast('相片處理中，請稍候再儲存');return;}const all=draft;
    if(!all.length||all.some(x=>!String(x.description||'').trim()||!(Number(x.quantity)>0)||!Number.isFinite(Number(x.unit_price))||Number(x.unit_price)<0)){toast('請填妥項目名稱、數量及有效單價');return;}
    const sum=payment.stages.reduce((a,x)=>a+Number(x.percent),0);if(Math.abs(sum-100)>.001||payment.stages.some(x=>!(x.percent>0)||!x.label.trim())){toast('每期須填有效百分比及條件，百分比合計須為100%');return;}
    const editing=window.__ub44EditQuote;
@@ -96,12 +106,16 @@
    const [name,...lines]=String(description||'').split(/\r?\n/);
    return '<span class="ub54-item-name">'+e(prefix+name)+'</span>'+(lines.length?'<span class="ub54-item-detail">'+e(lines.join('\n'))+'</span>':'');
  }
+ function addPhotoRows(table,items,meta){
+   const rows=[...table.querySelectorAll('tbody tr')];rows.forEach((row,i)=>{const item=items[i];if(!item)return;const photos=(Array.isArray(item.photos)?item.photos:((meta.item_photos||[]).find(p=>Number(p.sort_order)===Number(item.sort_order))?.photos||[])).filter(p=>photoSource(p.src));if(!photos.length)return;const r=document.createElement('tr');r.className='ub54-location-photo-row';r.innerHTML='<td colspan="'+row.cells.length+'"><div class="ub54-location-photos" style="grid-template-columns:repeat('+photos.length+',minmax(0,1fr))">'+photos.map((p,j)=>'<figure class="ub54-location-photo"><img src="'+e(p.src)+'" alt="'+e(p.caption||'工程位置相片')+'"><figcaption>'+e(String(item.description).split('\n')[0])+' · 位置相片 '+(j+1)+(p.caption?'：'+e(p.caption):'')+'</figcaption></figure>').join('')+'</div></td>';row.after(r);});
+ }
  window.quoteDocumentHTML=function(q,p,items,...rest){
    const box=document.createElement('div');box.innerHTML=quoteHTML(q,p,items,...rest);const paper=box.querySelector('article');if(!paper)return box.innerHTML;
    paper.querySelectorAll('.invoice-ref-items tbody tr').forEach((row,i)=>{if(items[i])row.cells[0].innerHTML=itemDescription(items[i].description,(i+1)+'. ')});
    const m=previewDraft?currentMeta():metaFor(q),opts=(m.options||[]).filter(x=>!x.selected);
    if(opts.length){const table=document.createElement('table');table.className='invoice-ref-items ub54-optional-table';table.innerHTML='<colgroup><col style="width:55%"><col style="width:10%"><col style="width:10%"><col style="width:25%"></colgroup><thead><tr><th>額外工程項目（自選）</th><th>單位</th><th>數量</th><th>單價</th></tr></thead><tbody>'+opts.map(x=>'<tr><td>□ '+e(x.description)+'</td><td>'+e(x.unit)+'</td><td>'+e(x.quantity)+'</td><td>'+hk(x.unit_price)+'</td></tr>').join('')+'</tbody>';const note=document.createElement('p');note.className='ub54-optional-note';note.textContent='以下項目供客戶選擇，費用另計。';paper.querySelector('.invoice-ref-summary').after(table,note);}
    paper.querySelectorAll('.ub54-optional-table tbody tr').forEach((row,i)=>{row.cells[0].innerHTML=itemDescription(opts[i].description,'□ ')});
+   const includedTable=paper.querySelector('.invoice-ref-items:not(.ub54-optional-table)');if(includedTable)addPhotoRows(includedTable,items,m);const optionalTable=paper.querySelector('.ub54-optional-table');if(optionalTable)addPhotoRows(optionalTable,opts,m);
    if(m.payment)paper.querySelector('.invoice-ref-payment').innerHTML=paymentHTML(m.payment,q.total);
    return box.innerHTML;
  };
