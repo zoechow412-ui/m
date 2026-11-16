@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict');
+const O=require('../v54/optional-defaults.js'),C=require('../v54/core.js');
+const fresh=O.ensure([]);
+assert.equal(fresh.length,8);
+assert.equal(C.totals(fresh).total,0);
+assert.equal(O.ensure(fresh).length,8);
+const existing=[{description:'通風管道建造工程',unit_price:2500,quantity:2,optional:true,selected:false,sort_order:4,photos:[{src:'x'}]}];
+const merged=O.ensure(existing);
+assert.equal(merged.length,8);assert.equal(merged[0],existing[0]);
+assert.equal(merged[0].unit_price,2500);
+assert.equal(O.ensure(merged.filter(x=>O.key(x)!=='capacity')).length,8);
+assert.equal(O.defaults.find(x=>x.optional_key==='capacity').unit_price,6500);
+assert.equal(O.defaults.find(x=>x.optional_key==='cable60').unit_price,1800);
+assert.equal(O.defaults.find(x=>x.optional_key==='fireboard').unit_price,2000);
+console.log('Fixed options: new orders, repeat edits, custom values/photos, restoration, prices and zero unchecked totals passed');

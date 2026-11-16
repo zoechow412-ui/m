@@ -33,12 +33,12 @@
  window.ub44PickItem=function(code){basePick(code);if($('ub54-add-mode')?.value==='optional'&&draft.length){draft[draft.length-1].optional=true;draft[draft.length-1].selected=false;window.ub44DrawItems()}};
  window.pickItem=window.ub44PickItem;
  const baseNew=window.newQuote;
- window.newQuote=function(){payment=defaults();baseNew()};
+ window.newQuote=function(){payment=defaults();baseNew();draft=window.UB54Options.ensure(draft);window.ub44DrawItems();update()};
  window.editQuote=async function(id){try{
    const q=(D.quotes||[]).find(x=>x.id===id)||(await api('quotations','?id=eq.'+enc(id)+'&select=*'))[0];if(!q)throw Error('找不到報價');
    const rows=await api('quotation_items','?quotation_id=eq.'+enc(id)+'&select=*&order=sort_order'),m=metaFor(q);payment=m.payment||defaults();
    const opts=m.options||[];draft=C.restorePhotos(rows,m).map(x=>({...x,optional:opts.some(o=>o.selected&&o.sort_order===x.sort_order),selected:true}));
-   for(const x of opts.filter(x=>!x.selected))draft.push({...x,id:undefined});draft.sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
+   for(const x of opts.filter(x=>!x.selected))draft.push({...x,id:undefined});draft.sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));draft=window.UB54Options.ensure(draft);
    window.__ub44EditQuote=q;window.__ub43EditQuote=null;window.__ub43EditQuoteId='';tier=q.price_tier||'customer';window.ub50RenderEditor();
  }catch(err){alert('開啟報價失敗：'+err.message)}};
  function drawStages(){const box=$('ub54-stages');if(!box)return;
@@ -79,7 +79,7 @@
    }return rawApi(table,query,options);
  };
  window.saveQuote=async function(){
-   if(saving)return;if(photoUploads){toast('相片處理中，請稍候再儲存');return;}const all=draft;
+   if(saving)return;if(photoUploads){toast('相片處理中，請稍候再儲存');return;}draft=window.UB54Options.ensure(draft);const all=draft;
    if(!all.length||all.some(x=>!String(x.description||'').trim()||((!x.optional||x.selected||(!x.price_pending&&!x.quantity_pending))&&(!(Number(x.quantity)>0)||x.unit_price===null||x.unit_price===''||!Number.isFinite(Number(x.unit_price))||Number(x.unit_price)<0)))){toast('請填妥項目名稱、數量及有效單價');return;}
    const sum=payment.stages.reduce((a,x)=>a+Number(x.percent),0);if(Math.abs(sum-100)>.001||payment.stages.some(x=>!(x.percent>0)||!x.label.trim())){toast('每期須填有效百分比及條件，百分比合計須為100%');return;}
    const editing=window.__ub44EditQuote;
