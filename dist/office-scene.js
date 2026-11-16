@@ -19,7 +19,7 @@ export function mountOfficeScene({root,staff,onStart}){
  const people=[...root.querySelectorAll('.office-worker .night-sprite')];
  const started=performance.now();
  const motionTimer=setInterval(()=>{
-  const still=document.body.classList.contains('reduce-night-motion')||matchMedia('(prefers-reduced-motion: reduce)').matches||document.hidden||root.hidden;
+  const still=document.body.classList.contains('reduce-night-motion')||document.hidden||root.hidden;
   people.forEach((person,index)=>person.style.setProperty('--pose',still?0:officePoseAt(performance.now()-started,index)));
  },80);
  root.addEventListener('pointerover',e=>{const seat=e.target.closest('[data-consultant]');if(seat&&!document.body.classList.contains('reduce-night-motion'))seat.classList.add('office-greeting');});
