@@ -38,8 +38,12 @@
 .office-seat .office-worker{inset:0;overflow:visible;transform-origin:50% 55%}
 .office-worker .night-sprite{inset:0;width:100%;height:100%;aspect-ratio:auto;translate:0 0;filter:drop-shadow(0 3px 6px #0008)}
 .office-seat-label{top:8%;left:0}
-@keyframes office-seat-breathe{50%{transform:translateY(-1px)}}
+@keyframes office-seat-breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-2px) scaleY(1.012)}}
 .office-seat .office-worker{animation-name:office-seat-breathe}
+.office-seat:nth-child(2n) .office-worker{animation-duration:4.3s}
+.office-seat:nth-child(3n) .office-worker{animation-duration:5.7s}
+.office-greeting .office-worker{filter:brightness(1.1)}
+@media(prefers-reduced-motion:reduce){.office-seat .office-worker,#officePortrait,.office-seat-label{animation:none!important}}
 /* Keep the room and its occupants in one perspective coordinate system. */
 .office-stage{min-height:0;height:auto;aspect-ratio:3/2;align-self:start}
 .office-seat{left:calc(var(--seat-x) - 9%);width:18%;height:17.8%;aspect-ratio:auto}

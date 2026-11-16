@@ -1,5 +1,12 @@
 const descriptions={bazi:'由四柱、十神同五行關係，逐步認識出生盤。先核對出生時間，再拆開人生主題；唔會將五行最少直接當用神。',ziwei:'十二宮係十二個生活切面。入房後可以逐宮打開，再點星曜，對照實際落宮同會照關係。',indian:'由上升、行星落點同月宿認識節奏。出生地同時區會影響計算，行星周期唔等於某日必有事件。',meihua:'用香港當刻時間起卦，分清本卦、互卦、變卦同體用。適合帶一件眼前嘅事入房慢慢拆。',liuren:'由香港當刻農曆月、日、時順推六神，只讀最後落宮，唔會將六個結果一齊當答案。',iching:'由卦辭、動爻同變卦睇事情點轉變。六十四卦各有意思，先問清一件事，再讀今次所得。',qimen:'按香港當刻排時家局，逐格查看九宮嘅門、星、神與干。先認清局面，再討論可控嘅一步。',cross:'將出生盤同當下卦局分開列出，再逐門比對。未有計算嘅部分會講清楚，唔會硬湊成一致答案。'};
 const labels={bazi:'八字',ziwei:'紫微斗數',indian:'印度占星',meihua:'梅花易數',liuren:'掐指一算',iching:'易經',qimen:'奇門遁甲',cross:'綜合解讀'};
+// Stagger every person, using only seated frames (never the walking frame).
+export function officePoseAt(elapsed,index){
+ const phase=((elapsed+index*1187)%9000+9000)%9000;
+ if(phase>=1400&&phase<1570||phase>=5800&&phase<5970)return 1;
+ if(phase>=3000&&phase<4300)return 2;
+ return 0;
+}
 export const officeSeats=Object.freeze([{id:'bazi',x:15.3,y:24.7},{id:'ziwei',x:38.4,y:24.7},{id:'indian',x:60.8,y:24.7},{id:'meihua',x:83.4,y:24.7},{id:'liuren',x:12.5,y:42.5},{id:'iching',x:36.5,y:42.5},{id:'qimen',x:60.8,y:42.5},{id:'cross',x:86.7,y:42.5}]);
 export function mountOfficeScene({root,staff,onStart}){
  let selected=staff[0],favorites=new Set();
@@ -9,6 +16,13 @@ export function mountOfficeScene({root,staff,onStart}){
  const start=()=>onStart(selected.id,q('#officeQuestion').value.trim());
  root.addEventListener('click',e=>{const seat=e.target.closest('[data-consultant]');if(seat){preview(seat.dataset.consultant);if(dialog.open)dialog.close();if(!document.body.classList.contains('reduce-night-motion')){const figure=seat.querySelector('.night-sprite');figure?.style.setProperty('--pose',2);setTimeout(()=>figure?.style.setProperty('--pose',0),700);}if(matchMedia('(max-width:760px)').matches)q('.office-profile').scrollIntoView({behavior:document.body.classList.contains('reduce-night-motion')?'auto':'smooth',block:'start'});}const nav=e.target.closest('[data-nav]');if(!nav)return;if(nav.dataset.nav==='home'){root.scrollIntoView({behavior:'smooth'});return;}if(nav.dataset.nav==='consult'){q('#officeStart').focus();return;}q('.office-info h2').textContent=nav.dataset.nav==='saved'?'收藏顧問':'使用說明';const content=q('.office-info div');content.replaceChildren();if(nav.dataset.nav==='saved'){if(!favorites.size)content.textContent='未有收藏。揀一位顧問後，按「收藏呢位顧問」；收藏只保留至重新載入頁面。';else staff.filter(s=>favorites.has(s.id)).forEach(s=>{const b=document.createElement('button');b.type='button';b.dataset.consultant=s.id;b.textContent=s.name+' · '+labels[s.id];content.append(b);});}else content.textContent='先揀顧問，再按開始諮詢。顧問會帶你經走廊入房，逐步問資料同問題。出生盤需要出生資料；問事方法使用起課當刻香港時間。命盤可逐項打開，術語可點擊詳解。自由生成 AI 係自願試驗功能，可選 WebGPU 或 CPU／WASM；規則解讀唔需要下載模型。';dialog.showModal();});
  q('#officeStart').onclick=start;q('.office-composer').onsubmit=e=>{e.preventDefault();start();};q('#officeFavorite').onclick=()=>{favorites.has(selected.id)?favorites.delete(selected.id):favorites.add(selected.id);preview(selected.id);};q('.office-info-close').onclick=()=>dialog.close();preview(selected.id);
- setInterval(()=>{if(document.body.classList.contains('reduce-night-motion')||root.hidden)return;const people=[...root.querySelectorAll('.office-worker .night-sprite')];const person=people[Math.floor(Math.random()*people.length)];person?.style.setProperty('--pose',1);setTimeout(()=>person?.style.setProperty('--pose',0),160);},3700);
+ const people=[...root.querySelectorAll('.office-worker .night-sprite')];
+ const started=performance.now();
+ const motionTimer=setInterval(()=>{
+  const still=document.body.classList.contains('reduce-night-motion')||matchMedia('(prefers-reduced-motion: reduce)').matches||document.hidden||root.hidden;
+  people.forEach((person,index)=>person.style.setProperty('--pose',still?0:officePoseAt(performance.now()-started,index)));
+ },80);
+ root.addEventListener('pointerover',e=>{const seat=e.target.closest('[data-consultant]');if(seat&&!document.body.classList.contains('reduce-night-motion'))seat.classList.add('office-greeting');});
+ root.addEventListener('pointerout',e=>e.target.closest('[data-consultant]')?.classList.remove('office-greeting'));
  return {reset(){q('#officeQuestion').value='';if(dialog.open)dialog.close();preview(selected.id);}};
 }
