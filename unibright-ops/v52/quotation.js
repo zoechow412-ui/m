@@ -75,6 +75,7 @@
      addEntry();await readyImages(source);
      host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:842px;background:white;pointer-events:none';document.body.append(host);
      const pages=paginate(source,host);await readyImages(host);
+     app.dataset.pdfLayout=JSON.stringify(pages.map(p=>({height:p.getBoundingClientRect().height,children:[...p.querySelector('.ub52-page-content').children].map(x=>({type:x.className,y:x.getBoundingClientRect().top-p.getBoundingClientRect().top,h:x.getBoundingClientRect().height}))})));
      frame=document.createElement('iframe');frame.style.cssText='position:fixed;left:-20000px;top:0;width:1440px;height:1191px;border:0';document.body.append(frame);
      const doc=frame.contentDocument;
      doc.open();doc.write('<!doctype html><html><head><base href="'+location.origin+'/">'+[...document.querySelectorAll('link[rel="stylesheet"],style')].map(x=>x.outerHTML).join('')+'<style>html,body{margin:0!important;padding:0!important;background:white!important}.ub52-page{margin:0!important}</style></head><body></body></html>');doc.close();
