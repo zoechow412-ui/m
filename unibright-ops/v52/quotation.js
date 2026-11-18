@@ -82,7 +82,7 @@
        pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,PDF_W,PDF_H,undefined,'FAST');
      }
      const no=source.querySelector('.invoice-ref-meta')?.querySelectorAll('div')[1]?.textContent||'UNIBRIGHT-Quotation';
-     pdf.save(no.replace(/[\\/:*?"<>|]/g,'-')+'.pdf');
+     pdf.save(window.UB54Options.filename(no,source.dataset.siteAddress||''));
      document.getElementById('app').dataset.pdfExport=JSON.stringify({pages:pages.length,width:PDF_W,height:PDF_H,status:'downloaded'});toast('報價 PDF 已下載，共 '+pages.length+' 頁');return true;
    }catch(e){app.dataset.pdfError=e.message;toast('報價 PDF 未能匯出：'+e.message);alert('報價 PDF 未能匯出：'+e.message);return false;}finally{host?.remove();frame?.remove();exporting=false;}
  }

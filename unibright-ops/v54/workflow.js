@@ -3,9 +3,9 @@
  const $=id=>document.getElementById(id),C=window.UB54,enc=encodeURIComponent;
  const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const defaults=()=>({method:'銀行轉帳／FPS／支票',bank:'中國工商銀行（亞洲）有限公司 720502009151',fps:'120437801',stages:[{percent:50,label:'確認訂單時支付訂金'},{percent:50,label:'完工後7天內支付尾款'}]});
- let payment=defaults(),previewDraft=null,saving=false,quoteContext=null,paymentContext=null,photoUploads=0;
+ let roomCount=0,payment=defaults(),previewDraft=null,saving=false,quoteContext=null,paymentContext=null,photoUploads=0;
  function metaFor(q){return q?.notes?C.read(q.notes):{}}
- function currentMeta(){const rows=previewDraft||draft||[];return {payment,item_photos:C.photoMeta(rows),options:rows.flatMap((x,i)=>x.optional?[{...x,sort_order:i+1}]:[])}}
+ function currentMeta(){const rows=previewDraft||draft||[];return {room_count:roomCount,payment,item_photos:C.photoMeta(rows),options:rows.flatMap((x,i)=>x.optional?[{...x,sort_order:i+1}]:[])}}
  function activeRows(rows){return rows.filter(x=>!x.optional||x.selected)}
  const baseUpdate=window.ub50UpdatePreview;
  function update(){const all=draft;previewDraft=all;draft=activeRows(all);try{baseUpdate()}finally{draft=all;previewDraft=null}}
@@ -33,12 +33,12 @@
  window.ub44PickItem=function(code){basePick(code);if($('ub54-add-mode')?.value==='optional'&&draft.length){draft[draft.length-1].optional=true;draft[draft.length-1].selected=false;window.ub44DrawItems()}};
  window.pickItem=window.ub44PickItem;
  const baseNew=window.newQuote;
- window.newQuote=function(){payment=defaults();baseNew();draft=window.UB54Options.ensure(draft);window.ub44DrawItems();update()};
+ window.newQuote=function(){roomCount=0;payment=defaults();baseNew();draft=window.UB54Options.ensure(draft,roomCount);window.ub44DrawItems();update()};
  window.editQuote=async function(id){try{
    const q=(D.quotes||[]).find(x=>x.id===id)||(await api('quotations','?id=eq.'+enc(id)+'&select=*'))[0];if(!q)throw Error('找不到報價');
-   const rows=await api('quotation_items','?quotation_id=eq.'+enc(id)+'&select=*&order=sort_order'),m=metaFor(q);payment=m.payment||defaults();
+   const rows=await api('quotation_items','?quotation_id=eq.'+enc(id)+'&select=*&order=sort_order'),m=metaFor(q);roomCount=Number(m.room_count)||window.UB54Options.inferRooms(rows);payment=m.payment||defaults();
    const opts=m.options||[];draft=C.restorePhotos(rows,m).map(x=>({...x,optional:opts.some(o=>o.selected&&o.sort_order===x.sort_order),selected:true}));
-   for(const x of opts.filter(x=>!x.selected))draft.push({...x,id:undefined});draft.sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));draft=window.UB54Options.ensure(draft);
+   for(const x of opts.filter(x=>!x.selected))draft.push({...x,id:undefined});draft.sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));draft=window.UB54Options.ensure(draft,roomCount);
    window.__ub44EditQuote=q;window.__ub43EditQuote=null;window.__ub43EditQuoteId='';tier=q.price_tier||'customer';window.ub50RenderEditor();
  }catch(err){alert('開啟報價失敗：'+err.message)}};
  function drawStages(){const box=$('ub54-stages');if(!box)return;
@@ -55,6 +55,7 @@
    for(const key of ['method','bank','fps'])$('ub54-'+key).oninput=x=>{payment[key]=x.target.value;update()};
    const mode=document.createElement('label');mode.className='ub54-add-mode';mode.innerHTML='加入方式<select id="ub54-add-mode"><option value="included">工程項目：計入總價</option><option value="optional">單點待選：不計入總價，供剔選</option></select>';$('catalogSearch').before(mode);
    const sort=document.createElement('button');sort.type='button';sort.className='btn light';sort.textContent='按價目次序排列項目';sort.onclick=window.ub54Sort;$('quoteItems').before(sort);
+   const roomField=$('ub53-rooms');if(roomField){roomField.value=roomCount||'';roomField.onchange=()=>{roomCount=Number(roomField.value)||0;draft=window.UB54Options.ensure(draft,roomCount);window.ub44DrawItems();update();};}
    const help=$('ub53-options')?.querySelector('small');if(help)help.textContent='報價 QO/MK/ZOE/YYYYMMDD/001；Invoice INV/...；收據 RCP/...。舊單不會自動改號。';
    const q=$('qnumber');if(!window.__ub44EditQuote&&/^[A-Z0-9]+\/ZOE\//.test(q.value))q.value='QO/'+q.value;
  }
@@ -79,7 +80,7 @@
    }return rawApi(table,query,options);
  };
  window.saveQuote=async function(){
-   if(saving)return;if(photoUploads){toast('相片處理中，請稍候再儲存');return;}draft=window.UB54Options.ensure(draft);const all=draft;
+   if(saving)return;if(photoUploads){toast('相片處理中，請稍候再儲存');return;}draft=window.UB54Options.ensure(draft,roomCount);const all=draft;
    if(!all.length||all.some(x=>!String(x.description||'').trim()||((!x.optional||x.selected||(!x.price_pending&&!x.quantity_pending))&&(!(Number(x.quantity)>0)||x.unit_price===null||x.unit_price===''||!Number.isFinite(Number(x.unit_price))||Number(x.unit_price)<0)))){toast('請填妥項目名稱、數量及有效單價');return;}
    const sum=payment.stages.reduce((a,x)=>a+Number(x.percent),0);if(Math.abs(sum-100)>.001||payment.stages.some(x=>!(x.percent>0)||!x.label.trim())){toast('每期須填有效百分比及條件，百分比合計須為100%');return;}
    const editing=window.__ub44EditQuote;
@@ -111,12 +112,13 @@
    return '<span class="ub54-item-name">'+e(prefix+name)+'</span>'+(lines.length?'<span class="ub54-item-detail">'+e(lines.join('\n'))+'</span>':'');
  }
  function addPhotoRows(table,items,meta){
-   const rows=[...table.querySelectorAll('tbody tr')];rows.forEach((row,i)=>{const item=items[i];if(!item)return;const photos=(Array.isArray(item.photos)?item.photos:((meta.item_photos||[]).find(p=>Number(p.sort_order)===Number(item.sort_order))?.photos||[])).filter(p=>photoSource(p.src));if(!photos.length)return;const r=document.createElement('tr');r.className='ub54-location-photo-row';r.innerHTML='<td colspan="'+row.cells.length+'"><div class="ub54-location-photos" style="grid-template-columns:repeat('+photos.length+',minmax(0,1fr))">'+photos.map((p,j)=>'<figure class="ub54-location-photo"><img src="'+e(p.src)+'" alt="'+e(p.caption||'工程位置相片')+'"><figcaption>'+e(String(item.description).split('\n')[0])+' · 位置相片 '+(j+1)+(p.caption?'：'+e(p.caption):'')+'</figcaption></figure>').join('')+'</div></td>';row.after(r);});
+   const rows=[...table.querySelectorAll('tbody tr')];rows.forEach((row,i)=>{const item=items[i];if(!item)return;const photos=(Array.isArray(item.photos)?item.photos:((meta.item_photos||[]).find(p=>Number(p.sort_order)===Number(item.sort_order))?.photos||[])).filter(p=>photoSource(p.src));if(!photos.length)return;const r=document.createElement('tr');r.className='ub54-location-photo-row';r.innerHTML='<td colspan="'+row.cells.length+'"><div class="ub54-location-photos" style="grid-template-columns:repeat('+photos.length+',minmax(0,1fr))">'+photos.map((p,j)=>'<figure class="ub54-location-photo"><img src="'+e(p.src)+'" alt="'+e(p.caption||'工程位置相片')+'"><figcaption>'+e(String(item.description).split('\n')[0])+(p.kind==='material'?' · 材料款式 ':' · 位置相片 ')+(j+1)+(p.caption?'：'+e(p.caption):'')+'</figcaption></figure>').join('')+'</div></td>';row.after(r);});
  }
  window.quoteDocumentHTML=function(q,p,items,...rest){
    const box=document.createElement('div');box.innerHTML=quoteHTML(q,p,items,...rest);const paper=box.querySelector('article');if(!paper)return box.innerHTML;
    paper.querySelectorAll('.invoice-ref-items tbody tr').forEach((row,i)=>{if(items[i])row.cells[0].innerHTML=itemDescription(items[i].description,(i+1)+'. ')});
-   const m=previewDraft?currentMeta():metaFor(q),opts=(m.options||[]).filter(x=>!x.selected);
+   paper.dataset.siteAddress=(previewDraft?$('nsite')?.value:null)||p?.site_address||p?.project_name||'';
+   const m=previewDraft?currentMeta():metaFor(q),opts=window.UB54Options.ensure(m.options||[],Number(m.room_count)||window.UB54Options.inferRooms(items)).filter(x=>!x.selected);
    if(opts.length){const table=document.createElement('table');table.className='invoice-ref-items ub54-optional-table';table.innerHTML='<colgroup><col style="width:55%"><col style="width:10%"><col style="width:10%"><col style="width:25%"></colgroup><thead><tr><th>額外工程項目（自選）</th><th>單位</th><th>數量</th><th>單價</th></tr></thead><tbody>'+opts.map(x=>'<tr><td>□ '+e(x.description)+'</td><td>'+e(x.unit)+'</td><td>'+(x.quantity_pending?'按實量':e(x.quantity))+'</td><td>'+(x.price_pending?'待定':hk(x.unit_price))+'</td></tr>').join('')+'</tbody>';const note=document.createElement('p');note.className='ub54-optional-note';note.textContent='以下項目供客戶選擇，費用另計。';paper.querySelector('.invoice-ref-summary').after(table,note);}
    paper.querySelectorAll('.ub54-optional-table tbody tr').forEach((row,i)=>{row.cells[0].innerHTML=itemDescription(opts[i].description,'□ ')});
    const includedTable=paper.querySelector('.invoice-ref-items:not(.ub54-optional-table)');if(includedTable)addPhotoRows(includedTable,items,m);const optionalTable=paper.querySelector('.ub54-optional-table');if(optionalTable)addPhotoRows(optionalTable,opts,m);
