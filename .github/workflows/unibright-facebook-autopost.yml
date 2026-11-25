@@ -1,0 +1,45 @@
+name: Unibright Facebook Page Auto Publish
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Preview only (do not publish)"
+        type: boolean
+        default: true
+        required: true
+  schedule:
+    # 10:33 Asia/Hong_Kong = 02:33 UTC
+    - cron: "33 2 * * *"
+permissions:
+  contents: write
+concurrency:
+  group: unibright-facebook-page-publisher
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+      FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+      FB_GRAPH_VERSION: v27.0
+      DRY_RUN: ${{ vars.FB_AUTOPUBLISH_ENABLED != 'true' || (github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish at most one approved due post
+        run: python unibright-ops/facebook-autopost/publish.py
+      - name: Record success and prevent repeat publishing
+        if: success()
+        run: |
+          if git diff --quiet -- unibright-ops/facebook-autopost/published.json; then
+            echo "No new publication"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add unibright-ops/facebook-autopost/published.json
+          git commit -m "Record published Facebook post [skip ci]"
+          git push
